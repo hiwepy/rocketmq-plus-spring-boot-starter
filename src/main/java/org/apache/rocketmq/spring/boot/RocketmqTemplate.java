@@ -1,5 +1,6 @@
 package org.apache.rocketmq.spring.boot;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageQueue;
+import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 
 public class RocketmqTemplate {
@@ -40,11 +42,11 @@ public class RocketmqTemplate {
 	}
 
 	public SendResult send(final String topic, final String tags, final String keys, final String body)
-			throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
+			throws MQClientException, RemotingException, MQBrokerException, InterruptedException, UnsupportedEncodingException {
 		Message msg = new Message(topic, // topic
 				tags, // tag
 				keys, // key用于标识业务的唯一性
-				body.getBytes()// body 二进制字节数组
+				body.getBytes(RemotingHelper.DEFAULT_CHARSET)// body 二进制字节数组
 		);
 		return producer.send(msg);
 	}
