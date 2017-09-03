@@ -1,0 +1,116 @@
+server:
+  tomcat:
+    max-threads: 100
+    min-spare-threads: 20
+  connection-timeout: 5000
+  ssl:
+    key-store: classpath:.keystore
+    key-store-type: JKS
+    key-password: qq123456
+    key-alias: tomcat
+  port: 8080
+spring:  
+  rocketmq:
+    tx-producer:
+      #队列数
+      check-request-hold-max: 2000
+      #事务回查最大并发数
+      check-thread-pool-max-size: 1
+      #事务回查最小并发数
+      check-thread-pool-min-size: 1
+    producer:
+      #客户端回调线程池容量大小，默认 JVM可用的CPU个数 
+      client-callback-executor-threads: 4
+      #当前客户端IP地址
+      client-i-p: 127.0.0.1
+      #Compress message body threshold, namely, message body larger than 4k will be compressed on default.
+      compress-msg-body-over-howmuch: 4096
+      #Just for testing or demo program
+      create-topic-key: 'topic01'
+      #Number of queues to create per default topic.
+      default-topic-queue-nums: 4
+      #Heartbeat interval in microseconds with message broker
+      heartbeat-broker-interval: 3000
+      #当前客户端实例名称，默认 ：DEFAULT
+      #如果需要同一个jvm中不同的producer往不同的mq集群发送消息，需要设置不同的instanceName
+      instance-name:  DEFAULT
+      #Maximum allowed message size in bytes. 1024 * 1024 * 4 = 4M
+      max-message-size: 4194304
+      #mq的nameserver地址
+      namesrv-addr: 192.168.1.2:9876;192.168.1.3:9876
+      #Offset persistent interval for consumer
+      persist-consumer-offset-interval: 5000
+      #Pulling topic information interval from the named server
+      poll-name-server-interval: 3000
+      #Producer group conceptually aggregates all producer instances of exactly same role, 
+      #which is particularly important when transactional messages are involved.
+      # 发送同一类消息的设置为同一个group，保证唯一,默认不需要设置，rocketmq会使用ip@pid(pid代表jvm名字)作为唯一标示
+      producer-group: Datax
+      #Indicate whether to retry another broker on sending failure internally.
+      retry-another-broker-when-not-store-o-k: false
+      #Maximum number of retry to perform internally before claiming sending failure in asynchronous mode.
+      retry-times-when-send-async-failed: 2
+      #Maximum number of retry to perform internally before claiming sending failure in synchronous mode.
+      retry-times-when-send-failed: 2
+      send-latency-fault-enable: true
+      #Timeout for sending messages.
+      send-msg-timeout: 3000
+      #Whether the unit of subscription group
+      unit-mode: false
+      unit-name: KB
+      vip-channel-enabled: false
+      
+    consumer:
+      #Threshold for dynamic adjustment of the number of thread pool
+      adjust-thread-pool-nums-threshold: 100000
+      allocate-message-queue-strategy:
+      #Concurrently max span offset.it has no effect on sequential consumption
+      consume-concurrently-max-span: 2000
+      #设置批量消费，以提升消费吞吐量，默认是1
+      consume-message-batch-max-size: 1 
+      #Max consumer thread number; Default 64
+      consume-thread-max: 64
+      #Minimum consumer thread number; Default 20
+      consume-thread-min: 20
+      #Maximum amount of time in minutes a message may block the consuming thread.
+      consume-timeout: 15
+      consume-timestamp: 
+      
+      #Consumers of the same role is required to have exactly same subscriptions and consumerGroup to correctly achieve
+      #load balance. It's required and needs to be globally unique.
+      consumer-group: '232'
+      #客户端回调线程池容量大小，默认 JVM可用的CPU个数 
+      client-callback-executor-threads: 4
+      #当前客户端IP地址
+      client-i-p: 127.0.0.1
+      #当前客户端实例名称，默认 ：DEFAULT
+      instance-name: DEFAULT
+      #Heartbeat interval in microseconds with message broker
+      heartbeat-broker-interval: 3000
+      #Max re-consume times. -1 means 16 times. 
+      max-reconsume-times: -1
+      message-listener: 
+        org.apache.rocketmq.spring.boot.listener.ConsumerMessageReceiveListener
+      message-model: 
+      persist-consumer-offset-interval: 
+      #Pulling topic information interval from the named server
+      poll-name-server-interval: 3000
+      #Whether update subscription relationship when every pull
+      post-subscription-when-pull: false
+      #Batch pull size
+      pull-batch-size: 32
+      #Message pull Interval
+      pull-interval: 0
+      #Flow control threshold
+      pull-threshold-for-queue: 1000
+      #Subscription relationship
+      subscription: 
+        asdasd : asd 
+        sad : asd 
+      #Suspending pulling time for cases requiring slow pulling like flow-control scenario.
+      suspend-current-queue-time-millis: 1000
+      #Whether the unit of subscription group
+      unit-mode: false
+      unit-name: KB
+      vip-channel-enabled: false
+        
