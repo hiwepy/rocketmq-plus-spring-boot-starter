@@ -12,6 +12,8 @@ import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
+import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
+import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByRandoom;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
@@ -19,6 +21,8 @@ import org.apache.rocketmq.remoting.exception.RemotingException;
 
 public class RocketmqTemplate {
 
+	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
+	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
 	protected MQProducer producer;
 
 	public RocketmqTemplate(MQProducer producer) {
@@ -100,6 +104,14 @@ public class RocketmqTemplate {
 		producer.sendOneway(msg, mq);
 	}
 
+	/**
+	 * 发送有序消息
+	 *
+	 * @param messageMap 消息数据
+	 * @param selector   队列选择器，发送时会回调
+	 * @param order      回调队列选择器时，此参数会传入队列选择方法,提供配需规则
+	 * @return 发送结果
+	 */
 	public SendResult send(final Message msg, final MessageQueueSelector selector, final Object arg)
 			throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 		return producer.send(msg, selector, arg);
@@ -151,5 +163,5 @@ public class RocketmqTemplate {
 			throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 		return producer.send(msgs, mq, timeout);
 	}
-
+	
 }

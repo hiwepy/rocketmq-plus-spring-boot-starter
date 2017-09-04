@@ -29,15 +29,23 @@ Clone & Build
 
 三、服务启动、关闭
 
-Start Name Server
-
-  > nohup sh mqnamesrv 1>$ROCKETMQ_HOME/logs/ng.log 2>$ROCKETMQ_HOME/logs/ng-err.log &
+1、Start Name Server
+	
+  > cd rocketmq-all-4.1.0-incubating/bin
+  > 
+  > nohup sh mqnamesrv &
+  
+  运行 nohup mqnamesrv -n 127.0.0.1:9876 &↙ 启动nameserver服务。
+  > nohup sh mqnamesrv -n 127.0.0.1:9876 1>$ROCKETMQ_HOME/logs/ng.log 2>$ROCKETMQ_HOME/logs/ng-err.log &
+   
 
   > nohup sh bin/mqnamesrv &
   > tail -f ~/logs/rocketmqlogs/namesrv.log
   The Name Server boot success...
 
 Start Broker
+
+  运行 nohup mqbroker -n 127.0.0.1:9876  autoCreateTopicEnable=true & ↙ 启动broker服务
 
   > nohup sh bin/mqbroker -n localhost:9876 &
   > tail -f ~/logs/rocketmqlogs/broker.log 
