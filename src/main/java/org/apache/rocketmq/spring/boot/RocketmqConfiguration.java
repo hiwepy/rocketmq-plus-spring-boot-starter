@@ -30,20 +30,15 @@ import org.springframework.util.CollectionUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQProducer.class, DefaultMQPushConsumer.class })
-@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, matchIfMissing = false)
+//@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, matchIfMissing = false)
 @EnableConfigurationProperties({ RocketmqProperties.class })
 public class RocketmqConfiguration {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RocketmqConfiguration.class);
 
 	@Bean
-	public RocketmqTemplate rocketmqTemplate(DefaultMQProducer producer) throws MQClientException {
-		return new RocketmqTemplate(producer);
-	}
-
-	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqProperties.PRODUCER_PREFIX, value = "transaction", havingValue = "true", matchIfMissing = false)
+	@ConditionalOnProperty(prefix = RocketmqProperties.PRODUCER_PREFIX + ".transaction", value = "true")
 	public TransactionCheckListener transactionCheckListener() {
 		return new DefaultTransactionCheckListener();
 	}
@@ -84,7 +79,7 @@ public class RocketmqConfiguration {
 	 * 初始化向rocketmq发送普通消息的生产者
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = RocketmqProperties.PRODUCER_PREFIX, value = "producerGroup")
+	@ConditionalOnProperty(prefix = RocketmqProperties.PRODUCER_PREFIX + ".producerGroup")
 	public DefaultMQProducer defaultProducer(RocketmqProperties properties,
 			TransactionCheckListener transactionCheckListener) throws MQClientException {
 
@@ -181,7 +176,7 @@ public class RocketmqConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqProperties.CONSUMER_PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqProperties.CONSUMER_PREFIX + ".consumerGroup")
 	public MessageListenerConcurrently messageListener() {
 		return new DefaultMessageConsumeListener();
 	}
@@ -190,7 +185,7 @@ public class RocketmqConfiguration {
 	 * 初始化rocketmq消息监听方式的消费者
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = RocketmqProperties.CONSUMER_PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqProperties.CONSUMER_PREFIX + ".consumerGroup")
 	public DefaultMQPushConsumer pushConsumer(RocketmqProperties properties,
 			MessageListenerConcurrently messageListener) throws MQClientException {
 
