@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.apache.rocketmq.spring.boot.DisruptorAutoConfiguration
+org.apache.rocketmq.spring.boot.DisruptorAutoConfiguration,
 org.apache.rocketmq.spring.boot.RocketmqAutoConfiguration
 #provides: DefaultMQProducer, DefaultMQPushConsumer, Disruptor
