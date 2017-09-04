@@ -10,8 +10,8 @@ server:
     key-alias: tomcat
   port: 8080
 spring:  
-  rocketmq:
-    producer:
+  rocketmq: 
+    producer: 
       #客户端回调线程池容量大小，默认 JVM可用的CPU个数 
       client-callback-executor-threads: 4
       #当前客户端IP地址
