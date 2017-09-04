@@ -20,21 +20,23 @@ import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListener;
 import org.apache.rocketmq.spring.boot.listener.DefaultTransactionCheckListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 
-@Configuration
+@org.springframework.context.annotation.Configuration
 @ConditionalOnClass({ DefaultMQProducer.class, DefaultMQPushConsumer.class })
 //@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, matchIfMissing = false)
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
 @EnableConfigurationProperties({ RocketmqProperties.class })
-public class RocketmqConfiguration {
+public class RocketmqAutoConfiguration {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RocketmqConfiguration.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RocketmqAutoConfiguration.class);
 
 	@Bean
 	@ConditionalOnMissingBean
