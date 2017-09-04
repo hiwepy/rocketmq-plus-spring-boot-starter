@@ -11,13 +11,6 @@ server:
   port: 8080
 spring:  
   rocketmq:
-    tx-producer:
-      #队列数
-      check-request-hold-max: 2000
-      #事务回查最大并发数
-      check-thread-pool-max-size: 1
-      #事务回查最小并发数
-      check-thread-pool-min-size: 1
     producer:
       #客户端回调线程池容量大小，默认 JVM可用的CPU个数 
       client-callback-executor-threads: 4
@@ -59,7 +52,14 @@ spring:
       unit-mode: false
       unit-name: KB
       vip-channel-enabled: false
-      
+      #是否需要事物支持
+      transaction: false
+      #队列数
+      check-request-hold-max: 2000
+      #事务回查最大并发数
+      check-thread-pool-max-size: 1
+      #事务回查最小并发数
+      check-thread-pool-min-size: 1
     consumer:
       #Threshold for dynamic adjustment of the number of thread pool
       adjust-thread-pool-nums-threshold: 100000
@@ -91,8 +91,8 @@ spring:
       max-reconsume-times: -1
       message-listener: 
         org.apache.rocketmq.spring.boot.listener.ConsumerMessageReceiveListener
-      message-model: 
-      persist-consumer-offset-interval: 
+     #  message-model: org.apache.rocketmq.common.protocol.heartbeat.MessageModel.CLUSTERING
+      persist-consumer-offset-interval: 0
       #Pulling topic information interval from the named server
       poll-name-server-interval: 3000
       #Whether update subscription relationship when every pull
@@ -113,4 +113,14 @@ spring:
       unit-mode: false
       unit-name: KB
       vip-channel-enabled: false
+    disruptor: 
+      ring-buffer-size: 1024
+      ring-thread-numbers: 4
+      multi-producer: true
+      pre-handlers:
+        org.apache.rocketmq.spring.boot.disruptor.RocketmqDataInDbHandler
+        org.apache.rocketmq.spring.boot.disruptor.RocketmqDataSmsHandler
+      post-handlers: 
+        org.apache.rocketmq.spring.boot.disruptor.RocketmqDataSmsHandler
+      
         

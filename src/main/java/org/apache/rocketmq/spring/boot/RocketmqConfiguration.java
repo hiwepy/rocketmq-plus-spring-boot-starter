@@ -47,7 +47,39 @@ public class RocketmqConfiguration {
 	public TransactionCheckListener transactionCheckListener() {
 		return new DefaultTransactionCheckListener();
 	}
-
+	
+	/**
+	 * 初始化消息生产者
+	 * 
+	 * @param producer
+	 * @param config
+	 */
+	public void configure(DefaultMQProducer producer, ProducerConfig config) {
+		producer.setClientCallbackExecutorThreads(config.getClientCallbackExecutorThreads());
+		producer.setClientIP(config.getClientIP());
+		producer.setCompressMsgBodyOverHowmuch(config.getCompressMsgBodyOverHowmuch());
+		producer.setCreateTopicKey(config.getCreateTopicKey());
+		producer.setDefaultTopicQueueNums(config.getDefaultTopicQueueNums());
+		producer.setHeartbeatBrokerInterval(config.getHeartbeatBrokerInterval());
+		producer.setInstanceName(config.getInstanceName());
+		producer.setLatencyMax(config.getLatencyMax());
+		producer.setMaxMessageSize(config.getMaxMessageSize());
+		producer.setNamesrvAddr(config.getNamesrvAddr());
+		producer.setNotAvailableDuration(config.getNotAvailableDuration());
+		producer.setPersistConsumerOffsetInterval(config.getPersistConsumerOffsetInterval());
+		producer.setPollNameServerInterval(config.getPollNameServerInterval());
+		producer.setProducerGroup(config.getProducerGroup());
+		producer.setRetryAnotherBrokerWhenNotStoreOK(config.isRetryAnotherBrokerWhenNotStoreOK());
+		producer.setRetryTimesWhenSendAsyncFailed(config.getRetryTimesWhenSendAsyncFailed());
+		producer.setRetryTimesWhenSendFailed(config.getRetryTimesWhenSendFailed());
+		producer.setSendLatencyFaultEnable(config.isSendLatencyFaultEnable());
+		producer.setSendMessageWithVIPChannel(config.isVipChannelEnabled());
+		producer.setSendMsgTimeout(config.getSendMsgTimeout());
+		producer.setUnitMode(config.isUnitMode());
+		producer.setUnitName(config.getUnitName());
+		producer.setVipChannelEnabled(config.isVipChannelEnabled());
+	}
+	
 	/**
 	 * 初始化向rocketmq发送普通消息的生产者
 	 */
@@ -127,7 +159,17 @@ public class RocketmqConfiguration {
 
 				LOG.info("RocketMQ MQProducer Started ! groupName:[%s],namesrvAddr:[%s],instanceName:[%s].",
 						config.getProducerGroup(), config.getNamesrvAddr(), config.getInstanceName());
-
+				
+				/** 
+		         * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己 
+		         * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法 
+		         */  
+		        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {  
+		            public void run() {  
+		            	producer.shutdown(); 
+		            }  
+		        })); 
+		        
 				return producer;
 			} catch (Exception e) {
 				LOG.error(String.format("RocketMQ MQProducer Start failure ：%s", e.getMessage(), e));
@@ -136,39 +178,7 @@ public class RocketmqConfiguration {
 		}
 
 	}
-
-	/**
-	 * 初始化消息生产者
-	 * 
-	 * @param producer
-	 * @param config
-	 */
-	public void configure(DefaultMQProducer producer, ProducerConfig config) {
-		producer.setClientCallbackExecutorThreads(config.getClientCallbackExecutorThreads());
-		producer.setClientIP(config.getClientIP());
-		producer.setCompressMsgBodyOverHowmuch(config.getCompressMsgBodyOverHowmuch());
-		producer.setCreateTopicKey(config.getCreateTopicKey());
-		producer.setDefaultTopicQueueNums(config.getDefaultTopicQueueNums());
-		producer.setHeartbeatBrokerInterval(config.getHeartbeatBrokerInterval());
-		producer.setInstanceName(config.getInstanceName());
-		producer.setLatencyMax(config.getLatencyMax());
-		producer.setMaxMessageSize(config.getMaxMessageSize());
-		producer.setNamesrvAddr(config.getNamesrvAddr());
-		producer.setNotAvailableDuration(config.getNotAvailableDuration());
-		producer.setPersistConsumerOffsetInterval(config.getPersistConsumerOffsetInterval());
-		producer.setPollNameServerInterval(config.getPollNameServerInterval());
-		producer.setProducerGroup(config.getProducerGroup());
-		producer.setRetryAnotherBrokerWhenNotStoreOK(config.isRetryAnotherBrokerWhenNotStoreOK());
-		producer.setRetryTimesWhenSendAsyncFailed(config.getRetryTimesWhenSendAsyncFailed());
-		producer.setRetryTimesWhenSendFailed(config.getRetryTimesWhenSendFailed());
-		producer.setSendLatencyFaultEnable(config.isSendLatencyFaultEnable());
-		producer.setSendMessageWithVIPChannel(config.isVipChannelEnabled());
-		producer.setSendMsgTimeout(config.getSendMsgTimeout());
-		producer.setUnitMode(config.isUnitMode());
-		producer.setUnitName(config.getUnitName());
-		producer.setVipChannelEnabled(config.isVipChannelEnabled());
-	}
-
+	
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(prefix = RocketmqProperties.CONSUMER_PREFIX, value = "consumerGroup")
@@ -224,7 +234,17 @@ public class RocketmqConfiguration {
 			 * 注册消费监听
 			 */
 			consumer.registerMessageListener(messageListener);
-
+			
+			/** 
+	         * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己 
+	         * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法 
+	         */  
+	        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {  
+	            public void run() {  
+	            	consumer.shutdown(); 
+	            }  
+	        }));  
+	        
 			/*
 			 * 延迟5秒再启动，主要是等待spring事件监听相关程序初始化完成，否则，回出现对RocketMQ的消息进行消费后立即发布消息到达的事件，
 			 * 然而此事件的监听程序还未初始化，从而造成消息的丢失
@@ -253,5 +273,5 @@ public class RocketmqConfiguration {
 			throw new RocketMQException(e);
 		}
 	}
-
+	
 }
