@@ -199,12 +199,6 @@
 								${basedir}/target/test-classes
 							</additionalClasspathElement>
 						</additionalClasspathElements>
-						<includes>
-							<include>**/*Test.java</include>
-						</includes>
-						<excludes>
-							<exclude>**/TestBean.java</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 				<!-- jar包生成插件 ：创建项目jar包 -->
@@ -217,7 +211,6 @@
 							<manifest>
 								<addClasspath>true</addClasspath>
 								<classpathPrefix>lib/</classpathPrefix>
-								<mainClass>.....Main</mainClass>
 							</manifest>
 						</archive>
 					</configuration>

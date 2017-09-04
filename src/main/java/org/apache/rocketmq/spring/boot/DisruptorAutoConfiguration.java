@@ -32,7 +32,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQProducer.class, DefaultMQPushConsumer.class, Disruptor.class })
-//@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX)
+@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, value = "disruptor", matchIfMissing = true)
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 9)
 @EnableConfigurationProperties({ RocketmqProperties.class })
 @SuppressWarnings("unchecked")
@@ -58,6 +58,7 @@ public class DisruptorAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnClass({ Disruptor.class })
+	@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX , value = "ring-buffer-size")
 	protected Disruptor<RocketmqDataEvent> disruptor(RocketmqProperties properties, WaitStrategy waitStrategy,
 			EventFactory<RocketmqDataEvent> eventFactory, ThreadFactory threadFactory) {
 

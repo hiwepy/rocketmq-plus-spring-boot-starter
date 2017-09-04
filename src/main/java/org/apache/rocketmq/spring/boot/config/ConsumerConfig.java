@@ -94,11 +94,6 @@ public class ConsumerConfig extends ClientConfig {
     private String consumeTimestamp = UtilAll.timeMillisToHumanString3(System.currentTimeMillis() - (1000 * 60 * 30));
 
     /**
-     * Queue allocation algorithm specifying how message queues are allocated to each consumer clients.
-     */
-    private AllocateMessageQueueStrategy allocateMessageQueueStrategy;
-
-    /**
      * Subscription relationship
      */
     private Map<String /* topic */, String /* sub expression */> subscription = new HashMap<String, String>();
@@ -191,6 +186,7 @@ public class ConsumerConfig extends ClientConfig {
      * 订阅指定topic下tags
      */
     private List<Subscribe> subscribe;
+    
 
 	public String getConsumerGroup() {
 		return consumerGroup;
@@ -222,14 +218,6 @@ public class ConsumerConfig extends ClientConfig {
 
 	public void setConsumeTimestamp(String consumeTimestamp) {
 		this.consumeTimestamp = consumeTimestamp;
-	}
-
-	public AllocateMessageQueueStrategy getAllocateMessageQueueStrategy() {
-		return allocateMessageQueueStrategy;
-	}
-
-	public void setAllocateMessageQueueStrategy(AllocateMessageQueueStrategy allocateMessageQueueStrategy) {
-		this.allocateMessageQueueStrategy = allocateMessageQueueStrategy;
 	}
 
 	public Map<String, String> getSubscription() {
