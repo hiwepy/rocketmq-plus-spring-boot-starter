@@ -63,7 +63,6 @@ spring:
     consumer:
       #Threshold for dynamic adjustment of the number of thread pool
       adjust-thread-pool-nums-threshold: 100000
-      allocate-message-queue-strategy:
       #Concurrently max span offset.it has no effect on sequential consumption
       consume-concurrently-max-span: 2000
       #设置批量消费，以提升消费吞吐量，默认是1

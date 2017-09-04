@@ -5,8 +5,10 @@ import java.util.concurrent.Executors;
 
 import org.apache.rocketmq.spring.boot.config.DisruptorConfig;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventFactory;
+import org.apache.rocketmq.spring.boot.disruptor.RocketmqEventHandler;
 import org.apache.rocketmq.spring.boot.event.RocketmqDataEvent;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,7 +43,8 @@ public class RingBufferTest {
 	@Bean
 	@ConditionalOnClass({ RingBuffer.class })
 	protected RingBuffer<RocketmqDataEvent> ringBuffer(RocketmqProperties properties, WaitStrategy waitStrategy,
-			EventFactory<RocketmqDataEvent> eventFactory) {
+			EventFactory<RocketmqDataEvent> eventFactory,
+			@Autowired(required = false) RocketmqEventHandler eventHandler) {
 
 		DisruptorConfig config = properties.getDisruptor();
 
@@ -62,12 +65,12 @@ public class RingBufferTest {
 		}
 		
 		//单个处理器
-		if (null != config.getEventHandler()) {
+		if (null != eventHandler) {
 			// 创建SequenceBarrier
 			SequenceBarrier sequenceBarrier = ringBuffer.newBarrier();
 			// 创建消息处理器
 			BatchEventProcessor<RocketmqDataEvent> transProcessor = new BatchEventProcessor<RocketmqDataEvent>(
-					ringBuffer, sequenceBarrier, config.getEventHandler());
+					ringBuffer, sequenceBarrier, eventHandler);
 			// 这一部的目的是让RingBuffer根据消费者的状态 如果只有一个消费者的情况可以省略
 			ringBuffer.addGatingSequences(transProcessor.getSequence());
 			// 把消息处理器提交到线程池
