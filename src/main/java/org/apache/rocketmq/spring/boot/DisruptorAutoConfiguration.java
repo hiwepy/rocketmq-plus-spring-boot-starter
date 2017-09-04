@@ -3,8 +3,6 @@ package org.apache.rocketmq.spring.boot;
 import java.util.concurrent.ThreadFactory;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.spring.boot.config.DisruptorConfig;
 import org.apache.rocketmq.spring.boot.disruptor.EventHandlerFactory;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventFactory;
@@ -34,9 +32,9 @@ import com.lmax.disruptor.dsl.EventHandlerGroup;
 import com.lmax.disruptor.dsl.ProducerType;
 
 @Configuration
-@ConditionalOnClass({ DefaultMQProducer.class, DefaultMQPushConsumer.class, Disruptor.class })
+@ConditionalOnClass({ Disruptor.class })
 @ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, value = "disruptor", matchIfMissing = true)
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 9)
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 8)
 @EnableConfigurationProperties({ RocketmqProperties.class })
 @SuppressWarnings("unchecked")
 public class DisruptorAutoConfiguration {
@@ -114,7 +112,7 @@ public class DisruptorAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean({ Disruptor.class })
-	@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX)
+	@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, value = "disruptor")
 	public MessageProcessor messageProcessor() {
 		return new MessageDisruptorProcessor();
 	}

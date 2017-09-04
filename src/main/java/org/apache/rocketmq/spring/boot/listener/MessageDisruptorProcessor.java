@@ -8,11 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 
 import com.lmax.disruptor.dsl.Disruptor;
 
-@Configuration
 public class MessageDisruptorProcessor implements MessageProcessor, InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageDisruptorProcessor.class);
