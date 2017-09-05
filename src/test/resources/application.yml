@@ -113,13 +113,8 @@ spring:
       unit-name: KB
       vip-channel-enabled: false
     disruptor: 
+      enabled: true
       ring-buffer-size: 1024
       ring-thread-numbers: 4
       multi-producer: true
-      pre-handlers:
-        org.apache.rocketmq.spring.boot.disruptor.RocketmqDataInDbHandler
-        org.apache.rocketmq.spring.boot.disruptor.RocketmqDataSmsHandler
-      post-handlers: 
-        org.apache.rocketmq.spring.boot.disruptor.RocketmqDataSmsHandler
-      
         

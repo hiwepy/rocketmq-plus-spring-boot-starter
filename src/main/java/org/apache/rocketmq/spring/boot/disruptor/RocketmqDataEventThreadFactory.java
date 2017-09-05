@@ -6,10 +6,7 @@ public class RocketmqDataEventThreadFactory implements ThreadFactory {
 
 	@Override
 	public Thread newThread(Runnable r) {
-		
-		return null;
-		
-		
+		return new Thread(r);
 	}
 
 }

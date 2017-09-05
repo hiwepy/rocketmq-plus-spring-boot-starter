@@ -2,9 +2,23 @@ package org.apache.rocketmq.spring.boot.config;
 
 public class DisruptorConfig {
 
+
+	/**
+	 * Enable Disruptor.
+	 */
+	private boolean enabled = false;
 	private int ringBufferSize = 1024;
 	private int ringThreadNumbers = 4;
 	private boolean multiProducer = false;
+	
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public boolean isMultiProducer() {
 		return multiProducer;

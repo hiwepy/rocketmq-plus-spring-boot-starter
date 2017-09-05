@@ -14,6 +14,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 public class MessageDisruptorProcessor implements MessageProcessor, InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MessageDisruptorProcessor.class);
+	
 	@Autowired
 	private Disruptor<RocketmqDataEvent> disruptor;
 	

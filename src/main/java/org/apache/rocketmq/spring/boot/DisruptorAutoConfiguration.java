@@ -33,9 +33,9 @@ import com.lmax.disruptor.dsl.ProducerType;
 
 @Configuration
 @ConditionalOnClass({ Disruptor.class })
-@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, value = "disruptor", matchIfMissing = true)
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 8)
+@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX , value = "enabled" , havingValue = "true")
 @EnableConfigurationProperties({ RocketmqProperties.class })
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 8)
 @SuppressWarnings("unchecked")
 public class DisruptorAutoConfiguration {
 
@@ -65,7 +65,7 @@ public class DisruptorAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnClass({ Disruptor.class })
-	@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX , value = "ring-buffer-size")
+	@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX , value = "enabled" , havingValue = "true")
 	protected Disruptor<RocketmqDataEvent> disruptor(RocketmqProperties properties, WaitStrategy waitStrategy,ThreadFactory threadFactory,
 			EventFactory<RocketmqDataEvent> eventFactory, 
 			@Autowired(required = false) RocketmqEventHandler eventHandler,
@@ -112,7 +112,7 @@ public class DisruptorAutoConfiguration {
 
 	@Bean
 	@ConditionalOnBean({ Disruptor.class })
-	@ConditionalOnProperty(prefix = RocketmqProperties.PREFIX, value = "disruptor")
+	@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX , value = "enabled" , havingValue = "true")
 	public MessageProcessor messageProcessor() {
 		return new MessageDisruptorProcessor();
 	}
