@@ -25,6 +25,9 @@ public class RocketmqTemplate {
 	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
 	protected MQProducer producer;
 
+	public RocketmqTemplate() {
+	}
+	
 	public RocketmqTemplate(MQProducer producer) {
 		this.producer = producer;
 	}
@@ -162,6 +165,14 @@ public class RocketmqTemplate {
 	public SendResult send(final Collection<Message> msgs, final MessageQueue mq, final long timeout)
 			throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 		return producer.send(msgs, mq, timeout);
+	}
+
+	public MQProducer getProducer() {
+		return producer;
+	}
+
+	public void setProducer(MQProducer producer) {
+		this.producer = producer;
 	}
 	
 }
