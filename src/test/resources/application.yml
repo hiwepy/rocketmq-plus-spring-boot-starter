@@ -88,8 +88,6 @@ spring:
       heartbeat-broker-interval: 3000
       #Max re-consume times. -1 means 16 times. 
       max-reconsume-times: -1
-      message-listener: 
-        org.apache.rocketmq.spring.boot.listener.ConsumerMessageReceiveListener
      #  message-model: org.apache.rocketmq.common.protocol.heartbeat.MessageModel.CLUSTERING
       persist-consumer-offset-interval: 0
       #Pulling topic information interval from the named server

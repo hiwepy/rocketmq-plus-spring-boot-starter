@@ -20,7 +20,7 @@ public class RocketmqProperties {
 	private ConsumerConfig consumer;
 	@NestedConfigurationProperty
 	private DisruptorConfig disruptor;
-	
+
 	public ProducerConfig getProducer() {
 		return producer;
 	}
@@ -28,7 +28,7 @@ public class RocketmqProperties {
 	public void setProducer(ProducerConfig producer) {
 		this.producer = producer;
 	}
-	
+
 	public ConsumerConfig getConsumer() {
 		return consumer;
 	}
@@ -44,5 +44,5 @@ public class RocketmqProperties {
 	public void setDisruptor(DisruptorConfig disruptor) {
 		this.disruptor = disruptor;
 	}
-	
+
 }
