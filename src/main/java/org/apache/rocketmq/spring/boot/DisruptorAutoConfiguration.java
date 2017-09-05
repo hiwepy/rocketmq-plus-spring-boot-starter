@@ -10,6 +10,7 @@ import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventThreadFactory;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqEventHandler;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqEventHandlerFactory;
 import org.apache.rocketmq.spring.boot.event.RocketmqDataEvent;
+import org.apache.rocketmq.spring.boot.hooks.DisruptorShutdownHook;
 import org.apache.rocketmq.spring.boot.listener.MessageDisruptorProcessor;
 import org.apache.rocketmq.spring.boot.listener.MessageProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,6 +107,12 @@ public class DisruptorAutoConfiguration {
 		// 启动
 		disruptor.start();
 		
+		/** 
+         * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从MetaQ服务器上注销自己 
+         * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法 
+         */  
+        Runtime.getRuntime().addShutdownHook(new DisruptorShutdownHook(disruptor));
+        
 		return disruptor;
 		
 	}

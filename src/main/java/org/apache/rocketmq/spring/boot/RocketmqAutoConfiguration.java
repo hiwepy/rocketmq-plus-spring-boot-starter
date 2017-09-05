@@ -20,6 +20,8 @@ import org.apache.rocketmq.spring.boot.config.ConsumerConfig;
 import org.apache.rocketmq.spring.boot.config.ProducerConfig;
 import org.apache.rocketmq.spring.boot.config.Subscribe;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
+import org.apache.rocketmq.spring.boot.hooks.MQProducerShutdownHook;
+import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
 import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListener;
 import org.apache.rocketmq.spring.boot.listener.DefaultTransactionCheckListener;
 import org.slf4j.Logger;
@@ -140,11 +142,7 @@ public class RocketmqAutoConfiguration {
 				 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
 				 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
 				 */
-				Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-					public void run() {
-						producer.shutdown();
-					}
-				}));
+				Runtime.getRuntime().addShutdownHook(new MQProducerShutdownHook(producer));
 				
 				return producer;
 
@@ -175,11 +173,7 @@ public class RocketmqAutoConfiguration {
 				 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
 				 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
 				 */
-				Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-					public void run() {
-						producer.shutdown();
-					}
-				}));
+				Runtime.getRuntime().addShutdownHook(new MQProducerShutdownHook(producer));
 
 				return producer;
 			} catch (Exception e) {
@@ -311,17 +305,7 @@ public class RocketmqAutoConfiguration {
 			 * 注册消费监听
 			 */
 			consumer.registerMessageListener(messageListener);
-
-			/**
-			 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
-			 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
-			 */
-			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-				public void run() {
-					consumer.shutdown();
-				}
-			}));
-
+			
 			/*
 			 * 延迟5秒再启动，主要是等待spring事件监听相关程序初始化完成，否则，回出现对RocketMQ的消息进行消费后立即发布消息到达的事件，
 			 * 然而此事件的监听程序还未初始化，从而造成消息的丢失
@@ -335,6 +319,12 @@ public class RocketmqAutoConfiguration {
 						 */
 						consumer.start();
 
+						/**
+						 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
+						 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
+						 */
+						Runtime.getRuntime().addShutdownHook(new MQPushConsumerShutdownHook(consumer));
+						
 						LOG.info("RocketMQ MQPushConsumer Started ! groupName:[%s],namesrvAddr:[%s],instanceName:[%s].",
 								config.getConsumerGroup(), config.getNamesrvAddr(), config.getInstanceName());
 
