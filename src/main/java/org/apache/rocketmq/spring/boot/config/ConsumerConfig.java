@@ -20,11 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.rocketmq.client.ClientConfig;
-import org.apache.rocketmq.client.consumer.AllocateMessageQueueStrategy;
-import org.apache.rocketmq.client.consumer.listener.MessageListener;
-import org.apache.rocketmq.client.consumer.store.OffsetStore;
 import org.apache.rocketmq.common.UtilAll;
-import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 public class ConsumerConfig extends ClientConfig {
 	
@@ -45,12 +41,16 @@ public class ConsumerConfig extends ClientConfig {
      * the same {@link #consumerGroup} would only consume shards of the messages subscribed, which achieves load
      * balances; Conversely, if the broadcasting is set, each consumer client will consume all subscribed messages
      * separately.
+     * 
+     * BROADCASTING
+     * CLUSTERING
      * </p>
      *
      * This field defaults to clustering.
      */
-    private MessageModel messageModel = MessageModel.CLUSTERING;
-
+    //private MessageModel messageModel = MessageModel.CLUSTERING;
+    private String messageModel = "CLUSTERING";
+    
     /**
      * Consuming point on consumer booting.
      * </p>
@@ -97,16 +97,6 @@ public class ConsumerConfig extends ClientConfig {
      * Subscription relationship
      */
     private Map<String /* topic */, String /* sub expression */> subscription = new HashMap<String, String>();
-
-    /**
-     * Message listener
-     */
-    private MessageListener messageListener;
-
-    /**
-     * Offset Storage
-     */
-    private OffsetStore offsetStore;
 
     /**
      * Minimum consumer thread number
@@ -196,11 +186,11 @@ public class ConsumerConfig extends ClientConfig {
 		this.consumerGroup = consumerGroup;
 	}
 
-	public MessageModel getMessageModel() {
+	public String getMessageModel() {
 		return messageModel;
 	}
 
-	public void setMessageModel(MessageModel messageModel) {
+	public void setMessageModel(String messageModel) {
 		this.messageModel = messageModel;
 	}
 
@@ -226,22 +216,6 @@ public class ConsumerConfig extends ClientConfig {
 
 	public void setSubscription(Map<String, String> subscription) {
 		this.subscription = subscription;
-	}
-
-	public MessageListener getMessageListener() {
-		return messageListener;
-	}
-
-	public void setMessageListener(MessageListener messageListener) {
-		this.messageListener = messageListener;
-	}
-
-	public OffsetStore getOffsetStore() {
-		return offsetStore;
-	}
-
-	public void setOffsetStore(OffsetStore offsetStore) {
-		this.offsetStore = offsetStore;
 	}
 
 	public int getConsumeThreadMin() {

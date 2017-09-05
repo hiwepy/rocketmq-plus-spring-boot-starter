@@ -15,6 +15,7 @@ import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.TransactionCheckListener;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.boot.config.ConsumerConfig;
 import org.apache.rocketmq.spring.boot.config.ProducerConfig;
 import org.apache.rocketmq.spring.boot.config.Subscribe;
@@ -233,7 +234,10 @@ public class RocketmqAutoConfiguration {
 		consumer.setHeartbeatBrokerInterval(config.getHeartbeatBrokerInterval());
 		consumer.setInstanceName(config.getInstanceName());
 		consumer.setMaxReconsumeTimes(config.getMaxReconsumeTimes());
-		consumer.setMessageModel(config.getMessageModel());
+		try {
+			consumer.setMessageModel(MessageModel.valueOf(config.getMessageModel()));
+		} catch (Exception e) {
+		}
 		consumer.setNamesrvAddr(config.getNamesrvAddr());
 		consumer.setPersistConsumerOffsetInterval(config.getPersistConsumerOffsetInterval());
 		consumer.setPollNameServerInterval(config.getPollNameServerInterval());
