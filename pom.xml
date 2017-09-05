@@ -245,16 +245,18 @@
 						</execution>
 					</executions>
 				</plugin>
-				<!-- 文档插件:发布时自动生成文档 -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-						<aggregate>true</aggregate>
-						<charset>UTF-8</charset>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<docencoding>UTF-8</docencoding>
-					</configuration>
+				<!-- 文档插件:发布时自动生成文档 : http://codepub.cn/2016/10/18/Java-8-configure-maven-java-doc-plugin/ -->	
+				<plugin>  
+		            <groupId>org.apache.maven.plugins</groupId>  
+		            <artifactId>maven-javadoc-plugin</artifactId>  
+		            <version>2.10.4</version> 
+					<configuration>  
+	                    <aggregate>true</aggregate>  
+	                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                       	<charset>${project.build.sourceEncoding}</charset> 
+                        <encoding>${project.build.sourceEncoding}</encoding> 
+                        <docencoding>${project.build.sourceEncoding}</docencoding> 
+	                </configuration>
 					<executions>
 						<execution>
 							<id>attach-javadocs</id>
@@ -262,9 +264,12 @@
 							<goals>
 								<goal>jar</goal>
 							</goals>
+							<configuration>
+								<additionalparam>-Xdoclint:none</additionalparam>
+							</configuration>
 						</execution>
-					</executions>
-				</plugin>
+					</executions>				
+		        </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
