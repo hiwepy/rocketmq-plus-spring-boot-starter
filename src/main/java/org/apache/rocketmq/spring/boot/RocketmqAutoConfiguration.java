@@ -1,6 +1,7 @@
 package org.apache.rocketmq.spring.boot;
 
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +19,6 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.boot.config.ConsumerConfig;
 import org.apache.rocketmq.spring.boot.config.ProducerConfig;
-import org.apache.rocketmq.spring.boot.config.Subscribe;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
 import org.apache.rocketmq.spring.boot.hooks.MQProducerShutdownHook;
 import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
@@ -275,8 +275,8 @@ public class RocketmqAutoConfiguration {
 		if (StringUtils.isEmpty(config.getInstanceName())) {
 			throw new RocketMQException("instanceName is empty");
 		}
-		if (CollectionUtils.isEmpty(config.getSubscribe())) {
-			throw new RocketMQException("subscribe is empty");
+		if (CollectionUtils.isEmpty(config.getSubscription())) {
+			throw new RocketMQException("subscription is empty");
 		}
 
 		try {
@@ -295,10 +295,18 @@ public class RocketmqAutoConfiguration {
 			/*
 			 * 订阅指定topic下tags
 			 */
-			consumer.setSubscription(config.getSubscription());
-			List<Subscribe> subscribeList = config.getSubscribe();
-			for (Subscribe sunscribe : subscribeList) {
-				consumer.subscribe(sunscribe.getTopic(), sunscribe.getTags());
+			if(!CollectionUtils.isEmpty(config.getSubscription())){
+				
+				Iterator<Entry<String, String>> ite = config.getSubscription().entrySet().iterator();
+				while (ite.hasNext()) {
+					Entry<String, String> entry = ite.next();
+					/* 
+					 * entry.getKey() 	： topic名称 
+					 * entry.getValue() : 根据实际情况设置消息的tag 
+					 */
+					consumer.subscribe(entry.getKey(), entry.getValue());
+				}
+				
 			}
 
 			/*

@@ -7,7 +7,6 @@ import org.apache.rocketmq.spring.boot.config.DisruptorConfig;
 import org.apache.rocketmq.spring.boot.disruptor.EventHandlerFactory;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventFactory;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventThreadFactory;
-import org.apache.rocketmq.spring.boot.disruptor.RocketmqEventHandler;
 import org.apache.rocketmq.spring.boot.disruptor.RocketmqEventHandlerFactory;
 import org.apache.rocketmq.spring.boot.event.RocketmqDataEvent;
 import org.apache.rocketmq.spring.boot.hooks.DisruptorShutdownHook;
@@ -26,6 +25,7 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ObjectUtils;
 
 import com.lmax.disruptor.EventFactory;
+import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
@@ -69,7 +69,6 @@ public class DisruptorAutoConfiguration {
 	@ConditionalOnProperty(prefix = RocketmqProperties.DISRUPTOR_PREFIX , value = "enabled" , havingValue = "true")
 	protected Disruptor<RocketmqDataEvent> disruptor(RocketmqProperties properties, WaitStrategy waitStrategy,ThreadFactory threadFactory,
 			EventFactory<RocketmqDataEvent> eventFactory, 
-			@Autowired(required = false) RocketmqEventHandler eventHandler,
 			@Autowired(required = false) EventHandlerFactory<RocketmqDataEvent> eventHandlerFactory) {
 
 		DisruptorConfig config = properties.getDisruptor();
@@ -95,12 +94,13 @@ public class DisruptorAutoConfiguration {
 			}
 		} 
 		//单个处理器
-		else if (null != eventHandler) {
-			handlerGroup = disruptor.handleEventsWith(eventHandler);
+		else if (null != eventHandlerFactory && null != eventHandlerFactory.getEventHandler()) {
+			handlerGroup = disruptor.handleEventsWith(eventHandlerFactory.getEventHandler());
 			//后置处理;可以在完成前面的逻辑后执行新的逻辑
-			if(!ObjectUtils.isEmpty(eventHandler.getNext())) {
+			EventHandler<RocketmqDataEvent> thenEventHandler = eventHandlerFactory.getEventHandler().getNext();
+			if(! ObjectUtils.isEmpty(thenEventHandler)) {
 				// 完成前置事件处理之后执行后置事件处理
-				handlerGroup.then(eventHandler.getNext());
+				handlerGroup.then(thenEventHandler);
 			}
 		}
 	    

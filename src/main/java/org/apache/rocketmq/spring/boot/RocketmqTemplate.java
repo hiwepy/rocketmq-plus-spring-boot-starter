@@ -4,6 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.rocketmq.client.consumer.MQPushConsumer;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
@@ -18,12 +21,16 @@ import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class RocketmqTemplate {
 
 	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
 	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
+	@Autowired
 	protected MQProducer producer;
+	@Autowired
+	protected MQPushConsumer consumer;
 
 	public RocketmqTemplate() {
 	}
@@ -107,14 +114,6 @@ public class RocketmqTemplate {
 		producer.sendOneway(msg, mq);
 	}
 
-	/**
-	 * 发送有序消息
-	 *
-	 * @param messageMap 消息数据
-	 * @param selector   队列选择器，发送时会回调
-	 * @param order      回调队列选择器时，此参数会传入队列选择方法,提供配需规则
-	 * @return 发送结果
-	 */
 	public SendResult send(final Message msg, final MessageQueueSelector selector, final Object arg)
 			throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 		return producer.send(msg, selector, arg);
@@ -166,6 +165,14 @@ public class RocketmqTemplate {
 			throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 		return producer.send(msgs, mq, timeout);
 	}
+	
+	public void registerMessageListener(final MessageListenerConcurrently messageListener){
+		consumer.registerMessageListener(messageListener);
+	}
+
+	public void registerMessageListener(final MessageListenerOrderly messageListener){
+		consumer.registerMessageListener(messageListener);
+	}
 
 	public MQProducer getProducer() {
 		return producer;
@@ -173,6 +180,14 @@ public class RocketmqTemplate {
 
 	public void setProducer(MQProducer producer) {
 		this.producer = producer;
+	}
+
+	public MQPushConsumer getConsumer() {
+		return consumer;
+	}
+
+	public void setConsumer(MQPushConsumer consumer) {
+		this.consumer = consumer;
 	}
 	
 }

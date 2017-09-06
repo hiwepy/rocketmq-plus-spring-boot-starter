@@ -16,7 +16,6 @@
 package org.apache.rocketmq.spring.boot.config;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.rocketmq.client.ClientConfig;
@@ -172,11 +171,6 @@ public class ConsumerConfig extends ClientConfig {
 	 */
 	private int retryTimesWhenConsumeFailed = 3;
     
-    /**
-     * 订阅指定topic下tags
-     */
-    private List<Subscribe> subscribe;
-    
 
 	public String getConsumerGroup() {
 		return consumerGroup;
@@ -328,14 +322,6 @@ public class ConsumerConfig extends ClientConfig {
 
 	public void setRetryTimesWhenConsumeFailed(int retryTimesWhenConsumeFailed) {
 		this.retryTimesWhenConsumeFailed = retryTimesWhenConsumeFailed;
-	}
-
-	public List<Subscribe> getSubscribe() {
-		return subscribe;
-	}
-
-	public void setSubscribe(List<Subscribe> subscribe) {
-		this.subscribe = subscribe;
 	}
 	
 }

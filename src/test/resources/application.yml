@@ -102,8 +102,7 @@ spring:
       pull-threshold-for-queue: 1000
       #Subscription relationship
       subscription: 
-        asdasd : asd 
-        sad : asd 
+        TopicA : TagA || TagB || TagD 
       #Suspending pulling time for cases requiring slow pulling like flow-control scenario.
       suspend-current-queue-time-millis: 1000
       #Whether the unit of subscription group

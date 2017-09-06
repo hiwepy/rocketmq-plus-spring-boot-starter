@@ -7,6 +7,11 @@ import com.lmax.disruptor.EventHandler;
 public class RocketmqEventHandlerFactory implements EventHandlerFactory<RocketmqDataEvent> {
 
 	@Override
+	public RocketmqEventHandler getEventHandler() {
+		return null;
+	}
+	
+	@Override
 	public EventHandler<RocketmqDataEvent>[] getPreHandlers() {
 		return null;
 	}
