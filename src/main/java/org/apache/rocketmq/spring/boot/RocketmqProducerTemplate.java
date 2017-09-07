@@ -4,9 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.rocketmq.client.consumer.MQPushConsumer;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.LocalTransactionExecuter;
@@ -23,19 +20,17 @@ import org.apache.rocketmq.remoting.common.RemotingHelper;
 import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class RocketmqTemplate {
+public class RocketmqProducerTemplate {
 
 	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
 	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
 	@Autowired
 	protected MQProducer producer;
-	@Autowired
-	protected MQPushConsumer consumer;
 
-	public RocketmqTemplate() {
+	public RocketmqProducerTemplate() {
 	}
 	
-	public RocketmqTemplate(MQProducer producer) {
+	public RocketmqProducerTemplate(MQProducer producer) {
 		this.producer = producer;
 	}
 
@@ -166,28 +161,12 @@ public class RocketmqTemplate {
 		return producer.send(msgs, mq, timeout);
 	}
 	
-	public void registerMessageListener(final MessageListenerConcurrently messageListener){
-		consumer.registerMessageListener(messageListener);
-	}
-
-	public void registerMessageListener(final MessageListenerOrderly messageListener){
-		consumer.registerMessageListener(messageListener);
-	}
-
 	public MQProducer getProducer() {
 		return producer;
 	}
 
 	public void setProducer(MQProducer producer) {
 		this.producer = producer;
-	}
-
-	public MQPushConsumer getConsumer() {
-		return consumer;
-	}
-
-	public void setConsumer(MQPushConsumer consumer) {
-		this.consumer = consumer;
 	}
 	
 }

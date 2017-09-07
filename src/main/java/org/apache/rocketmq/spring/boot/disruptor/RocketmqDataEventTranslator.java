@@ -2,11 +2,11 @@ package org.apache.rocketmq.spring.boot.disruptor;
 
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.event.RocketmqDataEvent;
+import org.apache.rocketmq.spring.boot.event.RocketmqDisruptorEvent;
 
 import com.lmax.disruptor.EventTranslatorOneArg;
 
-public class RocketmqDataEventTranslator implements EventTranslatorOneArg<RocketmqDataEvent, MessageExt> {
+public class RocketmqDataEventTranslator implements EventTranslatorOneArg<RocketmqDisruptorEvent, MessageExt> {
 	
 	private ConsumeConcurrentlyContext context;
 	
@@ -15,7 +15,7 @@ public class RocketmqDataEventTranslator implements EventTranslatorOneArg<Rocket
 	}
 	
 	@Override
-	public void translateTo(RocketmqDataEvent event, long sequence, MessageExt msgExt) {
+	public void translateTo(RocketmqDisruptorEvent event, long sequence, MessageExt msgExt) {
 		
 		event.setMessageExt(msgExt);
 		event.setTopic(msgExt.getTopic());

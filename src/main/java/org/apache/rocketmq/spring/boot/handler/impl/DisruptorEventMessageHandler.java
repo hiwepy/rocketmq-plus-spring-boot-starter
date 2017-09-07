@@ -1,22 +1,21 @@
-package org.apache.rocketmq.spring.boot.listener;
+package org.apache.rocketmq.spring.boot.handler.impl;
 
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventTranslator;
-import org.apache.rocketmq.spring.boot.event.RocketmqDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lmax.disruptor.dsl.Disruptor;
+import org.apache.rocketmq.spring.boot.disruptor.RocketmqDataEventTranslator;
+import org.apache.rocketmq.spring.boot.event.RocketmqDisruptorEvent;
+import org.apache.rocketmq.spring.boot.handler.MessageHandler;
 
-public class MessageDisruptorProcessor implements MessageProcessor, InitializingBean {
+public class DisruptorEventMessageHandler implements MessageHandler, InitializingBean {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MessageDisruptorProcessor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DisruptorEventMessageHandler.class);
 	
-	@Autowired
-	private Disruptor<RocketmqDataEvent> disruptor;
+	private Disruptor<RocketmqDisruptorEvent> disruptor;
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {

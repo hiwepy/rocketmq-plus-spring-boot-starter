@@ -117,6 +117,13 @@
 		    <version>${disruptor.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>spring-boot-starter-disruptor</artifactId>
+			<version>${project.version}</version>
+			<optional>true</optional>
+		</dependency>	
+		
 		<!-- <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

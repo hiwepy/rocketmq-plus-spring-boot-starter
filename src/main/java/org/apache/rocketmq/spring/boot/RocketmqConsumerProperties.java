@@ -13,15 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.rocketmq.spring.boot.config;
+package org.apache.rocketmq.spring.boot;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.rocketmq.client.ClientConfig;
 import org.apache.rocketmq.common.UtilAll;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-public class ConsumerConfig extends ClientConfig {
+@ConfigurationProperties(RocketmqConsumerProperties.PREFIX)
+public class RocketmqConsumerProperties extends ClientConfig {
+	
+	public static final String PREFIX = "spring.rocketmq.consumer";
 	
 	/**
      * Consumers of the same role is required to have exactly same subscriptions and consumerGroup to correctly achieve

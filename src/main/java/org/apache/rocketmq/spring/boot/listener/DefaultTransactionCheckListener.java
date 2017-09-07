@@ -8,7 +8,10 @@ public class DefaultTransactionCheckListener implements TransactionCheckListener
 	
 	@Override
 	public LocalTransactionState checkLocalTransactionState(MessageExt msg) {
-		return null;
+		
+		// 进行业务检查
+		
+		return LocalTransactionState.COMMIT_MESSAGE;
 	}
 
 }

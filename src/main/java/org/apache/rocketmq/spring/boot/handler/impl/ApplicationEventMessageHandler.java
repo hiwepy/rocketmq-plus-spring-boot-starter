@@ -1,18 +1,20 @@
-package org.apache.rocketmq.spring.boot.listener;
+package org.apache.rocketmq.spring.boot.handler.impl;
 
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
-@Component
-public class MessageApplicationEventProcessor implements MessageProcessor, ApplicationEventPublisherAware {
+import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
+import org.apache.rocketmq.spring.boot.handler.MessageHandler;
 
-	private static final Logger LOG = LoggerFactory.getLogger(MessageApplicationEventProcessor.class);
+@Component
+public class ApplicationEventMessageHandler implements MessageHandler, ApplicationEventPublisherAware {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ApplicationEventMessageHandler.class);
 	private ApplicationEventPublisher eventPublisher;
 	
 	@Override

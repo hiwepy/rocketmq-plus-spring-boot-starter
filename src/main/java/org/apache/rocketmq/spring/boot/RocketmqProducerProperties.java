@@ -13,15 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.apache.rocketmq.spring.boot.config;
+package org.apache.rocketmq.spring.boot;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.ClientConfig;
 import org.apache.rocketmq.client.producer.TransactionCheckListener;
 import org.apache.rocketmq.common.MixAll;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-public class ProducerConfig extends ClientConfig {
-
+@ConfigurationProperties(RocketmqProducerProperties.PREFIX)
+public class RocketmqProducerProperties extends ClientConfig {
+	
+	public static final String PREFIX = "spring.rocketmq.producer";
+	
 	/**
 	 * Producer group conceptually aggregates all producer instances of exactly
 	 * same role, which is particularly important when transactional messages

@@ -6,7 +6,8 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.RocketmqProperties;
+import org.apache.rocketmq.spring.boot.RocketmqConsumerProperties;
+import org.apache.rocketmq.spring.boot.handler.MessageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,13 @@ public class DefaultMessageConsumeListener implements MessageListenerConcurrentl
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageConsumeListener.class);
 
+	/**
+	 * 真正处理消息的实现对象
+	 */
 	@Autowired
-	private MessageProcessor messageProcessor;
+	private MessageHandler messageHandler;
 	@Autowired
-	private RocketmqProperties properties;
+	private RocketmqConsumerProperties properties;
 
 	@Override
 	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgExts, ConsumeConcurrentlyContext context) {
@@ -26,12 +30,12 @@ public class DefaultMessageConsumeListener implements MessageListenerConcurrentl
 		// 默认msgs里只有一条消息，可以通过设置consumeMessageBatchMaxSize参数来批量接收消息
 		LOG.debug(Thread.currentThread().getName() + " Receive New Messages: " + msgExts.size());
 		// 重试次数
-		int retryTimes = properties.getConsumer().getRetryTimesWhenConsumeFailed();
+		int retryTimes = properties.getRetryTimesWhenConsumeFailed();
 		// 消费消息内容
 		for (MessageExt msgExt : msgExts) {
 
 			try {
-				boolean result = messageProcessor.handleMessage(msgExt, context);
+				boolean result = messageHandler.handleMessage(msgExt, context);
 				// 重复消费指定的次数
 				if (!result && msgExt.getReconsumeTimes() < retryTimes) {
 					return ConsumeConcurrentlyStatus.RECONSUME_LATER;
@@ -54,12 +58,20 @@ public class DefaultMessageConsumeListener implements MessageListenerConcurrentl
 		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
 	}
 
-	public void setMessageProcessor(MessageProcessor messageProcessor) {
-		this.messageProcessor = messageProcessor;
+	public MessageHandler getMessageHandler() {
+		return messageHandler;
 	}
 
-	public MessageProcessor getMessageProcessor() {
-		return messageProcessor;
+	public void setMessageHandler(MessageHandler messageHandler) {
+		this.messageHandler = messageHandler;
+	}
+	
+	public RocketmqConsumerProperties getProperties() {
+		return properties;
 	}
 
+	public void setProperties(RocketmqConsumerProperties properties) {
+		this.properties = properties;
+	}
+	
 }

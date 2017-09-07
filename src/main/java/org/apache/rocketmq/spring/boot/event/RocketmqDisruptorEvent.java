@@ -18,28 +18,30 @@ package org.apache.rocketmq.spring.boot.event;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.rocketmq.common.message.MessageExt;
-import org.springframework.context.ApplicationEvent;
+import org.apache.rocketmq.spring.boot.util.StringUtils;
+
+import com.lmax.disruptor.spring.boot.event.DisruptorEvent;
+
 
 @SuppressWarnings("serial")
-public class RocketmqEvent extends ApplicationEvent {
+public class RocketmqDisruptorEvent extends DisruptorEvent {
 
 	private MessageExt messageExt;
 	private String topic;
 	private String tag;
 	private byte[] body;
-	private String expression;
 
-	public RocketmqEvent(Object source) {
+	public RocketmqDisruptorEvent(Object source) {
 		super(source);
 	}
-
-	public RocketmqEvent(MessageExt msgExt) throws Exception {
-		super(msgExt);
-		this.topic = msgExt.getTopic();
-		this.tag = msgExt.getTags();
-		this.body = msgExt.getBody();
-		this.messageExt = msgExt;
-		this.expression = this.buildExpression(msgExt);
+	
+	@Override
+	public String getExpression() {
+		String expression = super.getExpression();
+		if(StringUtils.isEmpty(expression)){
+			return this.buildExpression(messageExt);
+		}
+		return expression;
 	}
 	
 	private String buildExpression(MessageExt msgExt) {
@@ -94,13 +96,5 @@ public class RocketmqEvent extends ApplicationEvent {
 	public void setBody(byte[] body) {
 		this.body = body;
 	}
-
-	public String getExpression() {
-		return expression;
-	}
-
-	public void setExpression(String expression) {
-		this.expression = expression;
-	}
-
+	
 }
