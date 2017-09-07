@@ -36,8 +36,8 @@ public class RocketmqDisruptorEvent extends DisruptorEvent {
 	}
 	
 	@Override
-	public String getExpression() {
-		String expression = super.getExpression();
+	public String getRuleExpression() {
+		String expression = super.getRuleExpression();
 		if(StringUtils.isEmpty(expression)){
 			return this.buildExpression(messageExt);
 		}

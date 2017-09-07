@@ -26,7 +26,7 @@ public abstract class AbstractPathMatchMessageHandler<T extends RocketmqEvent> e
 	}
 	
 	protected String getPathWithinEvent(T event) {
-		return event.getExpression();
+		return event.getRuleExpression();
 	}
 
 	protected boolean pathsMatch(String path, T event) {
