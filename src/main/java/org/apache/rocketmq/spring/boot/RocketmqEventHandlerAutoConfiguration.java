@@ -1,9 +1,10 @@
 package org.apache.rocketmq.spring.boot;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
@@ -14,24 +15,27 @@ import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainMana
 import org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver;
 import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageHandler;
 import org.apache.rocketmq.spring.boot.util.StringUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(name = RocketmqEventHandlerDefinitionProperties.PREFIX, matchIfMissing = true)
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
-@EnableConfigurationProperties({ RocketmqConsumerProperties.class })
-public class RocketmqEventHandlerAutoConfiguration {
+@EnableConfigurationProperties({ RocketmqEventHandlerDefinitionProperties.class })
+public class RocketmqEventHandlerAutoConfiguration implements ApplicationContextAware {
 
+
+	private ApplicationContext applicationContext;
+	
 	/**
 	 * 处理器链定义
 	 */
@@ -40,10 +44,23 @@ public class RocketmqEventHandlerAutoConfiguration {
 	/**
 	 * 处理器定义
 	 */
-	@Bean
-	@ConditionalOnMissingBean(name = "rocketmqEventHandlers")
-	public Map<String, EventHandler<RocketmqEvent>> eventHandlers() {
-		return new LinkedHashMap<String, EventHandler<RocketmqEvent>>();
+	@Bean("rocketmqEventHandlers")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Map<String, EventHandler<RocketmqEvent>> rocketmqEventHandlers() {
+
+		Map<String, EventHandler<RocketmqEvent>> rocketmqEventHandlers = new LinkedHashMap<String, EventHandler<RocketmqEvent>>();
+
+		Map<String, EventHandler> beansOfType = getApplicationContext().getBeansOfType(EventHandler.class);
+		if (!ObjectUtils.isEmpty(beansOfType)) {
+			Iterator<Entry<String, EventHandler>> ite = beansOfType.entrySet().iterator();
+			while (ite.hasNext()) {
+				Entry<String, EventHandler> entry = ite.next();
+				rocketmqEventHandlers.put(entry.getKey(), entry.getValue());
+			}
+		}
+		// BeanFactoryUtils.beansOfTypeIncludingAncestors(getApplicationContext(), EventHandler.class);
+
+		return rocketmqEventHandlers;
 	}
 	
 	@Bean
@@ -53,7 +70,7 @@ public class RocketmqEventHandlerAutoConfiguration {
 		
 		if( StringUtils.isNotEmpty(properties.getDefinitions())) {
 			this.setHandlerChainDefinitions(properties.getDefinitions());
-		} else if (MapUtils.isNotEmpty(properties.getDefinitionMap())) {
+		} else if (!CollectionUtils.isEmpty(properties.getDefinitionMap())) {
 			this.setHandlerChainDefinitionMap(properties.getDefinitionMap());
 		}
 		
@@ -111,4 +128,13 @@ public class RocketmqEventHandlerAutoConfiguration {
 		this.handlerChainDefinitionMap = handlerChainDefinitionMap;
 	}
 
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.applicationContext = applicationContext;
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+	
 }

@@ -4,6 +4,6 @@ import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 
 public interface HandlerChain<T extends RocketmqEvent>{
 
-	void onEvent(T event) throws Exception;
+	void doHandler(T event) throws Exception;
 	
 }

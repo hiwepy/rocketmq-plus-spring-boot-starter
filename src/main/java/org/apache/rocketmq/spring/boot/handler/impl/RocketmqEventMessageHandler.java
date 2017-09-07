@@ -28,13 +28,13 @@ public class RocketmqEventMessageHandler extends AbstractRouteableMessageHandler
 			HandlerChain<RocketmqEvent> originalChain = new HandlerChain<RocketmqEvent>() {
 				
 				@Override
-				public void onEvent(RocketmqEvent event) throws Exception {
+				public void doHandler(RocketmqEvent event) throws Exception {
 					
 				}
 				
 			};
 			//执行事件处理链
-			this.doHandlerInternal(new RocketmqEvent(msgExt), originalChain);
+			this.doHandler(new RocketmqEvent(msgExt), originalChain);
 			return true;
 		} catch (Exception e) {
 			LOG.error(e.getMessage());

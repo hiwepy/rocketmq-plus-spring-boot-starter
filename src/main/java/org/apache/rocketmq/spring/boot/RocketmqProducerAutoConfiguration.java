@@ -69,7 +69,7 @@ public class RocketmqProducerAutoConfiguration {
 	 * 初始化向rocketmq发送普通消息的生产者
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "producerGroup")
+	@ConditionalOnProperty(prefix = RocketmqProducerProperties.PREFIX, value = "producerGroup")
 	public DefaultMQProducer defaultProducer(RocketmqProducerProperties properties,
 			TransactionCheckListener transactionCheckListener) throws MQClientException {
 

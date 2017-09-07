@@ -67,7 +67,7 @@ public class AbstractRouteableMessageHandler<T extends RocketmqEvent> extends Ab
 
 	protected void executeChain(T event, HandlerChain<T> origChain) throws Exception {
 		HandlerChain<T> chain = getExecutionChain(event, origChain);
-		chain.onEvent(event);
+		chain.doHandler(event);
 	}
 
 	public HandlerChainResolver<T> getHandlerChainResolver() {

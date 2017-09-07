@@ -26,17 +26,17 @@ public class ProxiedHandlerChain implements HandlerChain<RocketmqEvent> {
     }
 
     @Override
-	public void onEvent(RocketmqEvent event) throws Exception {
+	public void doHandler(RocketmqEvent event) throws Exception {
         if (this.handlers == null || this.handlers.size() == this.index) {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Invoking original filter chain.");
             }
-            this.orig.onEvent(event);
+            this.orig.doHandler(event);
         } else {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Invoking wrapped filter at index [" + this.index + "]");
             }
-            this.handlers.get(this.index++).onEvent(event, this);
+            this.handlers.get(this.index++).doHandler(event, this);
         }
     }
     
