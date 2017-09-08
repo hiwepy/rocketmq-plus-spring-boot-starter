@@ -10,9 +10,7 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver;
 import org.apache.rocketmq.spring.boot.handler.chain.ProxiedHandlerChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
-@Component
 public class RocketmqEventMessageHandler extends AbstractRouteableMessageHandler<RocketmqEvent> implements MessageHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RocketmqEventMessageHandler.class);

@@ -9,6 +9,7 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
+import org.apache.rocketmq.spring.boot.handler.MessageHandler;
 import org.apache.rocketmq.spring.boot.handler.Nameable;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainManager;
@@ -18,6 +19,7 @@ import org.apache.rocketmq.spring.boot.util.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -45,6 +47,7 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	 * 处理器定义
 	 */
 	@Bean("rocketmqEventHandlers")
+	@ConditionalOnMissingBean(value = MessageHandler.class)
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map<String, EventHandler<RocketmqEvent>> rocketmqEventHandlers() {
 
@@ -68,6 +71,7 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	}
 	
 	@Bean
+	@ConditionalOnMissingBean(value = MessageHandler.class)
 	public RocketmqEventMessageHandler rocketmqEventMessageHandler(
 			RocketmqEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
