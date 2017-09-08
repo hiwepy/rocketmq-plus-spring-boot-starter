@@ -55,6 +55,10 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 			Iterator<Entry<String, EventHandler>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, EventHandler> entry = ite.next();
+				if (entry.getValue() instanceof RocketmqEventMessageHandler ) {
+					//跳过入口实现类
+					continue;
+				}
 				rocketmqEventHandlers.put(entry.getKey(), entry.getValue());
 			}
 		}
