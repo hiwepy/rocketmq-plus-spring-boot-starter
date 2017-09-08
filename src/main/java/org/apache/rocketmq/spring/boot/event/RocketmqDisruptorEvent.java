@@ -36,15 +36,15 @@ public class RocketmqDisruptorEvent extends DisruptorEvent {
 	}
 	
 	@Override
-	public String getRuleExpression() {
-		String expression = super.getRuleExpression();
+	public String getRouteExpression() {
+		String expression = super.getRouteExpression();
 		if(StringUtils.isEmpty(expression)){
-			return this.buildExpression(messageExt);
+			return this.buildRouteExpression(messageExt);
 		}
 		return expression;
 	}
 	
-	private String buildExpression(MessageExt msgExt) {
+	private String buildRouteExpression(MessageExt msgExt) {
 		return new StringBuilder("/").append(msgExt.getTopic()).append("/").append(msgExt.getTags()).append("/")
 				.append(msgExt.getKeys()).toString();
 	}

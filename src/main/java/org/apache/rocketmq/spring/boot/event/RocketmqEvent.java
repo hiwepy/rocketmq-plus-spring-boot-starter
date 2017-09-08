@@ -27,7 +27,8 @@ public class RocketmqEvent extends ApplicationEvent {
 	private String topic;
 	private String tag;
 	private byte[] body;
-	private String ruleExpression;
+	/** Route Expression*/
+	private String routeExpression;
 
 	public RocketmqEvent(Object source) {
 		super(source);
@@ -39,10 +40,10 @@ public class RocketmqEvent extends ApplicationEvent {
 		this.tag = msgExt.getTags();
 		this.body = msgExt.getBody();
 		this.messageExt = msgExt;
-		this.ruleExpression = this.buildExpression(msgExt);
+		this.routeExpression = this.buildRouteExpression(msgExt);
 	}
 	
-	private String buildExpression(MessageExt msgExt) {
+	private String buildRouteExpression(MessageExt msgExt) {
 		return new StringBuilder("/").append(msgExt.getTopic()).append("/").append(msgExt.getTags()).append("/")
 				.append(msgExt.getKeys()).toString();
 	}
@@ -95,12 +96,12 @@ public class RocketmqEvent extends ApplicationEvent {
 		this.body = body;
 	}
 
-	public String getRuleExpression() {
-		return ruleExpression;
+	public String getRouteExpression() {
+		return routeExpression;
 	}
 
-	public void setRuleExpression(String ruleExpression) {
-		this.ruleExpression = ruleExpression;
+	public void setRouteExpression(String routeExpression) {
+		this.routeExpression = routeExpression;
 	}
 	
 }

@@ -69,7 +69,7 @@ public class PathMatchingHandlerChainResolver implements HandlerChainResolver<Ro
     }
 
     protected String getPathWithinEvent(RocketmqEvent event) {
-    	return event.getRuleExpression();
+    	return event.getRouteExpression();
     }
 	
 }
