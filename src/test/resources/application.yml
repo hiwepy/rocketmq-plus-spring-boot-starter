@@ -110,9 +110,9 @@ spring:
       unit-mode: false
       unit-name: KB
       vip-channel-enabled: false
-    disruptor: 
-      enabled: true
-      ring-buffer-size: 1024
-      ring-thread-numbers: 4
-      multi-producer: true
+  disruptor: 
+    enabled: true
+    ring-buffer-size: 1024
+    ring-thread-numbers: 4
+    multi-producer: true
         
