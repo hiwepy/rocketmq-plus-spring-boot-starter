@@ -3,12 +3,11 @@ package org.apache.rocketmq.spring.boot.handler;
 import java.io.IOException;
 
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
+import org.apache.rocketmq.spring.boot.exception.EventHandleException;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChain;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.lmax.disruptor.spring.boot.exception.EventHandleException;
 
 public class AbstractRouteableMessageHandler<T extends RocketmqEvent> extends AbstractEnabledMessageHandler<T> {
 
