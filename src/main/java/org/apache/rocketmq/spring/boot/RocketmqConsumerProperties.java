@@ -27,6 +27,9 @@ public class RocketmqConsumerProperties extends ClientConfig {
 	
 	public static final String PREFIX = "spring.rocketmq.consumer";
 	
+	/** 是否启用 **/
+	protected boolean enabled = false;
+	
 	/**
      * Consumers of the same role is required to have exactly same subscriptions and consumerGroup to correctly achieve
      * load balance. It's required and needs to be globally unique.
@@ -175,6 +178,13 @@ public class RocketmqConsumerProperties extends ClientConfig {
 	 */
 	private int retryTimesWhenConsumeFailed = 3;
     
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public String getConsumerGroup() {
 		return consumerGroup;

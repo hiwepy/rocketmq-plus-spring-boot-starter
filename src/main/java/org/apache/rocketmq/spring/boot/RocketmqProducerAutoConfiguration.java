@@ -20,7 +20,7 @@ import org.springframework.core.Ordered;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQProducer.class })
-@ConditionalOnProperty(name = RocketmqProducerProperties.PREFIX, matchIfMissing = true)
+@ConditionalOnProperty(prefix = RocketmqProducerProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
 @EnableConfigurationProperties({ RocketmqProducerProperties.class })
 public class RocketmqProducerAutoConfiguration {

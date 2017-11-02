@@ -26,6 +26,9 @@ public class RocketmqProducerProperties extends ClientConfig {
 	
 	public static final String PREFIX = "spring.rocketmq.producer";
 	
+	/** 是否启用 **/
+	protected boolean enabled = false;
+	
 	/**
 	 * Producer group conceptually aggregates all producer instances of exactly
 	 * same role, which is particularly important when transactional messages
@@ -108,6 +111,15 @@ public class RocketmqProducerProperties extends ClientConfig {
 	private int checkThreadPoolMaxSize = 1;
 	/** 队列数 **/
 	private int checkRequestHoldMax = 2000;
+	
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
 	public String getProducerGroup() {
 		return StringUtils.isEmpty(producerGroup) ? "ProducerGroup" : producerGroup;

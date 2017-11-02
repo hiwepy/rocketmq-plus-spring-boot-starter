@@ -33,7 +33,7 @@ import org.springframework.util.CollectionUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
-@ConditionalOnProperty(name = RocketmqConsumerProperties.PREFIX, matchIfMissing = true)
+@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
 @EnableConfigurationProperties({ RocketmqConsumerProperties.class })
 public class RocketmqConsumerAutoConfiguration {
