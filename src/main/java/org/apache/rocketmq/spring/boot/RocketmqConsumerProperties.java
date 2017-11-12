@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.apache.rocketmq.client.ClientConfig;
 import org.apache.rocketmq.common.UtilAll;
+import org.apache.rocketmq.spring.boot.enums.ConsumeMode;
+import org.apache.rocketmq.spring.boot.enums.SelectorType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(RocketmqConsumerProperties.PREFIX)
@@ -100,10 +102,20 @@ public class RocketmqConsumerProperties extends ClientConfig {
     private String consumeTimestamp = UtilAll.timeMillisToHumanString3(System.currentTimeMillis() - (1000 * 60 * 30));
 
     /**
+     * ConsumeMode
+     */
+    private ConsumeMode consumeMode = ConsumeMode.CONCURRENTLY;
+    
+    /**
+     * SelectorType
+     */
+    private SelectorType selectorType = SelectorType.TAG;
+    
+    /**
      * Subscription relationship
      */
-    private Map<String /* topic */, String /* sub expression */> subscription = new HashMap<String, String>();
-
+    private Map<String /* topic */, String /* selectorExpress */> subscription = new HashMap<String, String>();
+    
     /**
      * Minimum consumer thread number
      */
@@ -216,6 +228,22 @@ public class RocketmqConsumerProperties extends ClientConfig {
 
 	public void setConsumeTimestamp(String consumeTimestamp) {
 		this.consumeTimestamp = consumeTimestamp;
+	}
+	
+	public ConsumeMode getConsumeMode() {
+		return consumeMode;
+	}
+
+	public void setConsumeMode(ConsumeMode consumeMode) {
+		this.consumeMode = consumeMode;
+	}
+
+	public SelectorType getSelectorType() {
+		return selectorType;
+	}
+
+	public void setSelectorType(SelectorType selectorType) {
+		this.selectorType = selectorType;
 	}
 
 	public Map<String, String> getSubscription() {

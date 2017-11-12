@@ -9,7 +9,7 @@ import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
-import org.apache.rocketmq.spring.boot.handler.MessageHandler;
+import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
 import org.apache.rocketmq.spring.boot.handler.Nameable;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainManager;
@@ -47,7 +47,7 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	 * 处理器定义
 	 */
 	@Bean("rocketmqEventHandlers")
-	@ConditionalOnMissingBean(value = MessageHandler.class)
+	@ConditionalOnMissingBean(value = MessageConcurrentlyHandler.class)
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map<String, EventHandler<RocketmqEvent>> rocketmqEventHandlers() {
 
@@ -71,7 +71,7 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	}
 	
 	@Bean
-	@ConditionalOnMissingBean(value = MessageHandler.class)
+	@ConditionalOnMissingBean(value = MessageConcurrentlyHandler.class)
 	public RocketmqEventMessageHandler rocketmqEventMessageHandler(
 			RocketmqEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {

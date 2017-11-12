@@ -11,11 +11,11 @@ import org.apache.rocketmq.spring.boot.handler.chain.ProxiedHandlerChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RocketmqEventMessageHandler extends AbstractRouteableMessageHandler<RocketmqEvent> implements MessageConcurrentlyHandler<ConsumeConcurrentlyContext> {
+public class RocketmqEventMessageHandlerOrderly extends AbstractRouteableMessageHandler<RocketmqEvent> implements MessageConcurrentlyHandler<ConsumeConcurrentlyContext> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RocketmqEventMessageHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RocketmqEventMessageHandlerOrderly.class);
 	
-	public RocketmqEventMessageHandler(HandlerChainResolver<RocketmqEvent> filterChainResolver) {
+	public RocketmqEventMessageHandlerOrderly(HandlerChainResolver<RocketmqEvent> filterChainResolver) {
 		super(filterChainResolver);
 	}
 	

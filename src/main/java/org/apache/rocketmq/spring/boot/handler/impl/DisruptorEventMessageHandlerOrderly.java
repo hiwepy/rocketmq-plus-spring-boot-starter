@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 
 import com.lmax.disruptor.dsl.Disruptor;
 
-public class DisruptorEventMessageHandler implements MessageConcurrentlyHandler<ConsumeConcurrentlyContext> {
+public class DisruptorEventMessageHandlerOrderly implements MessageConcurrentlyHandler<ConsumeConcurrentlyContext> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DisruptorEventMessageHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DisruptorEventMessageHandlerOrderly.class);
 	
 	private Disruptor<RocketmqDisruptorEvent> disruptor;
 		

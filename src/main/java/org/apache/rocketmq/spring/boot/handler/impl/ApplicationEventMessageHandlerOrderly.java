@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
-public class ApplicationEventMessageHandler implements MessageConcurrentlyHandler<ConsumeConcurrentlyContext>, ApplicationEventPublisherAware {
+public class ApplicationEventMessageHandlerOrderly implements MessageConcurrentlyHandler<ConsumeConcurrentlyContext>, ApplicationEventPublisherAware {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ApplicationEventMessageHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ApplicationEventMessageHandlerOrderly.class);
 	private ApplicationEventPublisher eventPublisher;
 	
 	@Override

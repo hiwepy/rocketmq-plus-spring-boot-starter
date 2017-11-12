@@ -7,20 +7,20 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.boot.RocketmqConsumerProperties;
-import org.apache.rocketmq.spring.boot.handler.MessageHandler;
+import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DefaultMessageConsumeListener implements MessageListenerConcurrently {
+public class DefaultMessageConsumeListenerConcurrently implements MessageListenerConcurrently {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageConsumeListener.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageConsumeListenerConcurrently.class);
 
 	/**
 	 * 真正处理消息的实现对象
 	 */
 	@Autowired
-	private MessageHandler messageHandler;
+	private MessageConcurrentlyHandler messageHandler;
 	@Autowired
 	private RocketmqConsumerProperties properties;
 
@@ -58,11 +58,11 @@ public class DefaultMessageConsumeListener implements MessageListenerConcurrentl
 		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
 	}
 
-	public MessageHandler getMessageHandler() {
+	public MessageConcurrentlyHandler getMessageHandler() {
 		return messageHandler;
 	}
 
-	public void setMessageHandler(MessageHandler messageHandler) {
+	public void setMessageHandler(MessageConcurrentlyHandler messageHandler) {
 		this.messageHandler = messageHandler;
 	}
 	

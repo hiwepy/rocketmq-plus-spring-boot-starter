@@ -9,7 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.consumer.AllocateMessageQueueStrategy;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
 import org.apache.rocketmq.client.consumer.MQPushConsumer;
+import org.apache.rocketmq.client.consumer.MessageSelector;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
+import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueConsistentHash;
 import org.apache.rocketmq.client.consumer.store.OffsetStore;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -17,7 +19,8 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
 import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
-import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListener;
+import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListenerConcurrently;
+import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListenerOrderly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +39,24 @@ import org.springframework.util.CollectionUtils;
 @ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
 @EnableConfigurationProperties({ RocketmqConsumerProperties.class })
-public class RocketmqConsumerAutoConfiguration {
+public class RocketmqConsumerAutoConfiguration  {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RocketmqConsumerAutoConfiguration.class);
-
+	
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
-	public MessageListenerConcurrently messageListener() {
-		return new DefaultMessageConsumeListener();
+	public MessageListenerConcurrently messageListenerConcurrently() {
+		return new DefaultMessageConsumeListenerConcurrently();
 	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	public MessageListenerOrderly messageListenerOrderly() {
+		return new DefaultMessageConsumeListenerOrderly();
+	}
+	
 
 	/*
 	 * @Bean
@@ -116,8 +127,9 @@ public class RocketmqConsumerAutoConfiguration {
 	@Bean
 	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
 	public DefaultMQPushConsumer pushConsumer(RocketmqConsumerProperties properties,
-			MessageListenerConcurrently messageListener, 
 			@Autowired(required = false) OffsetStore offsetStore,
+			MessageListenerOrderly messageListenerOrderly,
+			MessageListenerConcurrently messageListenerConcurrently,
 			AllocateMessageQueueStrategy allocateMessageQueueStrategy) throws MQClientException {
 
 
@@ -159,7 +171,19 @@ public class RocketmqConsumerAutoConfiguration {
 					 * entry.getKey() 	： topic名称 
 					 * entry.getValue() : 根据实际情况设置消息的tag 
 					 */
-					consumer.subscribe(entry.getKey(), entry.getValue());
+					String topic = entry.getKey();
+					String selectorExpress = entry.getValue();
+					switch (properties.getSelectorType()) {
+			            case TAG:{
+			                consumer.subscribe(topic, selectorExpress);
+						};break;
+			            case SQL92:{
+			                consumer.subscribe(topic, MessageSelector.bySql(selectorExpress));
+			            };break;
+			            default:{
+			                throw new IllegalArgumentException("Property 'selectorType' was wrong.");
+			            }
+			        }
 				}
 				
 			}
@@ -167,7 +191,16 @@ public class RocketmqConsumerAutoConfiguration {
 			/*
 			 * 注册消费监听
 			 */
-			consumer.registerMessageListener(messageListener);
+			switch (properties.getConsumeMode()) {
+	            case Orderly:
+	                consumer.setMessageListener(messageListenerOrderly);
+	                break;
+	            case CONCURRENTLY:
+	                consumer.setMessageListener(messageListenerConcurrently);
+	                break;
+	            default:
+	                throw new IllegalArgumentException("Property 'consumeMode' was wrong.");
+			}
 			
 			/*
 			 * 延迟5秒再启动，主要是等待spring事件监听相关程序初始化完成，否则，回出现对RocketMQ的消息进行消费后立即发布消息到达的事件，
@@ -208,6 +241,5 @@ public class RocketmqConsumerAutoConfiguration {
 	public RocketmqConsumerTemplate rocketmqConsumerTemplate(MQPushConsumer consumer) throws MQClientException {
 		return new RocketmqConsumerTemplate(consumer);
 	}
-	
 
 }
