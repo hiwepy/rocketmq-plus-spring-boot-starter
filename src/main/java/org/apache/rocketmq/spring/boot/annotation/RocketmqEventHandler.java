@@ -12,4 +12,9 @@ import java.lang.annotation.Target;
 @Documented	
 @Inherited		
 public @interface RocketmqEventHandler {
+	
+	String topic();
+
+	String selectorExpress() default "*";
+	
 }

@@ -1,11 +1,13 @@
 package org.apache.rocketmq.spring.boot;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.spring.boot.annotation.RocketmqEventHandler;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
@@ -14,7 +16,7 @@ import org.apache.rocketmq.spring.boot.handler.Nameable;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver;
-import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageHandler;
+import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageConcurrentlyHandler;
 import org.apache.rocketmq.spring.boot.util.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,7 +43,7 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	/**
 	 * 处理器链定义
 	 */
-	private Map<String, String> handlerChainDefinitionMap;
+	private Map<String, String> handlerChainDefinitionMap = new HashMap<String, String>();
 	
 	/**
 	 * 处理器定义
@@ -58,10 +60,15 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 			Iterator<Entry<String, EventHandler>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, EventHandler> entry = ite.next();
-				if (entry.getValue() instanceof RocketmqEventMessageHandler ) {
+				if (entry.getValue() instanceof RocketmqEventMessageConcurrentlyHandler ) {
 					//跳过入口实现类
 					continue;
 				}
+				RocketmqEventHandler annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqEventHandler.class);
+				if(annotationType != null) {
+					handlerChainDefinitionMap.put(annotationType.topic(), annotationType.selectorExpress());
+				}
+				
 				rocketmqEventHandlers.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -72,20 +79,20 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	
 	@Bean
 	@ConditionalOnMissingBean(value = MessageConcurrentlyHandler.class)
-	public RocketmqEventMessageHandler rocketmqEventMessageHandler(
+	public MessageConcurrentlyHandler rocketmqEventMessageHandler(
 			RocketmqEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
 		
 		if( StringUtils.isNotEmpty(properties.getDefinitions())) {
 			this.setHandlerChainDefinitions(properties.getDefinitions());
 		} else if (!CollectionUtils.isEmpty(properties.getDefinitionMap())) {
-			this.setHandlerChainDefinitionMap(properties.getDefinitionMap());
+			getHandlerChainDefinitionMap().putAll(properties.getDefinitionMap());
 		}
 		
 		HandlerChainManager<RocketmqEvent> manager = createHandlerChainManager(eventHandlers);
         PathMatchingHandlerChainResolver chainResolver = new PathMatchingHandlerChainResolver();
         chainResolver.setHandlerChainManager(manager);
-        return new RocketmqEventMessageHandler(chainResolver);
+        return new RocketmqEventMessageConcurrentlyHandler(chainResolver);
 	}
 	
 	protected void setHandlerChainDefinitions(String definitions) {
@@ -95,7 +102,7 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
         if (CollectionUtils.isEmpty(section)) {
             section = ini.getSection(Ini.DEFAULT_SECTION_NAME);
         }
-        setHandlerChainDefinitionMap(section);
+        getHandlerChainDefinitionMap().putAll(section);
     }
 	
 	protected HandlerChainManager<RocketmqEvent> createHandlerChainManager(

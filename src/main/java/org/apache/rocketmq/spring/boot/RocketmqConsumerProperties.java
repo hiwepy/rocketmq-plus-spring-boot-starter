@@ -55,8 +55,11 @@ public class RocketmqConsumerProperties extends ClientConfig {
      * </p>
      *
      * This field defaults to clustering.
+     * 
+     * 消息模式
+     * 广播模式消费： BROADCASTING
+     * 集群模式消费： CLUSTERING
      */
-    //private MessageModel messageModel = MessageModel.CLUSTERING;
     private String messageModel = "CLUSTERING";
     
     /**
@@ -102,7 +105,9 @@ public class RocketmqConsumerProperties extends ClientConfig {
     private String consumeTimestamp = UtilAll.timeMillisToHumanString3(System.currentTimeMillis() - (1000 * 60 * 30));
 
     /**
-     * ConsumeMode
+     * 消费模式
+     * 使用线程池并发消费: CONCURRENTLY("CONCURRENTLY"),
+     * 单线程消费: ORDERLY("ORDERLY");
      */
     private ConsumeMode consumeMode = ConsumeMode.CONCURRENTLY;
     
@@ -189,6 +194,19 @@ public class RocketmqConsumerProperties extends ClientConfig {
 	 * Maximum number of retry to perform internally before claiming consume failure.
 	 */
 	private int retryTimesWhenConsumeFailed = 3;
+	 /**
+     * Message consume retry strategy<br> 
+     * -1,no retry,put into DLQ directly<br> 
+     * 0,broker control retry frequency<br>
+     * >0,client control retry frequency
+     */
+	private int delayLevelWhenNextConsume = 0;
+    
+	/**
+	 * 延迟启动时间，单位秒，主要是等待spring事件监听相关程序初始化完成，否则，会出现对RocketMQ的消息进行消费后立即发布消息到达的事件，然而此事件的监听程序还未初始化，从而造成消息的丢失
+	 */
+	private int delayStartSeconds = 10;
+	
     
 	public boolean isEnabled() {
 		return enabled;
@@ -365,5 +383,22 @@ public class RocketmqConsumerProperties extends ClientConfig {
 	public void setRetryTimesWhenConsumeFailed(int retryTimesWhenConsumeFailed) {
 		this.retryTimesWhenConsumeFailed = retryTimesWhenConsumeFailed;
 	}
+	
+	public int getDelayLevelWhenNextConsume() {
+		return delayLevelWhenNextConsume;
+	}
+
+	public void setDelayLevelWhenNextConsume(int delayLevelWhenNextConsume) {
+		this.delayLevelWhenNextConsume = delayLevelWhenNextConsume;
+	}
+
+	public int getDelayStartSeconds() {
+		return delayStartSeconds;
+	}
+
+	public void setDelayStartSeconds(int delayStartSeconds) {
+		this.delayStartSeconds = delayStartSeconds;
+	}
+	
 	
 }

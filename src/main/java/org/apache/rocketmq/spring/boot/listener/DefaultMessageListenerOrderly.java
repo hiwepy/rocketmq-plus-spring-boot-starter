@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DefaultMessageConsumeListenerOrderly implements MessageListenerOrderly {
+public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageConsumeListenerOrderly.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageListenerOrderly.class);
 
 	/**
 	 * 真正处理消息的实现对象
@@ -30,20 +30,60 @@ public class DefaultMessageConsumeListenerOrderly implements MessageListenerOrde
 		LOG.debug(Thread.currentThread().getName() + " Receive New Messages: " + msgExts.size());
 		// 消费消息内容
 		for (MessageExt msgExt : msgExts) {
+			
 			LOG.debug("Receive msg: {}", msgExt);
+			
+			Exception exception = null;
+			
 			try {
-				long now = System.currentTimeMillis();
-				messageHandler.handleMessage(msgExt, context);
-				long costTime = System.currentTimeMillis() - now;
-                LOG.info("Message （MsgID : {} ）Consumed.  cost: {} ms", msgExt.getMsgId(), costTime);
+	
+				boolean continueHandle = messageHandler.preHandle(msgExt, context);
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Invoked preHandle method.  Continuing Handle?: [" + continueHandle + "]");
+				}
+				
+				if (continueHandle) {
+					
+					long now = System.currentTimeMillis();
+					messageHandler.handleMessage(msgExt, context);
+					long costTime = System.currentTimeMillis() - now;
+	                LOG.info("Message （MsgID : {} ）Consumed.  cost: {} ms", msgExt.getMsgId(), costTime);
+	                
+				}
+				
+				messageHandler.postHandle(msgExt, context);
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Successfully invoked postHandle method");
+				}
+	
 			} catch (Exception e) {
-				LOG.warn("Consume message failed. messageExt:{}", msgExt, e);
+				exception = e;
                 context.setSuspendCurrentQueueTimeMillis(properties.getSuspendCurrentQueueTimeMillis());
                 return ConsumeOrderlyStatus.SUSPEND_CURRENT_QUEUE_A_MOMENT;
+			} finally {
+				cleanup(msgExt, context, exception);
 			}
+			
 		}
 		// 如果没有return success，consumer会重复消费此信息，直到success。
 		return ConsumeOrderlyStatus.SUCCESS;
+	}
+	
+	protected void cleanup(MessageExt msgExt, ConsumeOrderlyContext context, Exception existing) {
+		Exception exception = existing;
+		try {
+			messageHandler.afterCompletion(msgExt, context, exception);
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Successfully invoked afterCompletion method.");
+			}
+		} catch (Exception e) {
+			if (exception == null) {
+				exception = e;
+			} else {
+				LOG.debug("afterCompletion implementation threw an exception.  This will be ignored to "
+						+ "allow the original source exception to be propagated.", e);
+			}
+		}
 	}
 
 	public MessageOrderlyHandler getMessageHandler() {

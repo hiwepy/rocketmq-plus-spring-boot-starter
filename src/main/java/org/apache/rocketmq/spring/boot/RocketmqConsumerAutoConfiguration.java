@@ -18,9 +18,13 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
+import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
+import org.apache.rocketmq.spring.boot.handler.MessageOrderlyHandler;
+import org.apache.rocketmq.spring.boot.handler.impl.NestedMessageConcurrentlyHandler;
+import org.apache.rocketmq.spring.boot.handler.impl.NestedMessageOrderlyHandler;
 import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
-import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListenerConcurrently;
-import org.apache.rocketmq.spring.boot.listener.DefaultMessageConsumeListenerOrderly;
+import org.apache.rocketmq.spring.boot.listener.DefaultMessageListenerConcurrently;
+import org.apache.rocketmq.spring.boot.listener.DefaultMessageListenerOrderly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,16 +51,29 @@ public class RocketmqConsumerAutoConfiguration  {
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
 	public MessageListenerConcurrently messageListenerConcurrently() {
-		return new DefaultMessageConsumeListenerConcurrently();
+		return new DefaultMessageListenerConcurrently();
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	public MessageConcurrentlyHandler messageConcurrentlyHandler() {
+		return new NestedMessageConcurrentlyHandler();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
 	public MessageListenerOrderly messageListenerOrderly() {
-		return new DefaultMessageConsumeListenerOrderly();
+		return new DefaultMessageListenerOrderly();
 	}
 	
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	public MessageOrderlyHandler messageOrderlyHandler() {
+		return new NestedMessageOrderlyHandler();
+	}
 
 	/*
 	 * @Bean
@@ -107,6 +124,7 @@ public class RocketmqConsumerAutoConfiguration  {
 		try {
 			consumer.setMessageModel(MessageModel.valueOf(properties.getMessageModel()));
 		} catch (Exception e) {
+			consumer.setMessageModel(MessageModel.CLUSTERING);
 		}
 		consumer.setNamesrvAddr(properties.getNamesrvAddr());
 		consumer.setPersistConsumerOffsetInterval(properties.getPersistConsumerOffsetInterval());
@@ -160,7 +178,7 @@ public class RocketmqConsumerAutoConfiguration  {
 
 			// consumer.setOffsetStore(offsetStore);
 			/*
-			 * 订阅指定topic下tags
+			 * 订阅指定topic下selectorExpress
 			 */
 			if(!CollectionUtils.isEmpty(properties.getSubscription())){
 				
@@ -169,7 +187,7 @@ public class RocketmqConsumerAutoConfiguration  {
 					Entry<String, String> entry = ite.next();
 					/* 
 					 * entry.getKey() 	： topic名称 
-					 * entry.getValue() : 根据实际情况设置消息的tag 
+					 * entry.getValue() : 根据实际情况设置消息的selectorExpress 
 					 */
 					String topic = entry.getKey();
 					String selectorExpress = entry.getValue();
@@ -228,7 +246,7 @@ public class RocketmqConsumerAutoConfiguration  {
 						LOG.error(String.format("RocketMQ MQPushConsumer Start failure ：%s", e.getMessage(), e));
 					}
 				}
-			}, 5, TimeUnit.SECONDS);
+			}, properties.getDelayStartSeconds(), TimeUnit.SECONDS);
 
 			return consumer;
 

@@ -14,8 +14,8 @@
 	<packaging>jar</packaging>
 	
 	<name>spring-boot-starter-rocketmq</name>
-	<url></url>
 	<description>starter for rocketmq</description>
+	<url>https://github.com/vindell/spring-boot-starter-rocketmq</url>
 	
 	<licenses>
 		<license>

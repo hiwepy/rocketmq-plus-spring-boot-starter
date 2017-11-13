@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DefaultMessageConsumeListenerConcurrently implements MessageListenerConcurrently {
+public class DefaultMessageListenerConcurrently implements MessageListenerConcurrently {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageConsumeListenerConcurrently.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageListenerConcurrently.class);
 
 	/**
 	 * 真正处理消息的实现对象
@@ -33,29 +33,68 @@ public class DefaultMessageConsumeListenerConcurrently implements MessageListene
 		int retryTimes = properties.getRetryTimesWhenConsumeFailed();
 		// 消费消息内容
 		for (MessageExt msgExt : msgExts) {
-
+			
+			LOG.debug("Receive msg: {}", msgExt);
+			
+			Exception exception = null;
+			
 			try {
-				boolean result = messageHandler.handleMessage(msgExt, context);
-				// 重复消费指定的次数
-				if (!result && msgExt.getReconsumeTimes() < retryTimes) {
-					return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+	
+				boolean continueHandle = messageHandler.preHandle(msgExt, context);
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Invoked preHandle method.  Continuing Handle?: [" + continueHandle + "]");
 				}
-				LOG.debug(String.format("Message （MsgID : %s ） Consumed.", msgExt.getMsgId()));
+				
+				if (continueHandle) {
+					
+					long now = System.currentTimeMillis();
+					messageHandler.handleMessage(msgExt, context);
+					long costTime = System.currentTimeMillis() - now;
+	                LOG.info("Message （MsgID : {} ）Consumed.  cost: {} ms", msgExt.getMsgId(), costTime);
+	               
+				}
+				
+				messageHandler.postHandle(msgExt, context);
+				if (LOG.isTraceEnabled()) {
+					LOG.trace("Successfully invoked postHandle method");
+				}
+	
 			} catch (Exception e) {
-				String error = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
+				
+				exception = e;
+				
+				context.setDelayLevelWhenNextConsume(properties.getDelayLevelWhenNextConsume());
 				if (msgExt.getReconsumeTimes() < retryTimes) {
-					// TODO 进行日志记录
-					LOG.debug(String.format("Consume Error : %s , Message （MsgID : %s ） Reconsume.", error,
-							msgExt.getMsgId()));
-					return ConsumeConcurrentlyStatus.RECONSUME_LATER;
-				} else {
 					// TODO 消息消费失败，进行日志记录
-					LOG.error(String.format("Consume Error : %s .", error));
+					String error = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
+					LOG.debug(String.format("Consume Error : %s , Message （MsgID : %s ） Reconsume.", error, msgExt.getMsgId()));
+					return ConsumeConcurrentlyStatus.RECONSUME_LATER;
 				}
+				
+			} finally {
+				cleanup(msgExt, context, exception);
 			}
+			
 		}
 		// 如果没有return success，consumer会重复消费此信息，直到success。
 		return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+	}
+	
+	protected void cleanup(MessageExt msgExt, ConsumeConcurrentlyContext context, Exception existing) {
+		Exception exception = existing;
+		try {
+			messageHandler.afterCompletion(msgExt, context, exception);
+			if (LOG.isTraceEnabled()) {
+				LOG.trace("Successfully invoked afterCompletion method.");
+			}
+		} catch (Exception e) {
+			if (exception == null) {
+				exception = e;
+			} else {
+				LOG.debug("afterCompletion implementation threw an exception.  This will be ignored to "
+						+ "allow the original source exception to be propagated.", e);
+			}
+		}
 	}
 
 	public MessageConcurrentlyHandler getMessageHandler() {

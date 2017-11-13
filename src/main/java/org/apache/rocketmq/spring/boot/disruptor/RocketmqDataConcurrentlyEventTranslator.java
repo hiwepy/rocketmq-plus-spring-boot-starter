@@ -6,11 +6,11 @@ import org.apache.rocketmq.spring.boot.event.RocketmqDisruptorEvent;
 
 import com.lmax.disruptor.EventTranslatorOneArg;
 
-public class RocketmqDataEventTranslator implements EventTranslatorOneArg<RocketmqDisruptorEvent, MessageExt> {
+public class RocketmqDataConcurrentlyEventTranslator implements EventTranslatorOneArg<RocketmqDisruptorEvent, MessageExt> {
 	
 	private ConsumeConcurrentlyContext context;
 	
-	public RocketmqDataEventTranslator(ConsumeConcurrentlyContext context) throws Exception {
+	public RocketmqDataConcurrentlyEventTranslator(ConsumeConcurrentlyContext context) throws Exception {
 		this.context = context;
 	}
 	
