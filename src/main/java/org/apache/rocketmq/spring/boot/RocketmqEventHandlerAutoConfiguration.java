@@ -17,6 +17,7 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver;
 import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageConcurrentlyHandler;
+import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageOrderlyHandler;
 import org.apache.rocketmq.spring.boot.util.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,7 +61,8 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 			Iterator<Entry<String, EventHandler>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, EventHandler> entry = ite.next();
-				if (entry.getValue() instanceof RocketmqEventMessageConcurrentlyHandler ) {
+				if (entry.getValue() instanceof RocketmqEventMessageConcurrentlyHandler ||
+						entry.getValue() instanceof RocketmqEventMessageOrderlyHandler) {
 					//跳过入口实现类
 					continue;
 				}
