@@ -11,8 +11,6 @@ import org.apache.rocketmq.spring.boot.annotation.RocketmqPushRule;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
-import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
-import org.apache.rocketmq.spring.boot.handler.MessageOrderlyHandler;
 import org.apache.rocketmq.spring.boot.handler.Nameable;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainManager;
@@ -86,7 +84,7 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	}
 	
 	@Bean
-	public MessageConcurrentlyHandler messageConcurrentlyHandler(
+	public RocketmqEventMessageConcurrentlyHandler messageConcurrentlyHandler(
 			RocketmqPushEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
 		
@@ -103,7 +101,7 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	}
 	
 	@Bean
-	public MessageOrderlyHandler messageOrderlyHandler(
+	public RocketmqEventMessageOrderlyHandler messageOrderlyHandler(
 			RocketmqPushEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
 		
