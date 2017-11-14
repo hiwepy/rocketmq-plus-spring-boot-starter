@@ -49,28 +49,24 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "consumerGroup")
 	public MessageListenerConcurrently messageListenerConcurrently() {
 		return new DefaultMessageListenerConcurrently();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public MessageConcurrentlyHandler messageConcurrentlyHandler() {
 		return new NestedMessageConcurrentlyHandler();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public MessageListenerOrderly messageListenerOrderly() {
 		return new DefaultMessageListenerOrderly();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public MessageOrderlyHandler messageOrderlyHandler() {
 		return new NestedMessageOrderlyHandler();
 	}
@@ -90,7 +86,6 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public AllocateMessageQueueStrategy allocateMessageQueueStrategy() {
 		return new AllocateMessageQueueConsistentHash();
 	}
@@ -146,7 +141,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	 * 初始化rocketmq消息监听方式的消费者
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
+	@ConditionalOnMissingBean
 	public DefaultMQPushConsumer pushConsumer(RocketmqPushConsumerProperties properties,
 			@Autowired(required = false) OffsetStore offsetStore,
 			MessageListenerOrderly messageListenerOrderly,
@@ -218,7 +213,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 			 * 注册消费监听
 			 */
 			switch (properties.getConsumeMode()) {
-	            case Orderly:
+	            case ORDERLY:
 	                consumer.setMessageListener(messageListenerOrderly);
 	                break;
 	            case CONCURRENTLY:

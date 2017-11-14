@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.spring.boot.annotation.RocketmqEventHandler;
+import org.apache.rocketmq.spring.boot.annotation.RocketmqEventExpress;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
 import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
+import org.apache.rocketmq.spring.boot.handler.MessageOrderlyHandler;
 import org.apache.rocketmq.spring.boot.handler.Nameable;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.def.DefaultHandlerChainManager;
@@ -19,6 +20,8 @@ import org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChai
 import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageConcurrentlyHandler;
 import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageOrderlyHandler;
 import org.apache.rocketmq.spring.boot.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -34,11 +37,11 @@ import org.springframework.util.ObjectUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
-@ConditionalOnProperty(name = RocketmqEventHandlerDefinitionProperties.PREFIX, matchIfMissing = true)
-@EnableConfigurationProperties({ RocketmqEventHandlerDefinitionProperties.class })
-public class RocketmqEventHandlerAutoConfiguration implements ApplicationContextAware {
+@ConditionalOnProperty(name = RocketmqPushEventHandlerDefinitionProperties.PREFIX, matchIfMissing = true)
+@EnableConfigurationProperties({ RocketmqPushEventHandlerDefinitionProperties.class })
+public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationContextAware {
 
-
+	private static final Logger LOG = LoggerFactory.getLogger(RocketmqPushEventHandlerAutoConfiguration.class);
 	private ApplicationContext applicationContext;
 	
 	/**
@@ -66,9 +69,12 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 					//跳过入口实现类
 					continue;
 				}
-				RocketmqEventHandler annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqEventHandler.class);
-				if(annotationType != null) {
-					handlerChainDefinitionMap.put(annotationType.topic(), annotationType.selectorExpress());
+				RocketmqEventExpress annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqEventExpress.class);
+				if(annotationType == null) {
+					// 注解为空，则打印错误信息
+					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqEventExpress.class, entry.getValue().getClass(), entry.getKey());
+				} else {
+					handlerChainDefinitionMap.put(annotationType.value(), entry.getKey());
 				}
 				
 				rocketmqEventHandlers.put(entry.getKey(), entry.getValue());
@@ -81,8 +87,8 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
 	
 	@Bean
 	@ConditionalOnMissingBean(value = MessageConcurrentlyHandler.class)
-	public MessageConcurrentlyHandler rocketmqEventMessageHandler(
-			RocketmqEventHandlerDefinitionProperties properties,
+	public MessageConcurrentlyHandler messageConcurrentlyHandler(
+			RocketmqPushEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
 		
 		if( StringUtils.isNotEmpty(properties.getDefinitions())) {
@@ -97,6 +103,24 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
         return new RocketmqEventMessageConcurrentlyHandler(chainResolver);
 	}
 	
+	@Bean
+	@ConditionalOnMissingBean(value = MessageOrderlyHandler.class)
+	public MessageOrderlyHandler messageOrderlyHandler(
+			RocketmqPushEventHandlerDefinitionProperties properties,
+			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
+		
+		if( StringUtils.isNotEmpty(properties.getDefinitions())) {
+			this.setHandlerChainDefinitions(properties.getDefinitions());
+		} else if (!CollectionUtils.isEmpty(properties.getDefinitionMap())) {
+			getHandlerChainDefinitionMap().putAll(properties.getDefinitionMap());
+		}
+		
+		HandlerChainManager<RocketmqEvent> manager = createHandlerChainManager(eventHandlers);
+        PathMatchingHandlerChainResolver chainResolver = new PathMatchingHandlerChainResolver();
+        chainResolver.setHandlerChainManager(manager);
+        return new RocketmqEventMessageOrderlyHandler(chainResolver);
+	}
+	
 	protected void setHandlerChainDefinitions(String definitions) {
         Ini ini = new Ini();
         ini.load(definitions);
@@ -107,6 +131,14 @@ public class RocketmqEventHandlerAutoConfiguration implements ApplicationContext
         getHandlerChainDefinitionMap().putAll(section);
     }
 	
+	/**
+	 * 
+	 * @description	： 创建ChainManager
+	 * @author 		： <a href="https://github.com/vindell">vindell</a>
+	 * @date 		：2017年11月14日 下午4:47:03
+	 * @param eventHandlers
+	 * @return
+	 */
 	protected HandlerChainManager<RocketmqEvent> createHandlerChainManager(
 			Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
 

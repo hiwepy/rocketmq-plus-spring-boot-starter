@@ -5,10 +5,10 @@ import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(RocketmqEventHandlerDefinitionProperties.PREFIX)
-public class RocketmqEventHandlerDefinitionProperties {
+@ConfigurationProperties(RocketmqPushEventHandlerDefinitionProperties.PREFIX)
+public class RocketmqPushEventHandlerDefinitionProperties {
 	
-	public static final String PREFIX = "spring.rocketmq.consumer.event";
+	public static final String PREFIX = RocketmqPushConsumerProperties.PREFIX + ".event";
 
 	private String definitions = null;
 

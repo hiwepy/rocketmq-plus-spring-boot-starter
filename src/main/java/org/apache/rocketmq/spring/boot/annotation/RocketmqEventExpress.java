@@ -11,10 +11,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented	
 @Inherited		
-public @interface RocketmqEventHandler {
+public @interface RocketmqEventExpress {
 	
-	String topic();
-
-	String selectorExpress() default "*";
+	String value();
 	
 }

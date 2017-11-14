@@ -17,8 +17,6 @@ package org.apache.rocketmq.spring.boot.event;
 
 import java.io.UnsupportedEncodingException;
 
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.springframework.context.ApplicationEvent;
