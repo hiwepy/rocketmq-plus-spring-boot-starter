@@ -60,8 +60,8 @@ spring:
       check-thread-pool-max-size: 1
       #事务回查最小并发数
       check-thread-pool-min-size: 1
-    consumer:
-      consume-type: consume-actively
+    # ConsumeType.CONSUME_PASSIVELY : "PUSH" 模式
+    consume-passively:
       #Threshold for dynamic adjustment of the number of thread pool
       adjust-thread-pool-nums-threshold: 100000
       #Concurrently max span offset.it has no effect on sequential consumption
@@ -74,8 +74,6 @@ spring:
       consume-thread-min: 20
       #Maximum amount of time in minutes a message may block the consuming thread.
       consume-timeout: 15
-      consume-timestamp: 
-      
       #Consumers of the same role is required to have exactly same subscriptions and consumerGroup to correctly achieve
       #load balance. It's required and needs to be globally unique.
       consumer-group: '232'
@@ -107,6 +105,29 @@ spring:
         TopicA : TagA || TagB || TagD 
       #Suspending pulling time for cases requiring slow pulling like flow-control scenario.
       suspend-current-queue-time-millis: 1000
+      #Whether the unit of subscription group
+      unit-mode: false
+      unit-name: KB
+      vip-channel-enabled: false
+    # ConsumeType.CONSUME_PASSIVELY : "PULL" 模式
+    consume-actively:
+      #Consumers of the same role is required to have exactly same subscriptions and consumerGroup to correctly achieve
+      #load balance. It's required and needs to be globally unique.
+      consumer-group: '232'
+      #客户端回调线程池容量大小，默认 JVM可用的CPU个数 
+      client-callback-executor-threads: 4
+      #当前客户端IP地址
+      client-i-p: 127.0.0.1
+      #当前客户端实例名称，默认 ：DEFAULT
+      instance-name: DEFAULT
+      #Heartbeat interval in microseconds with message broker
+      heartbeat-broker-interval: 3000
+      #Max re-consume times. -1 means 16 times. 
+      max-reconsume-times: -1
+      #message-model: org.apache.rocketmq.common.protocol.heartbeat.MessageModel.CLUSTERING
+      persist-consumer-offset-interval: 0
+      #Pulling topic information interval from the named server
+      poll-name-server-interval: 3000
       #Whether the unit of subscription group
       unit-mode: false
       unit-name: KB
