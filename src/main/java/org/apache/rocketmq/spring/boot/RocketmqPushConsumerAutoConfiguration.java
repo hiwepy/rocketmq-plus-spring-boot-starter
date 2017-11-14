@@ -18,30 +18,25 @@ import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
-import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
-import org.apache.rocketmq.spring.boot.handler.MessageOrderlyHandler;
-import org.apache.rocketmq.spring.boot.handler.impl.NestedMessageConcurrentlyHandler;
-import org.apache.rocketmq.spring.boot.handler.impl.NestedMessageOrderlyHandler;
 import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
 import org.apache.rocketmq.spring.boot.listener.DefaultMessageListenerConcurrently;
 import org.apache.rocketmq.spring.boot.listener.DefaultMessageListenerOrderly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.util.CollectionUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
+@AutoConfigureAfter(RocketmqPushEventHandlerAutoConfiguration.class)
 @EnableConfigurationProperties({ RocketmqPushConsumerProperties.class })
 public class RocketmqPushConsumerAutoConfiguration  {
 
@@ -55,22 +50,10 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	
 	@Bean
 	@ConditionalOnMissingBean
-	public MessageConcurrentlyHandler messageConcurrentlyHandler() {
-		return new NestedMessageConcurrentlyHandler();
-	}
-	
-	@Bean
-	@ConditionalOnMissingBean
 	public MessageListenerOrderly messageListenerOrderly() {
 		return new DefaultMessageListenerOrderly();
 	}
 	
-	@Bean
-	@ConditionalOnMissingBean
-	public MessageOrderlyHandler messageOrderlyHandler() {
-		return new NestedMessageOrderlyHandler();
-	}
-
 	/*
 	 * @Bean
 	 * 

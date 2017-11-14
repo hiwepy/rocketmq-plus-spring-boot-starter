@@ -11,8 +11,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented	
 @Inherited		
-public @interface RocketmqEventExpress {
+public @interface RocketmqPushRule {
 	
+	/**
+	 * Ant风格的事件分发规则表达式,格式为：topic/tags/keys，如：topic-a/tag-a/*
+	 */
 	String value();
 	
 }

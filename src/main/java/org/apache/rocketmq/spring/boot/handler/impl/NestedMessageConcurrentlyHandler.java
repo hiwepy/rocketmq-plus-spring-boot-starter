@@ -15,23 +15,14 @@
  */
 package org.apache.rocketmq.spring.boot.handler.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 
 /**
  * 
@@ -41,26 +32,15 @@ import org.springframework.util.ObjectUtils;
  * @date		： 2017年11月13日 上午10:36:12
  * @version 	V1.0
  */
-public class NestedMessageConcurrentlyHandler implements MessageConcurrentlyHandler, ApplicationContextAware, InitializingBean {
+public class NestedMessageConcurrentlyHandler implements MessageConcurrentlyHandler {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(NestedMessageConcurrentlyHandler.class);
-	private ApplicationContext applicationContext;
-	private List<MessageConcurrentlyHandler> handlers;
+	private final List<MessageConcurrentlyHandler> handlers;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		if(null == handlers){
-			handlers = new ArrayList<MessageConcurrentlyHandler>();
-			Map<String, MessageConcurrentlyHandler> beansOfType = getApplicationContext().getBeansOfType(MessageConcurrentlyHandler.class);
-			if (!ObjectUtils.isEmpty(beansOfType)) {
-				Iterator<Entry<String, MessageConcurrentlyHandler>> ite = beansOfType.entrySet().iterator();
-				while (ite.hasNext()) {
-					Entry<String, MessageConcurrentlyHandler> entry = ite.next();
-					handlers.add(entry.getValue());
-				}
-			}
-		}
+	public NestedMessageConcurrentlyHandler(List<MessageConcurrentlyHandler> handlers) {
+		this.handlers = handlers;
 	}
+
 	
 	@Override
 	public boolean preHandle(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
@@ -96,21 +76,8 @@ public class NestedMessageConcurrentlyHandler implements MessageConcurrentlyHand
 		return true;
 	}
 	
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
-	
 	public List<MessageConcurrentlyHandler> getHandlers() {
 		return handlers;
-	}
-
-	public void setHandlers(List<MessageConcurrentlyHandler> handlers) {
-		this.handlers = handlers;
 	}
 
 }

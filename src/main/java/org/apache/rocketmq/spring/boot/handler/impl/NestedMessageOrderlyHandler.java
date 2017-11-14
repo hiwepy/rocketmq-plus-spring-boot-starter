@@ -15,23 +15,14 @@
  */
 package org.apache.rocketmq.spring.boot.handler.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.boot.handler.MessageOrderlyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 
 /**
  * 
@@ -41,27 +32,15 @@ import org.springframework.util.ObjectUtils;
  * @date		： 2017年11月13日 上午10:35:10
  * @version 	V1.0
  */
-public class NestedMessageOrderlyHandler implements MessageOrderlyHandler, ApplicationContextAware, InitializingBean {
+public class NestedMessageOrderlyHandler implements MessageOrderlyHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(NestedMessageOrderlyHandler.class);
-	private ApplicationContext applicationContext;
-	private List<MessageOrderlyHandler> handlers;
+	private final List<MessageOrderlyHandler> handlers;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		if(null == handlers){
-			handlers = new ArrayList<MessageOrderlyHandler>();
-			Map<String, MessageOrderlyHandler> beansOfType = getApplicationContext().getBeansOfType(MessageOrderlyHandler.class);
-			if (!ObjectUtils.isEmpty(beansOfType)) {
-				Iterator<Entry<String, MessageOrderlyHandler>> ite = beansOfType.entrySet().iterator();
-				while (ite.hasNext()) {
-					Entry<String, MessageOrderlyHandler> entry = ite.next();
-					handlers.add(entry.getValue());
-				}
-			}
-		}
+	public NestedMessageOrderlyHandler(List<MessageOrderlyHandler> handlers) {
+		this.handlers = handlers;
 	}
-	
+
 	@Override
 	public boolean preHandle(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		return true;
@@ -96,21 +75,8 @@ public class NestedMessageOrderlyHandler implements MessageOrderlyHandler, Appli
 		return true;
 	}
 	
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
-	
 	public List<MessageOrderlyHandler> getHandlers() {
 		return handlers;
 	}
 
-	public void setHandlers(List<MessageOrderlyHandler> handlers) {
-		this.handlers = handlers;
-	}
-	
 }

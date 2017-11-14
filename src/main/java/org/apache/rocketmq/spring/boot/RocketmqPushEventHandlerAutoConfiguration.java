@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.spring.boot.annotation.RocketmqEventExpress;
+import org.apache.rocketmq.spring.boot.annotation.RocketmqPushRule;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
@@ -24,8 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -37,7 +37,8 @@ import org.springframework.util.ObjectUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
-@ConditionalOnProperty(name = RocketmqPushEventHandlerDefinitionProperties.PREFIX, matchIfMissing = true)
+@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
+@AutoConfigureAfter(RocketmqProducerAutoConfiguration.class)
 @EnableConfigurationProperties({ RocketmqPushEventHandlerDefinitionProperties.class })
 public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationContextAware {
 
@@ -53,7 +54,6 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	 * 处理器定义
 	 */
 	@Bean("rocketmqEventHandlers")
-	@ConditionalOnMissingBean(value = MessageConcurrentlyHandler.class)
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map<String, EventHandler<RocketmqEvent>> rocketmqEventHandlers() {
 
@@ -69,10 +69,10 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 					//跳过入口实现类
 					continue;
 				}
-				RocketmqEventExpress annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqEventExpress.class);
+				RocketmqPushRule annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPushRule.class);
 				if(annotationType == null) {
 					// 注解为空，则打印错误信息
-					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqEventExpress.class, entry.getValue().getClass(), entry.getKey());
+					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPushRule.class, entry.getValue().getClass(), entry.getKey());
 				} else {
 					handlerChainDefinitionMap.put(annotationType.value(), entry.getKey());
 				}
@@ -86,7 +86,6 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	}
 	
 	@Bean
-	@ConditionalOnMissingBean(value = MessageConcurrentlyHandler.class)
 	public MessageConcurrentlyHandler messageConcurrentlyHandler(
 			RocketmqPushEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
@@ -104,7 +103,6 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	}
 	
 	@Bean
-	@ConditionalOnMissingBean(value = MessageOrderlyHandler.class)
 	public MessageOrderlyHandler messageOrderlyHandler(
 			RocketmqPushEventHandlerDefinitionProperties properties,
 			@Qualifier("rocketmqEventHandlers") Map<String, EventHandler<RocketmqEvent>> eventHandlers) {

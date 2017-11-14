@@ -24,7 +24,7 @@ import org.apache.rocketmq.spring.boot.hooks.MQPullConsumerShutdownHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -33,13 +33,12 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.util.ObjectUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(prefix = RocketmqPullConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
+@AutoConfigureAfter(RocketmqPushEventHandlerAutoConfiguration.class)
 @EnableConfigurationProperties({ RocketmqPullConsumerProperties.class })
 public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContextAware {
 
