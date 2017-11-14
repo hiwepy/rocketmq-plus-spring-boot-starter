@@ -6,7 +6,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.RocketmqConsumerProperties;
+import org.apache.rocketmq.spring.boot.RocketmqPushConsumerProperties;
 import org.apache.rocketmq.spring.boot.handler.MessageConcurrentlyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class DefaultMessageListenerConcurrently implements MessageListenerConcur
 	@Autowired
 	private MessageConcurrentlyHandler messageHandler;
 	@Autowired
-	private RocketmqConsumerProperties properties;
+	private RocketmqPushConsumerProperties properties;
 
 	@Override
 	public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgExts, ConsumeConcurrentlyContext context) {
@@ -105,11 +105,11 @@ public class DefaultMessageListenerConcurrently implements MessageListenerConcur
 		this.messageHandler = messageHandler;
 	}
 	
-	public RocketmqConsumerProperties getProperties() {
+	public RocketmqPushConsumerProperties getProperties() {
 		return properties;
 	}
 
-	public void setProperties(RocketmqConsumerProperties properties) {
+	public void setProperties(RocketmqPushConsumerProperties properties) {
 		this.properties = properties;
 	}
 	

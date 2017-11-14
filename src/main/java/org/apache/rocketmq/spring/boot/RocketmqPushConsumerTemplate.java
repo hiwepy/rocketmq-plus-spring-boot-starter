@@ -6,19 +6,14 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
 import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByRandoom;
-import org.springframework.beans.factory.annotation.Autowired;
 
-public class RocketmqConsumerTemplate {
+public class RocketmqPushConsumerTemplate {
 
 	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
 	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
-	@Autowired
 	protected MQPushConsumer consumer;
 
-	public RocketmqConsumerTemplate() {
-	}
-	
-	public RocketmqConsumerTemplate(MQPushConsumer consumer) {
+	public RocketmqPushConsumerTemplate(MQPushConsumer consumer) {
 		this.consumer = consumer;
 	}
 

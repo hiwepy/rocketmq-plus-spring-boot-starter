@@ -2,4 +2,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.apache.rocketmq.spring.boot.RocketmqProducerAutoConfiguration,\
 org.apache.rocketmq.spring.boot.RocketmqEventHandlerAutoConfiguration,\
-org.apache.rocketmq.spring.boot.RocketmqConsumerAutoConfiguration
+org.apache.rocketmq.spring.boot.RocketmqPushConsumerAutoConfiguration,\
+org.apache.rocketmq.spring.boot.RocketmqPullConsumerAutoConfiguration

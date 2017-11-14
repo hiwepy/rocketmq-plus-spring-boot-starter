@@ -17,12 +17,16 @@ package org.apache.rocketmq.spring.boot.event;
 
 import java.io.UnsupportedEncodingException;
 
+import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
+import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.common.message.MessageQueue;
 import org.springframework.context.ApplicationEvent;
 
 @SuppressWarnings("serial")
 public class RocketmqEvent extends ApplicationEvent {
-
+	
+	private MessageQueue messageQueue;
 	private MessageExt messageExt;
 	private String topic;
 	private String tag;
@@ -30,16 +34,13 @@ public class RocketmqEvent extends ApplicationEvent {
 	/** Route Expression*/
 	private String routeExpression;
 
-	public RocketmqEvent(Object source) {
-		super(source);
-	}
-
-	public RocketmqEvent(MessageExt msgExt) throws Exception {
+	public RocketmqEvent(MessageExt msgExt, MessageQueue messageQueue) throws Exception {
 		super(msgExt);
 		this.topic = msgExt.getTopic();
 		this.tag = msgExt.getTags();
 		this.body = msgExt.getBody();
 		this.messageExt = msgExt;
+		this.messageQueue = messageQueue;
 		this.routeExpression = this.buildRouteExpression(msgExt);
 	}
 	
@@ -68,8 +69,8 @@ public class RocketmqEvent extends ApplicationEvent {
 		return messageExt;
 	}
 
-	public void setMessageExt(MessageExt messageExt) {
-		this.messageExt = messageExt;
+	public MessageQueue getMessageQueue() {
+		return messageQueue;
 	}
 
 	public String getTopic() {

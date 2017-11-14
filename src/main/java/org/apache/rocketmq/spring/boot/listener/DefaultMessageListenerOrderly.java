@@ -6,7 +6,7 @@ import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.RocketmqConsumerProperties;
+import org.apache.rocketmq.spring.boot.RocketmqPushConsumerProperties;
 import org.apache.rocketmq.spring.boot.handler.MessageOrderlyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
 	@Autowired
 	private MessageOrderlyHandler messageHandler;
 	@Autowired
-	private RocketmqConsumerProperties properties;
+	private RocketmqPushConsumerProperties properties;
 
 	@Override
 	public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgExts, ConsumeOrderlyContext context) {
@@ -94,11 +94,11 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly {
 		this.messageHandler = messageHandler;
 	}
 	
-	public RocketmqConsumerProperties getProperties() {
+	public RocketmqPushConsumerProperties getProperties() {
 		return properties;
 	}
 
-	public void setProperties(RocketmqConsumerProperties properties) {
+	public void setProperties(RocketmqPushConsumerProperties properties) {
 		this.properties = properties;
 	}
 	

@@ -29,7 +29,7 @@ public class RocketmqEventMessageConcurrentlyHandler extends AbstractRouteableMe
 		//构造原始链对象
 		HandlerChain<RocketmqEvent>	originalChain = new ProxiedHandlerChain();
 		//执行事件处理链
-		this.doHandler(new RocketmqEvent(msgExt), originalChain);
+		this.doHandler(new RocketmqEvent(msgExt, context.getMessageQueue()), originalChain);
 	}
 
 	@Override

@@ -22,7 +22,7 @@ public class ApplicationEventMessageConcurrentlyHandler implements MessageConcur
 	@Override
 	public void handleMessage(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		// 发布消息到达的事件，以便分发到每个tag的监听方法
-		getEventPublisher().publishEvent(new RocketmqEvent(msgExt));
+		getEventPublisher().publishEvent(new RocketmqEvent(msgExt, context.getMessageQueue()));
 	}
 	
 	@Override

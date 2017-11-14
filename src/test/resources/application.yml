@@ -61,6 +61,7 @@ spring:
       #事务回查最小并发数
       check-thread-pool-min-size: 1
     consumer:
+      consume-type: consume-actively
       #Threshold for dynamic adjustment of the number of thread pool
       adjust-thread-pool-nums-threshold: 100000
       #Concurrently max span offset.it has no effect on sequential consumption

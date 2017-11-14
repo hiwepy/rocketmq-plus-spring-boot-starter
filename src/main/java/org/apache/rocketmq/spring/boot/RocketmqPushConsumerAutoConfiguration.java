@@ -40,37 +40,37 @@ import org.springframework.util.CollectionUtils;
 
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
-@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
+@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 20)
-@EnableConfigurationProperties({ RocketmqConsumerProperties.class })
-public class RocketmqConsumerAutoConfiguration  {
+@EnableConfigurationProperties({ RocketmqPushConsumerProperties.class })
+public class RocketmqPushConsumerAutoConfiguration  {
 
-	private static final Logger LOG = LoggerFactory.getLogger(RocketmqConsumerAutoConfiguration.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RocketmqPushConsumerAutoConfiguration.class);
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "consumerGroup")
 	public MessageListenerConcurrently messageListenerConcurrently() {
 		return new DefaultMessageListenerConcurrently();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public MessageConcurrentlyHandler messageConcurrentlyHandler() {
 		return new NestedMessageConcurrentlyHandler();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public MessageListenerOrderly messageListenerOrderly() {
 		return new DefaultMessageListenerOrderly();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public MessageOrderlyHandler messageOrderlyHandler() {
 		return new NestedMessageOrderlyHandler();
 	}
@@ -90,7 +90,7 @@ public class RocketmqConsumerAutoConfiguration  {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
+	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
 	public AllocateMessageQueueStrategy allocateMessageQueueStrategy() {
 		return new AllocateMessageQueueConsistentHash();
 	}
@@ -101,7 +101,10 @@ public class RocketmqConsumerAutoConfiguration  {
 	 * @param consumer
 	 * @param properties
 	 */
-	public void configure(DefaultMQPushConsumer consumer, RocketmqConsumerProperties properties) {
+	public void configure(DefaultMQPushConsumer consumer, RocketmqPushConsumerProperties properties) {
+		
+		consumer.resetClientConfig(properties);
+		
 		consumer.setAdjustThreadPoolNumsThreshold(properties.getAdjustThreadPoolNumsThreshold());
 		consumer.setClientCallbackExecutorThreads(properties.getClientCallbackExecutorThreads());
 		consumer.setClientIP(properties.getClientIP());
@@ -138,13 +141,13 @@ public class RocketmqConsumerAutoConfiguration  {
 		consumer.setUnitName(properties.getUnitName());
 		consumer.setVipChannelEnabled(properties.isVipChannelEnabled());
 	}
-
+	
 	/**
 	 * 初始化rocketmq消息监听方式的消费者
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = RocketmqConsumerProperties.PREFIX, value = "consumerGroup")
-	public DefaultMQPushConsumer pushConsumer(RocketmqConsumerProperties properties,
+	@ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, name = "consume-type", havingValue = "consume-passively")
+	public DefaultMQPushConsumer pushConsumer(RocketmqPushConsumerProperties properties,
 			@Autowired(required = false) OffsetStore offsetStore,
 			MessageListenerOrderly messageListenerOrderly,
 			MessageListenerConcurrently messageListenerConcurrently,
@@ -173,6 +176,11 @@ public class RocketmqConsumerAutoConfiguration  {
 
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 
+			// 使用Java代码，在服务器做消息过滤
+			//String filterCode = MixAll.file2String("D:\\workspace\\rocketmq-quickstart\\src\\main\\java\\com\\zoo\\quickstart\\filter\\MessageFilterImpl.java");
+			//consumer.subscribe("TopicFilter7", "com.zoo.quickstart.filter.MessageFilterImpl", filterCode);
+			
+			
 			// 初始化参数
 			this.configure(consumer, properties);
 
@@ -256,8 +264,8 @@ public class RocketmqConsumerAutoConfiguration  {
 	}
 	
 	@Bean
-	public RocketmqConsumerTemplate rocketmqConsumerTemplate(MQPushConsumer consumer) throws MQClientException {
-		return new RocketmqConsumerTemplate(consumer);
+	public RocketmqPushConsumerTemplate rocketmqConsumerTemplate(MQPushConsumer consumer) throws MQClientException {
+		return new RocketmqPushConsumerTemplate(consumer);
 	}
 
 }
