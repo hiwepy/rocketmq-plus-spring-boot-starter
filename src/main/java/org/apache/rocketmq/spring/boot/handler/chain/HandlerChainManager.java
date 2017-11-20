@@ -17,6 +17,8 @@ public interface HandlerChainManager<T extends RocketmqEvent> {
 	 * @return
 	 */
     Map<String, EventHandler<T>> getHandlers();
+    
+    Map<String, NamedHandlerList<T>> getHandlerChains();
 
     /**
      * 根据指定的chainName获取Handler列表

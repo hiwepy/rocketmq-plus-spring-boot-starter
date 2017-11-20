@@ -162,7 +162,11 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 		
 		return manager;
 	}
-
+	
+	@Bean
+	public RocketmqPushEventTemplate rocketmqConsumerTemplate() {
+		return new RocketmqPushEventTemplate();
+	}
 
 	public Map<String, String> getHandlerChainDefinitionMap() {
 		return handlerChainDefinitionMap;
