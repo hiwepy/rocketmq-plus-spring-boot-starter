@@ -141,9 +141,6 @@ public class RocketmqPushConsumerAutoConfiguration  {
 		if (StringUtils.isEmpty(properties.getInstanceName())) {
 			throw new RocketMQException("instanceName is empty");
 		}
-		if (CollectionUtils.isEmpty(properties.getSubscription())) {
-			throw new RocketMQException("subscription is empty");
-		}
 
 		try {
 
