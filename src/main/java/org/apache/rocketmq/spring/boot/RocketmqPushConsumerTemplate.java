@@ -55,7 +55,7 @@ public class RocketmqPushConsumerTemplate {
 		for (String tag : tagArr) {
 			// 构造一个消息分发规则对应的handler责任链
 			// topic/tags/keys
-			String rule = new StringBuilder().append(topic).append("/").append(tag).append("/*").toString();
+			String rule = new StringBuilder().append("/").append(topic).append("/").append(tag).append("/*").toString();
 			chainManager.createChain(rule, chainDefinition);
 		}
 		

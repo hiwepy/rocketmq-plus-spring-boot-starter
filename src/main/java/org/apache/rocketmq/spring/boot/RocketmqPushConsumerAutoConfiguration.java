@@ -1,6 +1,8 @@
 package org.apache.rocketmq.spring.boot;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +19,7 @@ import org.apache.rocketmq.client.consumer.store.OffsetStore;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+import org.apache.rocketmq.spring.boot.config.SubscriptionProvider;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
 import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
 import org.apache.rocketmq.spring.boot.listener.DefaultMessageListenerConcurrently;
@@ -127,6 +130,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	@ConditionalOnMissingBean
 	public DefaultMQPushConsumer pushConsumer(RocketmqPushConsumerProperties properties,
 			@Autowired(required = false) OffsetStore offsetStore,
+			@Autowired(required = false) SubscriptionProvider subProvider,
 			MessageListenerOrderly messageListenerOrderly,
 			MessageListenerConcurrently messageListenerConcurrently,
 			AllocateMessageQueueStrategy allocateMessageQueueStrategy) throws MQClientException {
@@ -163,9 +167,20 @@ public class RocketmqPushConsumerAutoConfiguration  {
 			/*
 			 * 订阅指定topic下selectorExpress
 			 */
-			if(!CollectionUtils.isEmpty(properties.getSubscription())){
+			Map<String /* topic */, String /* selectorExpress */> subscription = new HashMap<String, String>();
+			if(subProvider != null) {
+				Map<String /* topic */, String /* selectorExpress */> subs = subProvider.subscription();
+				if(!CollectionUtils.isEmpty(subs) ){
+					subscription.putAll(subs);
+				}
+			}
+			if(!CollectionUtils.isEmpty(properties.getSubscription()) ){
+				subscription.putAll(properties.getSubscription());
+			}
+			
+			if(!CollectionUtils.isEmpty(subscription) ){
 				
-				Iterator<Entry<String, String>> ite = properties.getSubscription().entrySet().iterator();
+				Iterator<Entry<String, String>> ite = subscription.entrySet().iterator();
 				while (ite.hasNext()) {
 					Entry<String, String> entry = ite.next();
 					/* 
