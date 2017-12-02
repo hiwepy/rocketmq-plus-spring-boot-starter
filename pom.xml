@@ -6,17 +6,19 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.8.RELEASE</version>
+		<version>1.5.9.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
+	<groupId>com.github.vindell</groupId>
 	<artifactId>spring-boot-starter-rocketmq</artifactId>
+	<version>1.5.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>spring-boot-starter-rocketmq</name>
-	<description>starter for rocketmq</description>
 	<url>https://github.com/vindell/spring-boot-starter-rocketmq</url>
-	
+	<description>starter for rocketmq</description>
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -24,6 +26,12 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<scm>
+		<url>https://github.com/vindell/spring-boot-starter-rocketmq</url>
+		<connection>scm:git:git://github.com/vindell/spring-boot-starter-rocketmq.git</connection>
+		<developerConnection>scm:git:git@github.com/vindell/spring-boot-starter-rocketmq.git</developerConnection>
+	</scm>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -325,7 +333,4 @@
 		</plugins>
 	</build>
 
-
-	<groupId>com.github.vindell</groupId>
-	<version>1.5.8-SNAPSHOT</version>
 </project>
