@@ -7,7 +7,7 @@ import org.apache.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.MessageQueueSelector;
 import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
-import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByRandoom;
+import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByRandom;
 import org.apache.rocketmq.spring.boot.enums.ConsumeMode;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RocketmqPushConsumerTemplate {
 
 	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
-	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
+	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandom();
 	public final String SELECTOR_EXPRESSS_EPARATOR = " || ";
 	
 	@Autowired

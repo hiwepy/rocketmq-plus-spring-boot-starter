@@ -13,7 +13,7 @@ import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
 import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByHash;
-import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByRandoom;
+import org.apache.rocketmq.client.producer.selector.SelectMessageQueueByRandom;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageQueue;
 import org.apache.rocketmq.remoting.common.RemotingHelper;
@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RocketmqProducerTemplate {
 
 	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
-	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandoom();
+	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandom();
 	@Autowired
 	protected MQProducer producer;
 
