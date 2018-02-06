@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
-import org.apache.rocketmq.spring.boot.annotation.RocketmqPushRule;
+import org.apache.rocketmq.spring.boot.annotation.RocketmqPushConsumer;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.EventHandler;
@@ -67,12 +67,16 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 					//跳过入口实现类
 					continue;
 				}
-				RocketmqPushRule annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPushRule.class);
+				RocketmqPushConsumer annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPushConsumer.class);
 				if(annotationType == null) {
 					// 注解为空，则打印错误信息
-					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPushRule.class, entry.getValue().getClass(), entry.getKey());
+					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPushConsumer.class, entry.getValue().getClass(), entry.getKey());
 				} else {
-					handlerChainDefinitionMap.put(annotationType.value(), entry.getKey());
+					
+					String rule = new StringBuilder("/").append(annotationType.topic()).append("/").append(annotationType.tags()).append("/")
+					.append(annotationType.keys()).toString();
+					
+					handlerChainDefinitionMap.put(rule, entry.getKey());
 				}
 				
 				rocketmqEventHandlers.put(entry.getKey(), entry.getValue());

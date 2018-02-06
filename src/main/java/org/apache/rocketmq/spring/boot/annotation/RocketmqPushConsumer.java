@@ -7,15 +7,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Ant风格的事件分发规则表达式,格式为：topic/tags/keys，如：topic-a/tag-a/*
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented	
 @Inherited		
-public @interface RocketmqPushRule {
+public @interface RocketmqPushConsumer {
 	
-	/**
-	 * Ant风格的事件分发规则表达式,格式为：topic/tags/keys，如：topic-a/tag-a/*
-	 */
-	String value();
+	String topic();
+	
+	String tags();
+	
+	String keys() default "*";
 	
 }

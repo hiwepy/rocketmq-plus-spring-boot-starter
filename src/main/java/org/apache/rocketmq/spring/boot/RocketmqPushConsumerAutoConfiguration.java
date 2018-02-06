@@ -19,6 +19,7 @@ import org.apache.rocketmq.client.consumer.store.OffsetStore;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
+import org.apache.rocketmq.spring.boot.config.DefaultSubscriptionProvider;
 import org.apache.rocketmq.spring.boot.config.SubscriptionProvider;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
 import org.apache.rocketmq.spring.boot.hooks.MQPushConsumerShutdownHook;
@@ -121,6 +122,12 @@ public class RocketmqPushConsumerAutoConfiguration  {
 		consumer.setUnitMode(properties.isUnitMode());
 		consumer.setUnitName(properties.getUnitName());
 		consumer.setVipChannelEnabled(properties.isVipChannelEnabled());
+	}
+	
+	@Bean
+	@ConditionalOnMissingBean
+	public SubscriptionProvider defaultSubProvider() {
+		return new DefaultSubscriptionProvider();
 	}
 	
 	/**

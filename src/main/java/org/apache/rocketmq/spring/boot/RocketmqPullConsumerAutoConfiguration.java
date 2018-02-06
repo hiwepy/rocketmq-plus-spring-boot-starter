@@ -17,7 +17,8 @@ import org.apache.rocketmq.client.consumer.PullTaskCallback;
 import org.apache.rocketmq.client.consumer.rebalance.AllocateMessageQueueConsistentHash;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
-import org.apache.rocketmq.spring.boot.annotation.RocketmqPullTopic;
+import org.apache.rocketmq.spring.boot.annotation.RocketmqPullCallback;
+import org.apache.rocketmq.spring.boot.annotation.RocketmqPullConsumer;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
 import org.apache.rocketmq.spring.boot.hooks.MQPullConsumerScheduleShutdownHook;
 import org.apache.rocketmq.spring.boot.hooks.MQPullConsumerShutdownHook;
@@ -117,13 +118,15 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 			while (ite.hasNext()) {
 				Entry<String, MessageQueueListener> entry = ite.next();
 				//查找该实现上的注解
-				RocketmqPullTopic annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPullTopic.class);
+				RocketmqPullConsumer annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPullConsumer.class);
 				if(annotationType == null) {
 					// 注解为空，则跳过该实现，并打印错误信息
-					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPullTopic.class, entry.getValue().getClass(), entry.getKey());
+					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPullConsumer.class, entry.getValue().getClass(), entry.getKey());
 					continue;
 				}
-				consumer.registerMessageQueueListener(annotationType.value(), entry.getValue());
+				
+				
+				consumer.registerMessageQueueListener(annotationType.topic(), entry.getValue());
 			}
 		}
 		
@@ -190,13 +193,13 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 			while (ite.hasNext()) {
 				Entry<String, PullTaskCallback> entry = ite.next();
 				//查找该实现上的注解
-				RocketmqPullTopic annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPullTopic.class);
+				RocketmqPullCallback annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPullCallback.class);
 				if(annotationType == null) {
 					// 注解为空，则跳过该实现，并打印错误信息
-					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPullTopic.class, entry.getValue().getClass(), entry.getKey());
+					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPullCallback.class, entry.getValue().getClass(), entry.getKey());
 					continue;
 				}
-				scheduleService.registerPullTaskCallback(annotationType.value(), entry.getValue());
+				scheduleService.registerPullTaskCallback(annotationType.topic(), entry.getValue());
 			}
 		}
 		

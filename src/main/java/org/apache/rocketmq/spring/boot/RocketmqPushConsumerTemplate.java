@@ -51,7 +51,7 @@ public class RocketmqPushConsumerTemplate {
 		chainManager.addHandler(chainDefinition, handler);
 		
 		//拆分
-		String[] tagArr = StringUtils.tokenizeToStringArray(tags, ",");
+		String[] tagArr = StringUtils.tokenizeToStringArray(tags);
 		for (String tag : tagArr) {
 			// 构造一个消息分发规则对应的handler责任链
 			// topic/tags/keys

@@ -26,8 +26,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented	
 @Inherited		
-public @interface RocketmqPullTopic {
+public @interface RocketmqPullConsumer {
 	
-	String value();
+	String topic();
 	
 }
