@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -69,7 +70,7 @@ public class RocketmqProducerAutoConfiguration {
 	 * 初始化向rocketmq发送普通消息的生产者
 	 */
 	@Bean
-	@ConditionalOnProperty(prefix = RocketmqProducerProperties.PREFIX, value = "producerGroup")
+	@ConditionalOnMissingBean
 	public DefaultMQProducer defaultProducer(RocketmqProducerProperties properties,
 			TransactionCheckListener transactionCheckListener) throws MQClientException {
 
