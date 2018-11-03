@@ -131,14 +131,6 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
         getHandlerChainDefinitionMap().putAll(section);
     }
 	
-	/**
-	 * 
-	 * @description	： 创建ChainManager
-	 * @author 		： <a href="https://github.com/vindell">vindell</a>
-	 * @date 		：2017年11月14日 下午4:47:03
-	 * @param eventHandlers
-	 * @return
-	 */
 	protected HandlerChainManager<RocketmqEvent> createHandlerChainManager(
 			Map<String, EventHandler<RocketmqEvent>> eventHandlers) {
 
