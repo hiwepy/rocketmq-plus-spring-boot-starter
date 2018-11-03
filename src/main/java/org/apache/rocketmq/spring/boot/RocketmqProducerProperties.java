@@ -47,7 +47,7 @@ public class RocketmqProducerProperties extends ClientConfig {
 	/**
 	 * Just for testing or demo program
 	 */
-	private String createTopicKey = MixAll.DEFAULT_TOPIC;
+	private String createTopicKey = MixAll.BENCHMARK_TOPIC;
 
 	/**
 	 * Number of queues to create per default topic.
