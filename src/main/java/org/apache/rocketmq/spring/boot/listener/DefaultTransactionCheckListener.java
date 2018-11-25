@@ -3,16 +3,21 @@ package org.apache.rocketmq.spring.boot.listener;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.rocketmq.client.producer.LocalTransactionState;
-import org.apache.rocketmq.client.producer.TransactionCheckListener;
+import org.apache.rocketmq.client.producer.TransactionListener;
+import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.common.message.MessageExt;
 
-public class DefaultTransactionCheckListener implements TransactionCheckListener {
+public class DefaultTransactionCheckListener implements TransactionListener {
 	
 	private AtomicInteger transactionIndex = new AtomicInteger(0);
-	 
+	
 	@Override
-	public LocalTransactionState checkLocalTransactionState(MessageExt msg) {
-		
+	public LocalTransactionState executeLocalTransaction(Message msg, Object arg) {
+		return null;
+	}
+	
+	@Override
+	public LocalTransactionState checkLocalTransaction(MessageExt msg) {
 		System.out.println("server checking TrMsg " + msg.toString());
 
         int value = transactionIndex.getAndIncrement();

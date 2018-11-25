@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.TransactionCheckListener;
+import org.apache.rocketmq.client.producer.TransactionListener;
 import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import org.apache.rocketmq.spring.boot.exception.RocketMQException;
 import org.apache.rocketmq.spring.boot.hooks.MQProducerShutdownHook;
@@ -30,7 +31,7 @@ public class RocketmqProducerAutoConfiguration {
 	
 	@Bean
 	@ConditionalOnProperty(prefix = RocketmqProducerProperties.PREFIX, value = "transaction", havingValue = "true", matchIfMissing = true)
-	public TransactionCheckListener transactionCheckListener() {
+	public TransactionListener transactionListener() {
 		return new DefaultTransactionCheckListener();
 	}
 
@@ -72,7 +73,7 @@ public class RocketmqProducerAutoConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	public DefaultMQProducer defaultProducer(RocketmqProducerProperties properties,
-			TransactionCheckListener transactionCheckListener) throws MQClientException {
+			TransactionListener transactionListener) throws MQClientException {
 
 		if (StringUtils.isEmpty(properties.getProducerGroup())) {
 			throw new RocketMQException("producerGroup is empty");
@@ -109,7 +110,7 @@ public class RocketmqProducerAutoConfiguration {
 				// 队列数
 				producer.setCheckRequestHoldMax(properties.getCheckRequestHoldMax());
 				// TODO 由于社区版本的服务器阉割调了消息回查的功能，所以这个地方没有意义
-				producer.setTransactionCheckListener(transactionCheckListener);
+				producer.setTransactionListener(transactionListener);
 
 				/*
 				 * Producer对象在使用之前必须要调用start初始化，初始化一次即可<br> 注意：切记不可以在每次发送消息时，都调用start方法
