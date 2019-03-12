@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>com.github.vindell</groupId>
-	<artifactId>spring-boot-starter-rocketmq</artifactId>
+	<artifactId>spring-boot-starter-rocketmq-plus</artifactId>
 	<description>Spring Boot Starter For Rocketmq</description>
-	<version>1.0.1.RELEASE</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<url>https://github.com/vindell/${project.artifactId}</url>
 	<packaging>jar</packaging>
