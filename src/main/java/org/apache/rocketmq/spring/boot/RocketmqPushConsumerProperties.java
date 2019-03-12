@@ -30,7 +30,7 @@ public class RocketmqPushConsumerProperties extends ClientConfig {
 	/**
      * ConsumeType.CONSUME_PASSIVELY : "PUSH"
      */
-	public static final String PREFIX = "spring.rocketmq.consume-passively";
+	public static final String PREFIX = "rocketmq.consume-passively";
 	
 	/** 是否启用 **/
 	private boolean enabled = false;

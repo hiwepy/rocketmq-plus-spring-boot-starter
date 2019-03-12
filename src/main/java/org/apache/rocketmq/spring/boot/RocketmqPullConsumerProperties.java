@@ -27,7 +27,7 @@ public class RocketmqPullConsumerProperties extends ClientConfig {
 	/**
      * ConsumeType.CONSUME_PASSIVELY : "PULL"
      */
-	public static final String PREFIX = "spring.rocketmq.consume-actively";
+	public static final String PREFIX = "rocketmq.consume-actively";
 	
 	/** 是否启用 **/
 	private boolean enabled = false;

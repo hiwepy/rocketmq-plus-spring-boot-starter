@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
+import org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration;
 import org.apache.rocketmq.spring.boot.annotation.RocketmqPushConsumer;
 import org.apache.rocketmq.spring.boot.config.Ini;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
@@ -36,7 +37,7 @@ import org.springframework.util.ObjectUtils;
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
-@AutoConfigureAfter(RocketmqProducerAutoConfiguration.class)
+@AutoConfigureAfter(RocketMQAutoConfiguration.class)
 @EnableConfigurationProperties({ RocketmqPushEventHandlerDefinitionProperties.class })
 public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationContextAware {
 
