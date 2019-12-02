@@ -1,6 +1,6 @@
-# spring-boot-starter-rocketmq
+# rocketmq-plus-spring-boot-starter
 
-starter for rocketmq
+Spring Boot Starter For Rocketmq
 
 ###基于Rocketmq客户端实现的 消息订阅、发布封装。
 
@@ -23,3 +23,13 @@ starter for rocketmq
 
   d、实现了基于Spring 框架的 ApplicationEvent 机制的消息消费实现，该实现只负责将消息对象以事件形式发布处理；具体消息处理逻辑需开发者实现 ApplicationEvent 监听接口
 
+
+### Maven
+
+``` xml
+<dependency>
+	<groupId>${project.groupId}</groupId>
+	<artifactId>rocketmq-plus-spring-boot-starter</artifactId>
+	<version>${project.version}</version>
+</dependency>
+```
