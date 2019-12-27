@@ -10,12 +10,12 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.github.vindell</groupId>
+	<groupId>com.github.hiwepy</groupId>
 	<artifactId>rocketmq-plus-spring-boot-starter</artifactId>
 	<description>Spring Boot Starter For Rocketmq</description>
 	<version>1.0.1-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
-	<url>https://github.com/vindell/${project.artifactId}</url>
+	<url>https://github.com/hiwepy/${project.artifactId}</url>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -26,15 +26,15 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:https:github.com/vindell/${project.artifactId}.git</connection>
-		<developerConnection>scm:git:https:github.com/vindell/${project.artifactId}.git</developerConnection>
-		<url>https:github.com/vindell/${project.artifactId}</url>
+		<connection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:https:github.com/hiwepy/${project.artifactId}.git</developerConnection>
+		<url>https:github.com/hiwepy/${project.artifactId}</url>
 		<tag>${project.artifactId}</tag>
 	</scm>
 
 	<developers>
 		<developer>
-			<name>vindell</name>
+			<name>wandl</name>
 			<email>hnxyhcwdl1003@163.com</email>
 			<roles>
 				<role>developer</role>
@@ -376,6 +376,7 @@
 		<os.detected.classifier>linux-x86_64</os.detected.classifier>
 		<rocketmq.version>4.4.0</rocketmq.version>
 		<rocketmq-spring-boot-starter.version>2.0.2</rocketmq-spring-boot-starter.version>
+		<disruptor-spring-boot-starter.version>1.0.3-SNAPSHOT</disruptor-spring-boot-starter.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -570,9 +571,9 @@
 	    </dependency>
         
 		<dependency>
-			<groupId>com.github.vindell</groupId>
-			<artifactId>spring-boot-starter-disruptor</artifactId>
-			<version>1.0.3-SNAPSHOT</version>
+			<groupId>com.github.hiwepy</groupId>
+			<artifactId>disruptor-spring-boot-starter</artifactId>
+			<version>${disruptor-spring-boot-starter.version}</version>
 			<optional>true</optional>
 		</dependency>
 		
