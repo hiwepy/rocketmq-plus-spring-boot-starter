@@ -44,12 +44,12 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	private static final Logger LOG = LoggerFactory.getLogger(RocketmqPushEventHandlerAutoConfiguration.class);
 	private ApplicationContext applicationContext;
 	
-	/**
+	/*
 	 * 处理器链定义
 	 */
 	private Map<String, String> handlerChainDefinitionMap = new HashMap<String, String>();
 	
-	/**
+	/*
 	 * 处理器定义
 	 */
 	@Bean("rocketmqEventHandlers")

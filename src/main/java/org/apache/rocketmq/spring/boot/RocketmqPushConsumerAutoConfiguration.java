@@ -57,15 +57,6 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	public MessageListenerOrderly messageListenerOrderly() {
 		return new DefaultMessageListenerOrderly();
 	}
-	
-	/*
-	 * @Bean
-	 * 
-	 * @ConditionalOnMissingBean
-	 * 
-	 * @ConditionalOnProperty(prefix = RocketmqProperties.CONSUMER_PREFIX , value =
-	 * "consumerGroup") public OffsetStore offsetStore() { return null; }
-	 */
 
 	/**
 	 * Queue allocation algorithm specifying how message queues are allocated to
@@ -77,11 +68,8 @@ public class RocketmqPushConsumerAutoConfiguration  {
 		return new AllocateMessageQueueConsistentHash();
 	}
 
-	/**
+	/*
 	 * 初始化消息消费者
-	 * 
-	 * @param consumer
-	 * @param properties
 	 */
 	public void configure(DefaultMQPushConsumer consumer, RocketmqPushConsumerProperties properties) {
 		
@@ -130,7 +118,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 		return new DefaultSubscriptionProvider();
 	}
 	
-	/**
+	/*
 	 * 初始化rocketmq消息监听方式的消费者
 	 */
 	@Bean
