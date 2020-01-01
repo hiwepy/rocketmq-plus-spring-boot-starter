@@ -371,12 +371,12 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <maven-surefire-plugin.vertsion>2.22.1</maven-surefire-plugin.vertsion>
 		<maven-nexus-staging-plugin.version>1.6.8</maven-nexus-staging-plugin.version>
-		<netty-tcnative.version>2.0.22.Final</netty-tcnative.version>
+		<netty-tcnative.version>2.0.28.Final</netty-tcnative.version>
 		<!-- http://netty.io/wiki/forked-tomcat-native.html: windows-x86_64,osx-x86_64,linux-x86_64 -->
 		<os.detected.classifier>linux-x86_64</os.detected.classifier>
-		<rocketmq.version>4.4.0</rocketmq.version>
-		<rocketmq-spring-boot-starter.version>2.0.2</rocketmq-spring-boot-starter.version>
-		<disruptor-spring-boot-starter.version>1.0.3-SNAPSHOT</disruptor-spring-boot-starter.version>
+		<rocketmq.version>4.6.0</rocketmq.version>
+		<rocketmq-spring-boot-starter.version>2.0.4</rocketmq-spring-boot-starter.version>
+		<disruptor-spring-boot-starter.version>1.0.3.RELEASE</disruptor-spring-boot-starter.version>
 	</properties>
 	
 	<dependencyManagement>
