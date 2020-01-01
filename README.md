@@ -28,7 +28,7 @@ Spring Boot Starter For Rocketmq
 
 ``` xml
 <dependency>
-	<groupId>${project.groupId}</groupId>
+	<groupId>com.github.hiwepy</groupId>
 	<artifactId>rocketmq-plus-spring-boot-starter</artifactId>
 	<version>${project.version}</version>
 </dependency>
