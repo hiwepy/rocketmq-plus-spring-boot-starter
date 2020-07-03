@@ -374,9 +374,9 @@
 		<netty-tcnative.version>2.0.28.Final</netty-tcnative.version>
 		<!-- http://netty.io/wiki/forked-tomcat-native.html: windows-x86_64,osx-x86_64,linux-x86_64 -->
 		<os.detected.classifier>linux-x86_64</os.detected.classifier>
-		<rocketmq.version>4.6.0</rocketmq.version>
-		<rocketmq-spring-boot-starter.version>2.0.4</rocketmq-spring-boot-starter.version>
-		<disruptor-spring-boot-starter.version>1.0.3.RELEASE</disruptor-spring-boot-starter.version>
+		<rocketmq.version>4.7.1</rocketmq.version>
+		<rocketmq-spring-boot-starter.version>2.1.0</rocketmq-spring-boot-starter.version>
+		<disruptor-spring-boot-starter.version>1.0.4-SNAPSHOT</disruptor-spring-boot-starter.version>
 	</properties>
 	
 	<dependencyManagement>
