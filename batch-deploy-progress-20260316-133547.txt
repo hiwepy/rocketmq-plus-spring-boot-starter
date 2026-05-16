@@ -1,0 +1,8 @@
+rocketmq-plus-spring-boot-starter:3.0.x:FAIL
+rocketmq-plus-spring-boot-starter:3.1.x:FAIL
+rocketmq-plus-spring-boot-starter:3.2.x:FAIL
+rocketmq-plus-spring-boot-starter:3.3.x:FAIL
+rocketmq-plus-spring-boot-starter:3.4.x:FAIL
+rocketmq-plus-spring-boot-starter:3.5.x:FAIL
+rocketmq-plus-spring-boot-starter:4.0.x:FAIL
+rocketmq-plus-spring-boot-starter:master:FAIL
