@@ -423,18 +423,12 @@
         <netty-tcnative.version>2.0.28.Final</netty-tcnative.version>
         <!-- http://netty.io/wiki/forked-tomcat-native.html: windows-x86_64,osx-x86_64,linux-x86_64 -->
         <os.detected.classifier>linux-x86_64</os.detected.classifier>
-<<<<<<< Updated upstream
         <rocketmq.version>4.7.1</rocketmq.version>
         <rocketmq-spring-boot-starter.version>2.1.0</rocketmq-spring-boot-starter.version>
         <disruptor-spring-boot-starter.version>1.0.4-SNAPSHOT</disruptor-spring-boot-starter.version>
                 <commons-io.version>2.22.0</commons-io.version>
                 <junit.version>4.13.2</junit.version>
                 <slf4j.version>2.0.18</slf4j.version>
-=======
-        <rocketmq.version>4.2.0</rocketmq.version>
-                <commons-lang3.version>3.20.0</commons-lang3.version>
-                <geronimo-jms_1.1_spec.version>1.1.1</geronimo-jms_1.1_spec.version>
->>>>>>> Stashed changes
     </properties>
     
     <dependencyManagement>
@@ -646,18 +640,9 @@
         
         <!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-spring-boot-starter -->
         <dependency>
-<<<<<<< Updated upstream
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-spring-boot-starter</artifactId>
         </dependency>
-=======
-            <groupId>org.apache.geronimo.specs</groupId>
-            <artifactId>geronimo-jms_1.1_spec</artifactId>
-            <version>${geronimo-jms_1.1_spec.version}</version>
-        </dependency> -->
-        
-        <!-- RocketMq客户端相关依赖 -->  
->>>>>>> Stashed changes
         <!-- https://mvnrepository.com/artifact/org.apache.rocketmq/rocketmq-client -->
         <dependency>  
             <groupId>org.apache.rocketmq</groupId>  
@@ -694,7 +679,6 @@
             <optional>true</optional>
         </dependency>
         
-<<<<<<< Updated upstream
         <!-- For Spring Messaging -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -720,13 +704,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-=======
-        <!-- <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
-        </dependency> -->
->>>>>>> Stashed changes
         
             <!-- For JUnit Jupiter -->
             <dependency>
