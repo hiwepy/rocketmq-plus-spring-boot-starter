@@ -13,7 +13,7 @@
     <groupId>io.github.easy4j</groupId>
     <artifactId>rocketmq-plus-spring-boot-starter</artifactId>
     <description>Spring Boot Starter For Rocketmq</description>
-    <version>3.1.x.20260527-SNAPSHOT</version>
+    <version>3.1.x.20260630-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/easy-4-java/${project.artifactId}</url>
     <packaging>jar</packaging>
@@ -410,6 +410,7 @@
     </profiles>
     
     <properties>
+        <java.version>17</java.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -425,7 +426,7 @@
         <os.detected.classifier>linux-x86_64</os.detected.classifier>
         <rocketmq.version>4.7.1</rocketmq.version>
         <rocketmq-spring-boot-starter.version>2.1.0</rocketmq-spring-boot-starter.version>
-        <disruptor-spring-boot-starter.version>1.0.4-SNAPSHOT</disruptor-spring-boot-starter.version>
+        <disruptor-spring-boot-starter.version>3.1.x.20260630-SNAPSHOT</disruptor-spring-boot-starter.version>
                 <commons-io.version>2.22.0</commons-io.version>
                 <junit.version>4.13.2</junit.version>
                 <slf4j.version>2.0.18</slf4j.version>
