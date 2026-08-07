@@ -411,6 +411,7 @@
     </profiles>
     
     <properties>
+        <java.version>21</java.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -426,7 +427,7 @@
         <os.detected.classifier>linux-x86_64</os.detected.classifier>
         <rocketmq.version>4.7.1</rocketmq.version>
         <rocketmq-spring-boot-starter.version>2.1.0</rocketmq-spring-boot-starter.version>
-        <disruptor-spring-boot-starter.version>1.0.4-SNAPSHOT</disruptor-spring-boot-starter.version>
+        <disruptor-spring-boot-starter.version>4.1.x.20260630-SNAPSHOT</disruptor-spring-boot-starter.version>
                 <commons-io.version>2.22.0</commons-io.version>
                 <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
                 <junit.version>4.13.2</junit.version>
