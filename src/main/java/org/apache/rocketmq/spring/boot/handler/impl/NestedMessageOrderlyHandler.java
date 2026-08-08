@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -25,7 +25,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 /**
- * 嵌套的顺序消息处理器：解决统一消息交由多个处理实现处理问题
+ * Composite {@link MessageOrderlyHandler} that delegates each message to a list
+ * of nested handlers, allowing a single message to be processed by multiple
+ * implementations.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class NestedMessageOrderlyHandler implements MessageOrderlyHandler {
 

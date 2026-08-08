@@ -10,13 +10,22 @@ import org.springframework.util.PathMatcher;
 
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 
+/**
+ * {@link EventHandler} base that applies itself only to events whose route
+ * expression matches one of the configured Ant-style patterns.
+ *
+ * @param <T> the event type, bound to {@link RocketmqEvent}
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public abstract class AbstractPathMatchMessageHandler<T extends RocketmqEvent> extends AbstractAdviceMessageHandler<T>  implements PathProcessor<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPathMatchMessageHandler.class);
 
+	/** Ant-style path matcher used to test route expressions. */
 	protected PathMatcher pathMatcher = new AntPathMatcher();
-	
-	// 需要过滤的路径
+
+	/** Ant-style patterns this handler should apply to. */
 	protected List<String> appliedPaths = new ArrayList<String>();
 
 	@Override

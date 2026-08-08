@@ -9,11 +9,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
+/**
+ * Concurrent message handler that publishes a {@link RocketmqEvent} through the
+ * Spring {@link ApplicationEventPublisher}, allowing tag-specific listeners to
+ * receive it.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class ApplicationEventMessageConcurrentlyHandler implements MessageConcurrentlyHandler, ApplicationEventPublisherAware {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ApplicationEventMessageConcurrentlyHandler.class);
 	private ApplicationEventPublisher eventPublisher;
-	
+
 	@Override
 	public boolean preHandle(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		return true;
@@ -21,7 +29,7 @@ public class ApplicationEventMessageConcurrentlyHandler implements MessageConcur
 
 	@Override
 	public void handleMessage(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
-		// 发布消息到达的事件，以便分发到每个tag的监听方法
+		// Publish a message-arrived event so tag-specific listeners can handle it.
 		getEventPublisher().publishEvent(new RocketmqEvent(msgExt, context.getMessageQueue()));
 	}
 	
