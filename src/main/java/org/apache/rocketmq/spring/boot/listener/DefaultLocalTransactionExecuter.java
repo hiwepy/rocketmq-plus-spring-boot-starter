@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -22,16 +22,22 @@ import org.apache.rocketmq.client.producer.LocalTransactionState;
 import org.apache.rocketmq.common.message.Message;
 
 /**
- * 执行本地事务
+ * Sample {@link LocalTransactionExecuter} that simulates local transaction
+ * outcomes (commit / rollback / unknown) based on an incrementing counter.
+ * <p>Use as a starting point for real transaction execution logic.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class DefaultLocalTransactionExecuter implements LocalTransactionExecuter {
-	
+
+	/** Counter used to vary the simulated transaction outcome. */
 	private AtomicInteger transactionIndex = new AtomicInteger(1);
 
 	@Override
 
 	public LocalTransactionState executeLocalTransactionBranch(final Message msg, final Object arg) {
-		
+
 		int value = transactionIndex.getAndIncrement();
 		if (value == 0) {
 			throw new RuntimeException("Could not find db");
@@ -44,7 +50,7 @@ public class DefaultLocalTransactionExecuter implements LocalTransactionExecuter
 		else if ((value % 4) == 0) {
 			return LocalTransactionState.COMMIT_MESSAGE;
 		}
-		
+
 		return LocalTransactionState.UNKNOW;
 
 	}
