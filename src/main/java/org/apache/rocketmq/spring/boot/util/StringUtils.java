@@ -937,7 +937,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	/*
 	 * 
 	 * 获得以 ",; \t\n"分割的字符数组
-	 * @author 		： hiwepy
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @param str
 	 * @return
 	 */
@@ -1439,7 +1439,7 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	/*
 	 * 
 	 * 方括号[]包裹
-	 * @author : hiwepy
+	 * @author [@Loong Wan](https://github.com/loong10k)
 	 * @date : 2014-4-29
 	 * @time : 下午03:11:57
 	 * @param source
