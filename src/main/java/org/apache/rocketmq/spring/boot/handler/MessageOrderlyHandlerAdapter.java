@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,6 +18,15 @@ package org.apache.rocketmq.spring.boot.handler;
 import org.apache.rocketmq.client.consumer.listener.ConsumeOrderlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
 
+/**
+ * No-op adapter for {@link MessageOrderlyHandler} with default
+ * {@code preHandle} returning {@code true} and empty hook implementations.
+ * <p>Subclass and override the relevant methods to implement custom orderly
+ * handling.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public abstract class MessageOrderlyHandlerAdapter implements MessageOrderlyHandler {
 
 	/**
