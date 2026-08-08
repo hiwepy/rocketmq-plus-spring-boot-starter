@@ -18,10 +18,22 @@ import org.apache.rocketmq.spring.boot.handler.impl.RocketmqEventMessageOrderlyH
 import org.apache.rocketmq.spring.boot.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * Helper template for the RocketMQ push consumer, exposing the underlying
+ * {@link MQPushConsumer} together with convenience methods for subscribing to
+ * topics and binding {@link EventHandler} instances to the handler-chain
+ * registry.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class RocketmqPushConsumerTemplate {
 
+	/** Hash-based message queue selector for orderly messaging. */
 	public final MessageQueueSelector HASH_SELECTOR = new SelectMessageQueueByHash();
+	/** Random message queue selector. */
 	public final MessageQueueSelector RANDOOM_SELECTOR = new SelectMessageQueueByRandom();
+	/** Separator used when joining multiple tag expressions. */
 	public final String SELECTOR_EXPRESSS_EPARATOR = " || ";
 	
 	@Autowired
@@ -45,21 +57,20 @@ public class RocketmqPushConsumerTemplate {
 		}
 		HandlerChainManager<RocketmqEvent> chainManager = chainResolver.getHandlerChainManager();
 
-		//构造一个独一无二的handler名称
+		// Build a unique handler name.
 		String chainDefinition = handlerName;
-		//创建一个新的Handler实例
+		// Register a new handler instance.
 		chainManager.addHandler(chainDefinition, handler);
 		
-		//拆分
+		// Split the tag expression.
 		String[] tagArr = StringUtils.tokenizeToStringArray(tags);
 		for (String tag : tagArr) {
-			// 构造一个消息分发规则对应的handler责任链
-			// topic/tags/keys
+			// Build the dispatch rule chain: topic/tags/keys
 			String rule = new StringBuilder().append("/").append(topic).append("/").append(tag).append("/*").toString();
 			chainManager.createChain(rule, chainDefinition);
 		}
 		
-		// 调用消费端，订阅消息
+		// Subscribe the consumer to the topic.
 		String selectorExpress = StringUtils.join(tagArr, SELECTOR_EXPRESSS_EPARATOR);
 		switch (pushConsumerProperties.getSelectorType()) {
             case TAG:{
@@ -86,7 +97,7 @@ public class RocketmqPushConsumerTemplate {
 		
 		chainManager.getHandlers().remove(handlerName);
 		
-		//拆分
+		// Split the tag expression.
 		String[] tagArr = StringUtils.tokenizeToStringArray(tags, ",");
 		for (String tag : tagArr) {
 			// topic/tags/keys
@@ -94,7 +105,7 @@ public class RocketmqPushConsumerTemplate {
 			chainManager.getHandlerChains().remove(rule);
 		}
 		
-		// 调用消费端，取消消息订阅
+		// Unsubscribe the consumer from the topic.
 		consumer.unsubscribe(topic);
 		
 	}
@@ -110,7 +121,7 @@ public class RocketmqPushConsumerTemplate {
 	protected PathMatchingHandlerChainResolver getChainResolver() {
 		PathMatchingHandlerChainResolver chainResolver = null;
 		if( pushConsumerProperties != null && pushConsumerProperties.isEnabled() ) {
-			//根据不同的消费模式创建对应的handler
+			// Select the handler based on the configured consume mode.
 			if (ConsumeMode.ORDERLY.compareTo(pushConsumerProperties.getConsumeMode()) == 0) {
 				chainResolver = (PathMatchingHandlerChainResolver) getMessageOrderlyHandler().getHandlerChainResolver();
 			}else {
