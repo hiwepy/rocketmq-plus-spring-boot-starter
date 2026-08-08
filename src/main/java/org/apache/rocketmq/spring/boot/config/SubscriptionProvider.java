@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,8 +17,19 @@ package org.apache.rocketmq.spring.boot.config;
 
 import java.util.Map;
 
+/**
+ * Strategy for providing the topic-to-selector-expression subscription map used
+ * by the push consumer when it subscribes to topics.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public interface SubscriptionProvider {
 
+	/**
+	 * @return a map of topic to selector expression (tag or SQL92) describing the
+	 *         subscriptions to register
+	 */
 	Map<String /* topic */, String /* selectorExpress */> subscription();
-	
+
 }

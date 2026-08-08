@@ -6,6 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChain;
 
+/**
+ * {@link EventHandler} base that wraps execution in pre-handle / post-handle /
+ * after-completion advice, ensuring {@code afterCompletion} is always invoked.
+ *
+ * @param <T> the event type, bound to {@link RocketmqEvent}
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class AbstractAdviceMessageHandler<T extends RocketmqEvent> extends AbstractEnabledMessageHandler<T> {
 
 	protected final Logger LOG = LoggerFactory.getLogger(AbstractAdviceMessageHandler.class);
