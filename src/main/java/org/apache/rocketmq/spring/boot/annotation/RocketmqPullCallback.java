@@ -7,12 +7,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a {@link org.apache.rocketmq.client.consumer.PullTaskCallback} bean as
+ * a pull-task callback bound to the given topic. The scheduled pull consumer
+ * auto-configuration registers the callback against the topic it declares.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented	
-@Inherited		
+@Documented
+@Inherited
 public @interface RocketmqPullCallback {
-	
+
+	/**
+	 * @return the topic this pull-task callback subscribes to
+	 */
 	String topic();
-	
+
 }
