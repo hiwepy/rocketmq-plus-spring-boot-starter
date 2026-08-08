@@ -34,6 +34,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * Spring Boot auto-configuration that discovers {@link EventHandler} beans,
+ * indexes them by the {@link RocketmqPushConsumer} annotation metadata and
+ * builds the concurrently/orderly handler chains used by the push consumer.
+ * <p>
+ * Handlers may be wired either via bean annotations or via INI-style / map
+ * chain definitions under
+ * {@code rocketmq.consume-passively.event.definitions} /
+ * {@code rocketmq.consume-passively.event.definition-map}.
+ * </p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -45,13 +59,9 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 	private ApplicationContext applicationContext;
 	
 	/*
-	 * 处理器链定义
+	 * Handler chain definitions.
 	 */
 	private Map<String, String> handlerChainDefinitionMap = new HashMap<String, String>();
-	
-	/*
-	 * 处理器定义
-	 */
 	@Bean("rocketmqEventHandlers")
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Map<String, EventHandler<RocketmqEvent>> rocketmqEventHandlers() {
@@ -65,12 +75,12 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 				Entry<String, EventHandler> entry = ite.next();
 				if (entry.getValue() instanceof RocketmqEventMessageConcurrentlyHandler ||
 						entry.getValue() instanceof RocketmqEventMessageOrderlyHandler) {
-					//跳过入口实现类
+					// Skip the built-in entry-point handler implementations.
 					continue;
 				}
 				RocketmqPushConsumer annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPushConsumer.class);
 				if(annotationType == null) {
-					// 注解为空，则打印错误信息
+					// No annotation: log an error.
 					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPushConsumer.class, entry.getValue().getClass(), entry.getKey());
 				} else {
 					

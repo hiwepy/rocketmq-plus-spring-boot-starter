@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, hiwepy (https://github.com/hiwepy).
+ * Copyright (c) 2018, hiwepy (https://github.com/easy-4-java).
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -33,19 +33,35 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * Default {@link SubscriptionProvider} that derives the subscription map from
+ * the {@link RocketmqPushConsumer} annotations on {@link EventHandler} beans in
+ * the application context.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @SuppressWarnings("rawtypes")
 public class DefaultSubscriptionProvider implements SubscriptionProvider, ApplicationContextAware {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultSubscriptionProvider.class);
 	private ApplicationContext applicationContext;
+	/** Separator used when joining multiple tag expressions. */
 	public final String SELECTOR_EXPRESSS_EPARATOR = " || ";
-	
+
+	/**
+	 * Builds the subscription map by scanning {@link EventHandler} beans for
+	 * {@link RocketmqPushConsumer} annotations, joining multiple tags with
+	 * {@link #SELECTOR_EXPRESSS_EPARATOR}.
+	 *
+	 * @return the topic-to-selector-expression subscription map
+	 */
 	@Override
 	public Map<String, String> subscription() {
-		
+
 		Map<String /* topic */, String /* selectorExpress */> subscription = new HashMap<String, String>();
-		
-		// 查找Spring上下文中注册的EventHandler接口实现
+
+		// Scan the Spring context for EventHandler beans.
 		Map<String, EventHandler> beansOfType = getApplicationContext().getBeansOfType(EventHandler.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
 			Iterator<Entry<String, EventHandler>> ite = beansOfType.entrySet().iterator();
@@ -53,28 +69,28 @@ public class DefaultSubscriptionProvider implements SubscriptionProvider, Applic
 				Entry<String, EventHandler> entry = ite.next();
 				if (entry.getValue() instanceof RocketmqEventMessageConcurrentlyHandler ||
 						entry.getValue() instanceof RocketmqEventMessageOrderlyHandler) {
-					//跳过入口实现类
+					// Skip the built-in entry-point handler implementations.
 					continue;
 				}
 				RocketmqPushConsumer annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPushConsumer.class);
 				if(annotationType == null) {
-					// 注解为空，则打印错误信息
+					// No annotation: log an error.
 					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPushConsumer.class, entry.getValue().getClass(), entry.getKey());
 				} else {
 					//handlerChainDefinitionMap.put(annotationType.value(), entry.getKey());
 					if("*".equals(annotationType.tags())) {
 						subscription.put(annotationType.topic(), annotationType.tags());
 					} else {
-						//拆分
+						// Split the tag expression.
 						String[] tagArr = StringUtils.tokenizeToStringArray(annotationType.tags());
-						// 调用消费端，订阅消息
+						// Build the selector expression for the consumer subscription.
 						String selectorExpress = StringUtils.join(tagArr, SELECTOR_EXPRESSS_EPARATOR);
 						subscription.put(annotationType.topic(), selectorExpress );
 					}
 				}
 			}
 		}
-		
+
 		return subscription;
 	}
 	
