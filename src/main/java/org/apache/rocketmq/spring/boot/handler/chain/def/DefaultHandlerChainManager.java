@@ -17,6 +17,13 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChain;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.util.StringUtils;
 
+/**
+ * Default {@link HandlerChainManager} implementation that maintains an ordered
+ * registry of named {@link EventHandler}s and comma-separated handler chains.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqEvent> {
 	
 	private static transient final Logger log = LoggerFactory.getLogger(DefaultHandlerChainManager.class);

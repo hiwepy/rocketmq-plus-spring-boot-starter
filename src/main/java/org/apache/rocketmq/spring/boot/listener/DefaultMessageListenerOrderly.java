@@ -22,73 +22,83 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * Default {@link MessageListenerOrderly} that collects every
+ * {@link MessageOrderlyHandler} bean (except nested implementations), wraps
+ * them in a {@link NestedMessageOrderlyHandler} and invokes the
+ * pre-handle / handle / post-handle / after-completion lifecycle, suspending
+ * the queue on failure.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class DefaultMessageListenerOrderly implements MessageListenerOrderly, ApplicationContextAware, InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultMessageListenerOrderly.class);
-	
+
 	@Autowired
 	private RocketmqPushConsumerProperties properties;
 	/**
-	 * 真正处理消息的实现对象
+	 * The actual handler implementation that processes messages.
 	 */
 	private MessageOrderlyHandler messageHandler;
 	private ApplicationContext applicationContext;
-	
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		
+
 		List<MessageOrderlyHandler> handlers = new ArrayList<MessageOrderlyHandler>();
-		
-		// 查找Spring上下文中注册的MessageOrderlyHandler接口实现
+
+		// Scan the Spring context for MessageOrderlyHandler beans.
 		Map<String, MessageOrderlyHandler> beansOfType = getApplicationContext().getBeansOfType(MessageOrderlyHandler.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
 			Iterator<Entry<String, MessageOrderlyHandler>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, MessageOrderlyHandler> entry = ite.next();
 				if (entry.getValue() instanceof NestedMessageOrderlyHandler ) {
-					//跳过其他嵌套实现
+					// Skip other nested implementations.
 					continue;
 				}
 				handlers.add(entry.getValue());
 			}
 		}
-		
+
 		messageHandler = new NestedMessageOrderlyHandler(handlers);
-		
+
 	}
-	
+
 	@Override
 	public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgExts, ConsumeOrderlyContext context) {
-		// 默认msgs里只有一条消息，可以通过设置consumeMessageBatchMaxSize参数来批量接收消息
+		// By default msgExts contains a single message; use consumeMessageBatchMaxSize to receive batches.
 		LOG.debug(Thread.currentThread().getName() + " Receive New Messages: " + msgExts.size());
-		// 消费消息内容
+		// Consume each message.
 		for (MessageExt msgExt : msgExts) {
-			
+
 			LOG.debug("Receive msg: {}", msgExt);
-			
+
 			Exception exception = null;
-			
+
 			try {
-	
+
 				boolean continueHandle = messageHandler.preHandle(msgExt, context);
 				if (LOG.isTraceEnabled()) {
 					LOG.trace("Invoked preHandle method.  Continuing Handle?: [" + continueHandle + "]");
 				}
-				
+
 				if (continueHandle) {
-					
+
 					long now = System.currentTimeMillis();
 					messageHandler.handleMessage(msgExt, context);
 					long costTime = System.currentTimeMillis() - now;
 	                LOG.info("Message （MsgID : {} ）Consumed.  cost: {} ms", msgExt.getMsgId(), costTime);
-	                
+
 				}
-				
+
 				messageHandler.postHandle(msgExt, context);
 				if (LOG.isTraceEnabled()) {
 					LOG.trace("Successfully invoked postHandle method");
 				}
-	
+
 			} catch (Exception e) {
 				exception = e;
                 context.setSuspendCurrentQueueTimeMillis(properties.getSuspendCurrentQueueTimeMillis());
@@ -96,9 +106,9 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly, Ap
 			} finally {
 				cleanup(msgExt, context, exception);
 			}
-			
+
 		}
-		// 如果没有return success，consumer会重复消费此信息，直到success。
+		// If SUCCESS is not returned the consumer will re-deliver the message until success.
 		return ConsumeOrderlyStatus.SUCCESS;
 	}
 	

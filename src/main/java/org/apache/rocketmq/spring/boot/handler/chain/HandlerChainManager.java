@@ -8,52 +8,75 @@ import org.apache.rocketmq.spring.boot.handler.EventHandler;
 import org.apache.rocketmq.spring.boot.handler.NamedHandlerList;
 
 /**
- * HandlerChain管理器，负责创建和维护HandlerChain
+ * Manager responsible for creating and maintaining {@link HandlerChain}s and
+ * the registry of named {@link EventHandler}s.
+ *
+ * @param <T> the event type, bound to {@link RocketmqEvent}
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public interface HandlerChainManager<T extends RocketmqEvent> {
 
 	/**
-	 * 获取所有HandlerChain
-	 * @return
+	 * @return all registered handlers keyed by name
 	 */
     Map<String, EventHandler<T>> getHandlers();
-    
+
+	/**
+	 * @return all registered handler chains keyed by name
+	 */
     Map<String, NamedHandlerList<T>> getHandlerChains();
 
-    /**
-     * 根据指定的chainName获取Handler列表
-     */
+	/**
+	 * Returns the named handler list for the given chain name.
+	 *
+	 * @param chainName the chain name
+	 * @return the matching handler list, or {@code null}
+	 */
     NamedHandlerList<T> getChain(String chainName);
 
-    /**
-     * 是否有HandlerChain
-     */
+	/**
+	 * @return {@code true} if at least one handler chain is registered
+	 */
     boolean hasChains();
 
-    /**
-     * 获取HandlerChain名称列表
-     */
+	/**
+	 * @return the set of registered chain names
+	 */
     Set<String> getChainNames();
 
-    /**
-     * <p>生成代理HandlerChain,先执行chainName指定的filerChian,最后执行servlet容器的original<p>
-     */
+	/**
+	 * Builds a proxy chain that first executes the named chain and finally
+	 * delegates to the supplied original chain.
+	 *
+	 * @param original  the original (root) chain
+	 * @param chainName the name of the chain to execute first
+	 * @return the proxied handler chain
+	 */
     HandlerChain<T> proxy(HandlerChain<T> original, String chainName);
 
    /**
-    * 
-    * <p>方法说明：增加handler到handler列表中<p>
+    * Registers a handler under the given name.
+    *
+    * @param name    the handler name
+    * @param handler the handler to register
     */
     void addHandler(String name, EventHandler<T> handler);
-    
+
     /**
-     * <p>方法说明：创建HandlerChain<p>
+     * Creates a new handler chain bound to the given name and definition.
+     *
+     * @param chainName       the chain name
+     * @param chainDefinition the handler names that make up the chain
      */
     void createChain(String chainName, String chainDefinition);
 
     /**
-     * <p>方法说明：追加handler到指定的HandlerChian中<p>
+     * Appends a handler to an existing chain.
+     *
+     * @param chainName   the chain to append to
+     * @param handlerName the handler name to append
      */
     void addToChain(String chainName, String handlerName);
-	
+
 }

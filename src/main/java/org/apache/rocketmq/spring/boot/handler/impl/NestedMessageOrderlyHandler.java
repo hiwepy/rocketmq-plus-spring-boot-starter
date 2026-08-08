@@ -25,7 +25,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 /**
- * 嵌套的顺序消息处理器：解决统一消息交由多个处理实现处理问题
+ * Composite {@link MessageOrderlyHandler} that delegates each message to a list
+ * of nested handlers, allowing a single message to be processed by multiple
+ * implementations.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 public class NestedMessageOrderlyHandler implements MessageOrderlyHandler {
 

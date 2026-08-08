@@ -18,6 +18,15 @@ package org.apache.rocketmq.spring.boot.handler;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.common.message.MessageExt;
 
+/**
+ * No-op adapter for {@link MessageConcurrentlyHandler} with default
+ * {@code preHandle} returning {@code true} and empty hook implementations.
+ * <p>Subclass and override the relevant methods to implement custom
+ * concurrent handling.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public abstract class MessageConcurrentlyHandlerAdapter implements MessageConcurrentlyHandler {
 
 	/**

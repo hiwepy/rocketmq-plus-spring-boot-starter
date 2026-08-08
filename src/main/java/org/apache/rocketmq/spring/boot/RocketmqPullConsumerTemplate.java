@@ -3,17 +3,35 @@ package org.apache.rocketmq.spring.boot;
 import org.apache.rocketmq.client.consumer.MQPullConsumer;
 import org.apache.rocketmq.client.consumer.MessageQueueListener;
 
+/**
+ * Helper template for the RocketMQ pull consumer, exposing the underlying
+ * {@link MQPullConsumer} and convenience methods for registering message queue
+ * listeners.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class RocketmqPullConsumerTemplate {
 
-	// Java缓存
+	// Java cache
 	//private static final Map<MessageQueue, Long> offseTable = new HashMap<MessageQueue, Long>();
 
+	/** The underlying RocketMQ pull consumer. */
 	protected MQPullConsumer consumer;
 
+	/**
+	 * @param consumer the underlying RocketMQ pull consumer
+	 */
 	public RocketmqPullConsumerTemplate(MQPullConsumer consumer) {
 		this.consumer = consumer;
 	}
 
+	/**
+	 * Registers a {@link MessageQueueListener} for the given topic.
+	 *
+	 * @param topic    the topic to listen on
+	 * @param listener the message queue listener to register
+	 */
 	public void registerMessageListener(final String topic, final MessageQueueListener listener) {
 		consumer.registerMessageQueueListener(topic, listener);
 	}
@@ -70,10 +88,12 @@ public class RocketmqPullConsumerTemplate {
 		return 0;
 	}*/
 
+	/** @return the underlying RocketMQ pull consumer */
 	public MQPullConsumer getConsumer() {
 		return consumer;
 	}
 
+	/** @param consumer the underlying RocketMQ pull consumer */
 	public void setConsumer(MQPullConsumer consumer) {
 		this.consumer = consumer;
 	}

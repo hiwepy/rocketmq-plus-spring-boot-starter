@@ -18,6 +18,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Minimal INI-format configuration parser used to load handler-chain
+ * definitions as an {@code [urls]} or default section of key/value pairs.
+ * <p>Modeled after Apache Shiro's {@code Ini} class.</p>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class Ini implements Map<String, Ini.Section> {
 
     private static transient final Logger log = LoggerFactory.getLogger(Ini.class);

@@ -9,19 +9,33 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * {@link EventHandler} base that resolves and executes the appropriate
+ * {@link HandlerChain} for an event using a {@link HandlerChainResolver}.
+ *
+ * @param <T> the event type, bound to {@link RocketmqEvent}
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class AbstractRouteableMessageHandler<T extends RocketmqEvent> extends AbstractEnabledMessageHandler<T> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractRouteableMessageHandler.class);
 
 	/**
-	 * 用来判定使用那个HandlerChian
+	 * Resolver used to determine which {@link HandlerChain} handles the event.
 	 */
 	protected HandlerChainResolver<T> handlerChainResolver;
 
+	/**
+	 * Creates a new handler without a chain resolver.
+	 */
 	public AbstractRouteableMessageHandler() {
 		super();
 	}
 
+	/**
+	 * @param handlerChainResolver the chain resolver used to route events
+	 */
 	public AbstractRouteableMessageHandler(HandlerChainResolver<T> handlerChainResolver) {
 		super();
 		this.handlerChainResolver = handlerChainResolver;

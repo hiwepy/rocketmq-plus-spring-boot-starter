@@ -10,16 +10,24 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChain;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainManager;
 import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver;
 
+/**
+ * {@link HandlerChainResolver} that matches the event's route expression
+ * against the registered chain names using an Ant-style {@link PathMatcher},
+ * returning the first matching chain.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class PathMatchingHandlerChainResolver implements HandlerChainResolver<RocketmqEvent> {
 
 	private static final Logger log = LoggerFactory.getLogger(PathMatchingHandlerChainResolver.class);
 	/**
-	 * handlerChain管理器
+	 * The handler-chain manager used to look up chains.
 	 */
 	private HandlerChainManager<RocketmqEvent> handlerChainManager;
-	
+
 	/**
-	 * 路径匹配器
+	 * Ant-style path matcher used to test route expressions.
 	 */
 	private PathMatcher pathMatcher;
 	

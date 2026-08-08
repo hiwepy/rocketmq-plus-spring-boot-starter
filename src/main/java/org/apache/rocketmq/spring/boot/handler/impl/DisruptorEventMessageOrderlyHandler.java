@@ -10,20 +10,28 @@ import org.slf4j.LoggerFactory;
 
 import com.lmax.disruptor.dsl.Disruptor;
 
+/**
+ * Orderly message handler that publishes received messages onto a LMAX
+ * Disruptor ring buffer for asynchronous processing.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public class DisruptorEventMessageOrderlyHandler implements MessageOrderlyHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DisruptorEventMessageOrderlyHandler.class);
-	
+
+	/** The Disruptor ring buffer used to publish events. */
 	private Disruptor<RocketmqDisruptorEvent> disruptor;
-		
+
 	@Override
 	public boolean preHandle(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		return true;
 	}
-	
+
 	@Override
 	public void handleMessage(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
-		// 生产消息
+		// Publish the message onto the Disruptor ring buffer.
 		disruptor.publishEvent(new RocketmqDataOrderlyEventTranslator(context), msgExt);
 	}
 	

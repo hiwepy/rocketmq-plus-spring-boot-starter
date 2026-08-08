@@ -21,6 +21,15 @@ import java.util.TreeSet;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * Extended string utility methods combining Apache Commons Lang
+ * {@link org.apache.commons.lang3.StringUtils} with additional helpers for
+ * tokenisation, path handling, Chinese pinyin extraction and SQL-friendly
+ * quoting used throughout the RocketMQ starter.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	
 	private static final String FOLDER_SEPARATOR = "/";
@@ -49,10 +58,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 			'T', 'W', 'X', 'Y', 'Z', unknowChar };
 
 	/*
-	 * 字串是否为空
-	 * 
-	 * @param str
-	 * @return
+	 * Whether the string is empty (null, zero-length or "NULL").
+	 *
+	 * @param str the candidate string
+	 * @return {@code true} if the string is considered empty
 	 */
 	public static boolean isEmpty(String str) {
 		if (str == null) {
@@ -64,20 +73,20 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 		}
 		return false;
 	}
-	
+
 	/*
-	 * 该方法不能被删除；可能引起调用者代码报错
+	 * Inverse of {@link #isEmpty(String)}; must not be removed as callers depend on it.
 	 */
 	public static boolean isNotEmpty(String str) {
 		return !isEmpty(str);
 	}
-	
+
 
 	/*
-	 * 判断 Null 或 空字符串
-	 * 
-	 * @param str
-	 * @return
+	 * Whether the string is null or blank (whitespace only).
+	 *
+	 * @param str the candidate string
+	 * @return {@code true} if the string is null or blank
 	 */
 	public static boolean isNull(String str) {
 
@@ -935,11 +944,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 
-	 * 获得以 ",; \t\n"分割的字符数组
-	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @param str
-	 * @return
+	 * Tokenize the string using the standard config-location delimiters (",; \t\n").
+	 *
+	 * @param str the string to tokenize
+	 * @return the array of tokens
 	 */
 	public static String[] tokenizeToStringArray(String str) {
 		return tokenizeToStringArray(str, CONFIG_LOCATION_DELIMITERS, true, true);
@@ -1163,10 +1171,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 	
 	/*
-	 * 生成查询字串Map
-	 * 
-	 * @param str
-	 * @return
+	 * Parse a query-parameter string into a map.
+	 *
+	 * @param str the query string
+	 * @return the parameter map
 	 */
 	public static Map<String, String> getMapFromQueryParamString(String str) {
 		Map<String, String> param = new HashMap<String, String>();
@@ -1178,15 +1186,12 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 全替换
-	 * 
-	 * @param src
-	 *            替换字串
-	 * @param tar
-	 *            替换目标
-	 * @param str
-	 *            主字串
-	 * @return
+	 * Replace all occurrences of a substring within a string.
+	 *
+	 * @param src the substring to find
+	 * @param tar the replacement substring
+	 * @param str the source string
+	 * @return the string with all replacements applied
 	 */
 	public static String replaceAll(String src, String tar, String str) {
 		StringBuilder sb = new StringBuilder();
@@ -1226,10 +1231,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 取中文拼音首字符
-	 * 
-	 * @param str
-	 * @return
+	 * Get the first pinyin letter of a Chinese word.
+	 *
+	 * @param str the Chinese word
+	 * @return the first pinyin letter (upper-case) or '*' on failure
 	 */
 	public static char getFirstLetterFromChinessWord(String str) {
 		char result = '*';
@@ -1265,11 +1270,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 字串分割
-	 * 
-	 * @param src
-	 * @param letter
-	 * @return
+	 * Split a string by the given character.
+	 *
+	 * @param src    the source string
+	 * @param letter the delimiter character
+	 * @return the array of segments
 	 */
 	public static String[] split(String src, char letter) {
 		if (src == null) {
@@ -1326,10 +1331,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 去除最后一个字符
-	 * 
-	 * @param str
-	 * @return
+	 * Remove the last character of the string.
+	 *
+	 * @param str the source string
+	 * @return the string without its last character, or the original if null/blank
 	 */
 	public static String removeLast(String str) {
 		if (isNull(str)) {
@@ -1340,10 +1345,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 为字符串的每个元素增加单引号，供sql语句调用 如字符串"123,567"变成"'123','567'"
-	 * 
-	 * @param str
-	 * @return
+	 * Wrap each comma-separated element in single quotes, e.g. "123,567" becomes "'123','567'".
+	 *
+	 * @param str the comma-separated string
+	 * @return the quoted, comma-separated string
 	 */
 	public static String addQuotation(String str) {
 		if (str == null) {
@@ -1362,10 +1367,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * list转string数组
-	 * 
-	 * @param list
-	 * @return String[]
+	 * Convert a list to a string array.
+	 *
+	 * @param list the source list
+	 * @return the string array
 	 */
 	public static String[] listToArray(List<String> list) {
 		String[] strs = new String[list.size()];
@@ -1373,29 +1378,27 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * list转string字符串,以符号分隔
-	 * 
-	 * @param list
-	 * @param separator
-	 * @return String
+	 * Join a list into a single string separated by the given separator.
+	 *
+	 * @param list      the source list
+	 * @param separator the separator string
+	 * @return the joined string
 	 */
 	public static String listToString(List<String> list, String separator) {
 		return StringUtils.join(listToArray(list), separator);
 	}
 
 	/*
-	 * 生成随即密码
-	 * 
-	 * @author 来自网上
-	 * @param pwd_len
-	 *            生成的密码的总长度
-	 * @return 密码的字符串
+	 * Generate a random alphanumeric password (lower-case letters, digits and underscore).
+	 *
+	 * @param pwd_len the total length of the generated password
+	 * @return the generated password string
 	 */
 	public static String genRandomNum(int pwd_len) {
-		// 36是因为数组是从0开始的，26个字母+10个数字 + 下划线
+		// 36 because the array is 0-based: 26 letters + 10 digits + underscore.
 		final int maxNum = 37;
-		int i; // 生成的随机数
-		int count = 0; // 生成的密码的长度
+		int i; // generated random number
+		int count = 0; // length of the password built so far
 		char[] str = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
 				'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
 				'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8',
@@ -1403,8 +1406,8 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 		StringBuilder pwd = new StringBuilder("");
 		Random r = new Random();
 		while (count < pwd_len) {
-			// 生成随机数，取绝对值，防止生成负数，
-			i = Math.abs(r.nextInt(maxNum)); // 生成的数最大为36-1
+			// Generate a random number (absolute value to avoid negatives).
+			i = Math.abs(r.nextInt(maxNum)); // max generated value is 36-1
 			if (i >= 0 && i < str.length) {
 				pwd.append(str[i]);
 				count++;
@@ -1414,10 +1417,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 将传入字符串改为非NULL值.
-	 * 
-	 * @param str
-	 * @return 传入NULL,返回空"".
+	 * Return a non-null version of the string (empty string when null).
+	 *
+	 * @param str the source string
+	 * @return the string, or empty string when null
 	 */
 	public static String killNull(String str) {
 		if (str == null) {
@@ -1427,23 +1430,20 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 
-	 * 圆括号()包裹
-	 * @param source
-	 * @return
+	 * Wrap the source string in parentheses.
+	 *
+	 * @param source the source string
+	 * @return the wrapped string, or null if the source is null
 	 */
 	public static String parentheses(String source) {
 		return (source != null ? "(" + source + ")" : null);
 	}
 
 	/*
-	 * 
-	 * 方括号[]包裹
-	 * @author [@Loong Wan](https://github.com/loong10k)
-	 * @date : 2014-4-29
-	 * @time : 下午03:11:57
-	 * @param source
-	 * @return
+	 * Wrap the source string in square brackets.
+	 *
+	 * @param source the source string
+	 * @return the wrapped string, or null if the source is null
 	 */
 	public static String brackets(String source) {
 		return (source != null ? "[" + source + "]" : null);
@@ -1466,11 +1466,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 
-	 * 将String集合元素用'包围，并拼接
-	 * @param list
-	 * @param separator
-	 * @return
+	 * Quote each element of a string array and join them with the separator.
+	 *
+	 * @param array     the source string array
+	 * @param separator the separator string
+	 * @return the joined, quoted string
 	 */
 	public static String quote(String[] array, String separator) {
 		if (null != array && array.length != 0) {
@@ -1499,10 +1499,10 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 
-	 * 把一个字符的非Alpha字符都去掉,String string = "1\r\n1\r\n";-->结果："11";
-	 * @param string 原始字符串
-	 * @return 去除Alpha字符后的字符串
+	 * Strip all non-alphanumeric characters from the string, e.g. "1\r\n1\r\n" becomes "11".
+	 *
+	 * @param string the source string
+	 * @return the string with non-word characters removed
 	 */
 	public static String trimToAlphaString(String string) {
 		if (string == null || string.length() == 0) {
@@ -1512,11 +1512,11 @@ public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {
 	}
 
 	/*
-	 * 
-	 *  把一个字符的非Alpha字符都去掉，并返回每个字符的数组,String string =
-	 *               "1\r\n1\r\n";-->结果：new String[]{"1","1"};
-	 * @param string 原始字符串
-	 * @return 去除Alpha字符后的字符串数组
+	 * Strip all non-alphanumeric characters and return each remaining character as an array element,
+	 * e.g. "1\r\n1\r\n" becomes {"1","1"}.
+	 *
+	 * @param string the source string
+	 * @return the array of remaining characters
 	 */
 	public static String[] trimToAlphaStrings(String string) {
 		if (string == null || string.length() == 0) {

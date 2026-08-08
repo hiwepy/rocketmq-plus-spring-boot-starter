@@ -36,6 +36,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ObjectUtils;
 
+/**
+ * Spring Boot auto-configuration for the RocketMQ <strong>pull</strong> consumer.
+ * <p>
+ * Activated when {@code rocketmq.consume-actively.enabled=true}. Registers a
+ * {@link DefaultMQPullConsumer} (and optionally an
+ * {@link MQPullConsumerScheduleService} when {@code schedulable=true}), wires
+ * {@link MessageQueueListener} and {@link PullTaskCallback} beans annotated
+ * with {@link RocketmqPullConsumer} / {@link RocketmqPullCallback}, and exposes
+ * a {@link RocketmqPullConsumerTemplate}. The consumer is started after a
+ * configurable delay so that Spring event listeners are ready before messages
+ * arrive.
+ * </p>
+ *
+ * <h3>Configuration keys</h3>
+ * <ul>
+ *   <li>{@code rocketmq.consume-actively.enabled} — must be {@code true}</li>
+ *   <li>{@code rocketmq.consume-actively.schedulable} — use the scheduled pull service</li>
+ *   <li>{@code rocketmq.consume-actively.consumer-group} — consumer group (required)</li>
+ *   <li>{@code rocketmq.consume-actively.namesrv-addr} — name server (required)</li>
+ * </ul>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(prefix = RocketmqPullConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -57,10 +81,10 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 	}
 
 	/**
-	 * 初始化消息消费者
-	 * 
-	 * @param consumer
-	 * @param properties
+	 * Configures the supplied pull consumer from the bound properties.
+	 *
+	 * @param consumer    the consumer to configure
+	 * @param properties  the pull consumer properties
 	 */
 	public void configure(DefaultMQPullConsumer consumer, RocketmqPullConsumerProperties properties) {
 		
@@ -106,21 +130,21 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		
 		DefaultMQPullConsumer consumer = new DefaultMQPullConsumer(properties.getConsumerGroup());
 		
-		// 初始化参数
+		// Initialise consumer parameters.
 		this.configure(consumer, properties);
 					
 		consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 		
-		// 查找Spring上下文中注册的MessageQueueListener接口实现
+		// Look up MessageQueueListener beans registered in the Spring context.
 		Map<String, MessageQueueListener> beansOfType = getApplicationContext().getBeansOfType(MessageQueueListener.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
 			Iterator<Entry<String, MessageQueueListener>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, MessageQueueListener> entry = ite.next();
-				//查找该实现上的注解
+				// Resolve the @RocketmqPullConsumer annotation on the bean.
 				RocketmqPullConsumer annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPullConsumer.class);
 				if(annotationType == null) {
-					// 注解为空，则跳过该实现，并打印错误信息
+					// No annotation: skip and log an error.
 					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPullConsumer.class, entry.getValue().getClass(), entry.getKey());
 					continue;
 				}
@@ -131,15 +155,17 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		}
 		
 		/*
-		 * 延迟5秒再启动，主要是等待spring事件监听相关程序初始化完成，否则，回出现对RocketMQ的消息进行消费后立即发布消息到达的事件，
-		 * 然而此事件的监听程序还未初始化，从而造成消息的丢失
+		 * Delay the start by a few seconds so Spring event listeners finish
+		 * initialising; otherwise consuming a message and immediately publishing
+		 * a message-arrived event could lose the event because its listener is
+		 * not yet registered.
 		 */
 		Executors.newScheduledThreadPool(1).schedule(new Thread() {
 			public void run() {
 				try {
 
 					/*
-					 * Consumer对象在使用之前必须要调用start初始化，初始化一次即可<br>
+					 * The consumer must be started once before use.
 					 */
 					consumer.start();
 
@@ -147,8 +173,10 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 							properties.getConsumerGroup(), properties.getNamesrvAddr(), properties.getInstanceName());
 					
 					/**
-					 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
-					 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
+					 * On application exit call shutdown to release resources,
+					 * close network connections and unregister from the broker.
+					 * It is recommended to call shutdown from the JVM shutdown
+					 * hook (e.g. when running inside JBoss/Tomcat).
 					 */
 					Runtime.getRuntime().addShutdownHook(new MQPullConsumerShutdownHook(consumer));
 
@@ -175,7 +203,7 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		MQPullConsumerScheduleService scheduleService = new MQPullConsumerScheduleService(properties.getConsumerGroup());
 
 		DefaultMQPullConsumer consumer = scheduleService.getDefaultMQPullConsumer();
-		// 初始化参数
+		// Initialise consumer parameters.
 		this.configure(consumer, properties);
 		
 		try {
@@ -186,16 +214,16 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		
 		scheduleService.setPullThreadNums(properties.getPullThreadNums());
 		
-		// 查找Spring上下文中注册的PullTaskCallback接口实现
+		// Look up PullTaskCallback beans registered in the Spring context.
 		Map<String, PullTaskCallback> beansOfType = getApplicationContext().getBeansOfType(PullTaskCallback.class);
 		if (!ObjectUtils.isEmpty(beansOfType)) {
 			Iterator<Entry<String, PullTaskCallback>> ite = beansOfType.entrySet().iterator();
 			while (ite.hasNext()) {
 				Entry<String, PullTaskCallback> entry = ite.next();
-				//查找该实现上的注解
+				// Resolve the @RocketmqPullCallback annotation on the bean.
 				RocketmqPullCallback annotationType = getApplicationContext().findAnnotationOnBean(entry.getKey(), RocketmqPullCallback.class);
 				if(annotationType == null) {
-					// 注解为空，则跳过该实现，并打印错误信息
+					// No annotation: skip and log an error.
 					LOG.error("Not Found AnnotationType {0} on Bean {1} Whith Name {2}", RocketmqPullCallback.class, entry.getValue().getClass(), entry.getKey());
 					continue;
 				}
@@ -204,15 +232,17 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		}
 		
 		/*
-		 * 延迟5秒再启动，主要是等待spring事件监听相关程序初始化完成，否则，回出现对RocketMQ的消息进行消费后立即发布消息到达的事件，
-		 * 然而此事件的监听程序还未初始化，从而造成消息的丢失
+		 * Delay the start by a few seconds so Spring event listeners finish
+		 * initialising; otherwise consuming a message and immediately publishing
+		 * a message-arrived event could lose the event because its listener is
+		 * not yet registered.
 		 */
 		Executors.newScheduledThreadPool(1).schedule(new Thread() {
 			public void run() {
 				try {
 
 					/*
-					 * Consumer对象在使用之前必须要调用start初始化，初始化一次即可<br>
+					 * The schedule service must be started once before use.
 					 */
 					scheduleService.start();
 
@@ -220,8 +250,10 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 							properties.getConsumerGroup(), properties.getNamesrvAddr(), properties.getInstanceName());
 					
 					/**
-					 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
-					 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
+					 * On application exit call shutdown to release resources,
+					 * close network connections and unregister from the broker.
+					 * It is recommended to call shutdown from the JVM shutdown
+					 * hook (e.g. when running inside JBoss/Tomcat).
 					 */
 					Runtime.getRuntime().addShutdownHook(new MQPullConsumerScheduleShutdownHook(scheduleService));
 

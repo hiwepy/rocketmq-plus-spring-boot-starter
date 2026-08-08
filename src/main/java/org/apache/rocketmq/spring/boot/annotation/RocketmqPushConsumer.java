@@ -8,18 +8,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Ant风格的事件分发规则表达式,格式为：topic/tags/keys，如：topic-a/tag-a/*
+ * Binds an {@link org.apache.rocketmq.spring.boot.handler.EventHandler} to an
+ * Ant-style event dispatch rule of the form {@code topic/tags/keys}, e.g.
+ * {@code topic-a/tag-a/*}. The rule is used by the handler-chain resolver to
+ * route incoming messages.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented	
-@Inherited		
+@Documented
+@Inherited
 public @interface RocketmqPushConsumer {
-	
+
+	/**
+	 * @return the topic segment of the dispatch rule
+	 */
 	String topic();
-	
+
+	/**
+	 * @return the tags segment of the dispatch rule
+	 */
 	String tags();
-	
+
+	/**
+	 * @return the keys segment of the dispatch rule (defaults to wildcard {@code "*"})
+	 */
 	String keys() default "*";
-	
+
 }

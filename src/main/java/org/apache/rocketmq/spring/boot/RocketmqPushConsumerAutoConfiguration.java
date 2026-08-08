@@ -37,6 +37,31 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
+/**
+ * Spring Boot auto-configuration for the RocketMQ <strong>push</strong> consumer.
+ * <p>
+ * Activated when {@code rocketmq.consume-passively.enabled=true}. Registers a
+ * {@link DefaultMQPushConsumer} with default concurrently/orderly message
+ * listeners, subscribes to the topics declared via a
+ * {@link SubscriptionProvider} or the {@code subscription} property map, and
+ * exposes a {@link RocketmqPushConsumerTemplate}. The consumer is started after
+ * a configurable delay so that Spring event listeners are ready before messages
+ * arrive.
+ * </p>
+ *
+ * <h3>Configuration keys</h3>
+ * <ul>
+ *   <li>{@code rocketmq.consume-passively.enabled} — must be {@code true}</li>
+ *   <li>{@code rocketmq.consume-passively.consumer-group} — consumer group (required)</li>
+ *   <li>{@code rocketmq.consume-passively.namesrv-addr} — name server (required)</li>
+ *   <li>{@code rocketmq.consume-passively.instance-name} — instance name (required)</li>
+ *   <li>{@code rocketmq.consume-passively.consume-mode} — {@code CONCURRENTLY} or {@code ORDERLY}</li>
+ *   <li>{@code rocketmq.consume-passively.selector-type} — {@code TAG} or {@code SQL92}</li>
+ * </ul>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Configuration
 @ConditionalOnClass({ DefaultMQPushConsumer.class })
 @ConditionalOnProperty(prefix = RocketmqPushConsumerProperties.PREFIX, value = "enabled", havingValue = "true")
@@ -69,7 +94,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	}
 
 	/*
-	 * 初始化消息消费者
+	 * Initialise the push consumer from the bound properties.
 	 */
 	public void configure(DefaultMQPushConsumer consumer, RocketmqPushConsumerProperties properties) {
 		
@@ -86,7 +111,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 		}
 		consumer.setConsumeMessageBatchMaxSize(properties.getConsumeMessageBatchMaxSize());
 		consumer.setConsumerGroup(properties.getConsumerGroup());
-		// 设置批量消费个数;设置后会出现数据消费延时
+		// Batch consume size; setting it introduces consumption latency.
 		consumer.setConsumeThreadMax(properties.getConsumeThreadMax());
 		consumer.setConsumeThreadMin(properties.getConsumeThreadMin());
 		consumer.setConsumeTimeout(properties.getConsumeTimeout());
@@ -119,7 +144,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	}
 	
 	/*
-	 * 初始化rocketmq消息监听方式的消费者
+	 * Initialise the RocketMQ push consumer.
 	 */
 	@Bean
 	@ConditionalOnMissingBean
@@ -144,23 +169,24 @@ public class RocketmqPushConsumerAutoConfiguration  {
 		try {
 
 			/*
-			 * 一个应用创建一个Consumer，由应用来维护此对象，可以设置为全局对象或者单例<br> 注意：ConsumerGroupName需要由应用来保证唯一
+			 * One application should create a single Consumer and maintain it
+			 * (e.g. as a singleton). The consumer group name must be unique.
 			 */
 			DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(properties.getConsumerGroup());
 
 			consumer.setAllocateMessageQueueStrategy(allocateMessageQueueStrategy);
 
-			// 使用Java代码，在服务器做消息过滤
+			// Optional server-side filtering via Java code.
 			//String filterCode = MixAll.file2String("D:\\workspace\\rocketmq-quickstart\\src\\main\\java\\com\\zoo\\quickstart\\filter\\MessageFilterImpl.java");
 			//consumer.subscribe("TopicFilter7", "com.zoo.quickstart.filter.MessageFilterImpl", filterCode);
 			
 			
-			// 初始化参数
+			// Initialise consumer parameters.
 			this.configure(consumer, properties);
 
 			// consumer.setOffsetStore(offsetStore);
 			/*
-			 * 订阅指定topic下selectorExpress
+			 * Subscribe to the configured topics and selector expressions.
 			 */
 			Map<String /* topic */, String /* selectorExpress */> subscription = new HashMap<String, String>();
 			if(subProvider != null) {
@@ -179,8 +205,8 @@ public class RocketmqPushConsumerAutoConfiguration  {
 				while (ite.hasNext()) {
 					Entry<String, String> entry = ite.next();
 					/* 
-					 * entry.getKey() 	： topic名称 
-					 * entry.getValue() : 根据实际情况设置消息的selectorExpress 
+					 * entry.getKey()   : topic name
+					 * entry.getValue() : selector expression for the topic
 					 */
 					String topic = entry.getKey();
 					String selectorExpress = entry.getValue();
@@ -200,7 +226,7 @@ public class RocketmqPushConsumerAutoConfiguration  {
 			}
 
 			/*
-			 * 注册消费监听
+			 * Register the consume listener.
 			 */
 			switch (properties.getConsumeMode()) {
 	            case ORDERLY:
@@ -214,15 +240,17 @@ public class RocketmqPushConsumerAutoConfiguration  {
 			}
 			
 			/*
-			 * 延迟5秒再启动，主要是等待spring事件监听相关程序初始化完成，否则，回出现对RocketMQ的消息进行消费后立即发布消息到达的事件，
-			 * 然而此事件的监听程序还未初始化，从而造成消息的丢失
+			 * Delay the start by a few seconds so Spring event listeners finish
+			 * initialising; otherwise consuming a message and immediately
+			 * publishing a message-arrived event could lose the event because
+			 * its listener is not yet registered.
 			 */
 			Executors.newScheduledThreadPool(1).schedule(new Thread() {
 				public void run() {
 					try {
 
 						/*
-						 * Consumer对象在使用之前必须要调用start初始化，初始化一次即可<br>
+						 * The consumer must be started once before use.
 						 */
 						consumer.start();
 
@@ -230,8 +258,11 @@ public class RocketmqPushConsumerAutoConfiguration  {
 								properties.getConsumerGroup(), properties.getNamesrvAddr(), properties.getInstanceName());
 						
 						/**
-						 * 应用退出时，要调用shutdown来清理资源，关闭网络连接，从RocketMQ服务器上注销自己
-						 * 注意：我们建议应用在JBOSS、Tomcat等容器的退出钩子里调用shutdown方法
+						 * On application exit call shutdown to release
+						 * resources, close network connections and unregister
+						 * from the broker. It is recommended to call shutdown
+						 * from the JVM shutdown hook (e.g. when running inside
+						 * JBoss/Tomcat).
 						 */
 						Runtime.getRuntime().addShutdownHook(new MQPushConsumerShutdownHook(consumer));
 

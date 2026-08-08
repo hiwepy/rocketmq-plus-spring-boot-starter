@@ -22,12 +22,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a {@link org.apache.rocketmq.client.consumer.MessageQueueListener} bean
+ * as a pull consumer bound to the given topic. The pull consumer
+ * auto-configuration registers the bean against the topic it declares.
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Documented	
-@Inherited		
+@Documented
+@Inherited
 public @interface RocketmqPullConsumer {
-	
+
+	/**
+	 * @return the topic this pull consumer subscribes to
+	 */
 	String topic();
-	
+
 }

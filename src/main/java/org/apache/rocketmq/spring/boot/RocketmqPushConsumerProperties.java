@@ -24,15 +24,39 @@ import org.apache.rocketmq.spring.boot.enums.ConsumeMode;
 import org.apache.rocketmq.spring.boot.enums.SelectorType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * Configuration properties for the RocketMQ <strong>push</strong> consumer.
+ * <p>
+ * Bound to the {@code rocketmq.consume-passively.*} namespace and extends the
+ * native RocketMQ {@link ClientConfig}. Push consumers receive messages
+ * delivered by the broker via long polling and process them through registered
+ * message listeners (concurrently or orderly).
+ * </p>
+ *
+ * <h3>Configuration keys</h3>
+ * <ul>
+ *   <li>{@code rocketmq.consume-passively.enabled} — opt-in switch (default {@code false})</li>
+ *   <li>{@code rocketmq.consume-passively.consumer-group} — globally unique consumer group (required)</li>
+ *   <li>{@code rocketmq.consume-passively.namesrv-addr} — name server address (required)</li>
+ *   <li>{@code rocketmq.consume-passively.consume-mode} — {@code CONCURRENTLY} or {@code ORDERLY} (default {@code CONCURRENTLY})</li>
+ *   <li>{@code rocketmq.consume-passively.selector-type} — {@code TAG} or {@code SQL92} (default {@code TAG})</li>
+ *   <li>{@code rocketmq.consume-passively.subscription} — topic {@code ->} selector expression map</li>
+ *   <li>{@code rocketmq.consume-passively.delay-start-seconds} — delayed start in seconds (default {@code 10})</li>
+ * </ul>
+ *
+ * @author [@Loong Wan](https://github.com/loong10k)
+ * @since 1.0.0
+ */
 @ConfigurationProperties(RocketmqPushConsumerProperties.PREFIX)
 public class RocketmqPushConsumerProperties extends ClientConfig {
 	
 	/**
-     * ConsumeType.CONSUME_PASSIVELY : "PUSH"
+     * Configuration prefix. {@code CONSUME_PASSIVELY} corresponds to the "PUSH"
+     * consume type.
      */
 	public static final String PREFIX = "rocketmq.consume-passively";
 	
-	/** 是否启用 **/
+	/** Whether the push consumer auto-configuration is enabled. */
 	private boolean enabled = false;
 	
 	/**
@@ -58,10 +82,6 @@ public class RocketmqPushConsumerProperties extends ClientConfig {
      * </p>
      *
      * This field defaults to clustering.
-     * 
-     * 消息模式
-     * 广播模式消费： BROADCASTING
-     * 集群模式消费： CLUSTERING
      */
     private String messageModel = "CLUSTERING";
     
@@ -108,9 +128,11 @@ public class RocketmqPushConsumerProperties extends ClientConfig {
     private String consumeTimestamp = UtilAll.timeMillisToHumanString3(System.currentTimeMillis() - (1000 * 60 * 30));
 
     /**
-     * 消费模式
-     * 使用线程池并发消费: CONCURRENTLY("CONCURRENTLY"),
-     * 单线程消费: ORDERLY("ORDERLY");
+     * Consume mode.
+     * <ul>
+     *   <li>{@code CONCURRENTLY} — consume using a thread pool</li>
+     *   <li>{@code ORDERLY} — consume using a single thread per queue</li>
+     * </ul>
      */
     private ConsumeMode consumeMode = ConsumeMode.CONCURRENTLY;
     
@@ -201,7 +223,9 @@ public class RocketmqPushConsumerProperties extends ClientConfig {
 	private int delayLevelWhenNextConsume = 0;
     
 	/**
-	 * 延迟启动时间，单位秒，主要是等待spring事件监听相关程序初始化完成，否则，会出现对RocketMQ的消息进行消费后立即发布消息到达的事件，然而此事件的监听程序还未初始化，从而造成消息的丢失
+	 * Delay before the consumer starts, in seconds. Lets Spring event listeners
+	 * finish initialising before messages are consumed, avoiding message loss
+	 * when a message-arrived event is published before its listener is ready.
 	 */
 	private int delayStartSeconds = 10;
 	
