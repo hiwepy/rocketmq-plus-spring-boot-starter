@@ -361,6 +361,60 @@ class ListenerTest {
         assertThat(result).isEmpty();
     }
 
+    // ---- DefaultMessageListenerConcurrently.afterPropertiesSet ----
+
+    @Test
+    void concurrentlyListener_afterPropertiesSet_withBeans() throws Exception {
+        DefaultMessageListenerConcurrently listener = new DefaultMessageListenerConcurrently();
+        ApplicationContext ctx = mock(ApplicationContext.class);
+        MessageConcurrentlyHandler regularHandler = mock(MessageConcurrentlyHandler.class);
+        NestedMessageConcurrentlyHandler nestedHandler = mock(NestedMessageConcurrentlyHandler.class);
+        java.util.Map<String, MessageConcurrentlyHandler> beans = new java.util.LinkedHashMap<>();
+        beans.put("regular", regularHandler);
+        beans.put("nested", nestedHandler);
+        when(ctx.getBeansOfType(MessageConcurrentlyHandler.class)).thenReturn(beans);
+        listener.setApplicationContext(ctx);
+        listener.afterPropertiesSet();
+        assertThat(listener.getMessageHandler()).isNotNull();
+    }
+
+    @Test
+    void concurrentlyListener_afterPropertiesSet_emptyContext() throws Exception {
+        DefaultMessageListenerConcurrently listener = new DefaultMessageListenerConcurrently();
+        ApplicationContext ctx = mock(ApplicationContext.class);
+        when(ctx.getBeansOfType(MessageConcurrentlyHandler.class)).thenReturn(Collections.emptyMap());
+        listener.setApplicationContext(ctx);
+        listener.afterPropertiesSet();
+        assertThat(listener.getMessageHandler()).isNotNull();
+    }
+
+    // ---- DefaultMessageListenerOrderly.afterPropertiesSet ----
+
+    @Test
+    void orderlyListener_afterPropertiesSet_withBeans() throws Exception {
+        DefaultMessageListenerOrderly listener = new DefaultMessageListenerOrderly();
+        ApplicationContext ctx = mock(ApplicationContext.class);
+        MessageOrderlyHandler regularHandler = mock(MessageOrderlyHandler.class);
+        NestedMessageOrderlyHandler nestedHandler = mock(NestedMessageOrderlyHandler.class);
+        java.util.Map<String, MessageOrderlyHandler> beans = new java.util.LinkedHashMap<>();
+        beans.put("regular", regularHandler);
+        beans.put("nested", nestedHandler);
+        when(ctx.getBeansOfType(MessageOrderlyHandler.class)).thenReturn(beans);
+        listener.setApplicationContext(ctx);
+        listener.afterPropertiesSet();
+        assertThat(listener.getMessageHandler()).isNotNull();
+    }
+
+    @Test
+    void orderlyListener_afterPropertiesSet_emptyContext() throws Exception {
+        DefaultMessageListenerOrderly listener = new DefaultMessageListenerOrderly();
+        ApplicationContext ctx = mock(ApplicationContext.class);
+        when(ctx.getBeansOfType(MessageOrderlyHandler.class)).thenReturn(Collections.emptyMap());
+        listener.setApplicationContext(ctx);
+        listener.afterPropertiesSet();
+        assertThat(listener.getMessageHandler()).isNotNull();
+    }
+
     // ---- NestedMessageConcurrentlyHandler ----
 
     @Test

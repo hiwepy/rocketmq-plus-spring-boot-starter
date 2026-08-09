@@ -195,4 +195,108 @@ class AbstractHandlerTest {
         adapter.postHandle(msg, ctx);
         adapter.afterCompletion(msg, ctx, null);
     }
+
+    // ---- AbstractAdviceMessageHandler: preHandle throws ----
+
+    @Test
+    void adviceHandler_doHandlerInternal_preHandleThrows() throws Exception {
+        TestPathMatchHandler handler = new TestPathMatchHandler() {
+            @Override
+            protected boolean preHandle(RocketmqEvent event) throws Exception {
+                throw new RuntimeException("preHandle error");
+            }
+        };
+        handler.setEnabled(true);
+        RocketmqEvent event = createEvent("/test/path");
+        // Should propagate through cleanup
+        try {
+            handler.doHandlerInternal(event, new ProxiedHandlerChain());
+        } catch (Exception e) {
+            // expected
+        }
+    }
+
+    @Test
+    void adviceHandler_doHandlerInternal_postHandleThrows() throws Exception {
+        TestPathMatchHandler handler = new TestPathMatchHandler() {
+            @Override
+            protected void postHandle(RocketmqEvent event) throws Exception {
+                throw new RuntimeException("postHandle error");
+            }
+        };
+        handler.setEnabled(true);
+        RocketmqEvent event = createEvent("/test/path");
+        try {
+            handler.doHandlerInternal(event, new ProxiedHandlerChain());
+        } catch (Exception e) {
+            // expected
+        }
+    }
+
+    @Test
+    void adviceHandler_cleanup_afterCompletionThrows_withExistingException() throws Exception {
+        TestPathMatchHandler handler = new TestPathMatchHandler() {
+            @Override
+            public void afterCompletion(RocketmqEvent event, Exception exception) throws Exception {
+                throw new RuntimeException("afterCompletion error");
+            }
+        };
+        RocketmqEvent event = createEvent("/test/path");
+        handler.cleanup(event, new Exception("existing"));
+    }
+
+    @Test
+    void adviceHandler_isEnabledEvent_delegates() throws Exception {
+        TestPathMatchHandler handler = new TestPathMatchHandler();
+        handler.setEnabled(true);
+        RocketmqEvent event = createEvent("/test/path");
+        assertThat(handler.isEnabled(event)).isTrue();
+    }
+
+    // ---- AbstractRouteableMessageHandler: constructor with resolver ----
+
+    private static class TestRouteableHandler extends AbstractRouteableMessageHandler<RocketmqEvent> {
+    }
+
+    @Test
+    void routeableHandler_constructorWithResolver() {
+        org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver<RocketmqEvent> resolver =
+                org.mockito.Mockito.mock(org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver.class);
+        TestRouteableHandler handler = new TestRouteableHandler();
+        handler.setHandlerChainResolver(resolver);
+        assertThat(handler.getHandlerChainResolver()).isEqualTo(resolver);
+    }
+
+    @Test
+    void routeableHandler_doHandlerInternal_success() throws Exception {
+        TestRouteableHandler handler = new TestRouteableHandler();
+        handler.setEnabled(true);
+        RocketmqEvent event = createEvent("/test/path");
+        handler.doHandlerInternal(event, new ProxiedHandlerChain());
+    }
+
+    @Test
+    void routeableHandler_doHandlerInternal_throwsIOException() throws Exception {
+        TestRouteableHandler handler = new TestRouteableHandler() {
+            @Override
+            protected void executeChain(RocketmqEvent event, HandlerChain<RocketmqEvent> chain) throws Exception {
+                throw new java.io.IOException("IO error");
+            }
+        };
+        handler.setEnabled(true);
+        RocketmqEvent event = createEvent("/test/path");
+        try {
+            handler.doHandlerInternal(event, new ProxiedHandlerChain());
+        } catch (java.io.IOException e) {
+            assertThat(e.getMessage()).isEqualTo("IO error");
+        }
+    }
+
+    @Test
+    void routeableHandler_getExecutionChain_noResolver() throws Exception {
+        TestRouteableHandler handler = new TestRouteableHandler();
+        ProxiedHandlerChain chain = new ProxiedHandlerChain();
+        RocketmqEvent event = createEvent("/test/path");
+        handler.executeChain(event, chain);
+    }
 }

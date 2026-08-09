@@ -132,4 +132,109 @@ class TemplateTest {
         // Should not throw - returns early when chainResolver is null
         template.unsubscribe("topic", "tag", "handler");
     }
+
+    @Test
+    void pushTemplate_subscribe_tagMode() throws Exception {
+        MQPushConsumer consumer = mock(MQPushConsumer.class);
+        RocketmqPushConsumerTemplate template = new RocketmqPushConsumerTemplate(consumer);
+
+        RocketmqEventMessageOrderlyHandler orderlyHandler = mock(RocketmqEventMessageOrderlyHandler.class);
+        RocketmqEventMessageConcurrentlyHandler concurrentlyHandler = mock(RocketmqEventMessageConcurrentlyHandler.class);
+        template.setMessageOrderlyHandler(orderlyHandler);
+        template.setMessageConcurrentlyHandler(concurrentlyHandler);
+
+        RocketmqPushConsumerProperties props = new RocketmqPushConsumerProperties();
+        props.setEnabled(true);
+        props.setConsumeMode(org.apache.rocketmq.spring.boot.enums.ConsumeMode.CONCURRENTLY);
+        props.setSelectorType(org.apache.rocketmq.spring.boot.enums.SelectorType.TAG);
+        java.lang.reflect.Field field = RocketmqPushConsumerTemplate.class.getDeclaredField("pushConsumerProperties");
+        field.setAccessible(true);
+        field.set(template, props);
+
+        org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver resolver =
+                new org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver();
+        when(concurrentlyHandler.getHandlerChainResolver()).thenReturn(resolver);
+
+        org.apache.rocketmq.spring.boot.handler.EventHandler<org.apache.rocketmq.spring.boot.event.RocketmqEvent> handler =
+                mock(org.apache.rocketmq.spring.boot.handler.EventHandler.class);
+        template.subscribe("testTopic", "tag1||tag2", "myHandler", handler);
+        verify(consumer).subscribe(eq("testTopic"), anyString());
+    }
+
+    @Test
+    void pushTemplate_unsubscribe_withProperties() throws Exception {
+        MQPushConsumer consumer = mock(MQPushConsumer.class);
+        RocketmqPushConsumerTemplate template = new RocketmqPushConsumerTemplate(consumer);
+
+        RocketmqEventMessageConcurrentlyHandler concurrentlyHandler = mock(RocketmqEventMessageConcurrentlyHandler.class);
+        template.setMessageConcurrentlyHandler(concurrentlyHandler);
+
+        RocketmqPushConsumerProperties props = new RocketmqPushConsumerProperties();
+        props.setEnabled(true);
+        props.setConsumeMode(org.apache.rocketmq.spring.boot.enums.ConsumeMode.CONCURRENTLY);
+        java.lang.reflect.Field field = RocketmqPushConsumerTemplate.class.getDeclaredField("pushConsumerProperties");
+        field.setAccessible(true);
+        field.set(template, props);
+
+        org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver resolver =
+                new org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver();
+        when(concurrentlyHandler.getHandlerChainResolver()).thenReturn(resolver);
+
+        template.unsubscribe("testTopic", "tag1,tag2", "myHandler");
+        verify(consumer).unsubscribe("testTopic");
+    }
+
+    @Test
+    void pushTemplate_subscribe_orderlyMode() throws Exception {
+        MQPushConsumer consumer = mock(MQPushConsumer.class);
+        RocketmqPushConsumerTemplate template = new RocketmqPushConsumerTemplate(consumer);
+
+        RocketmqEventMessageOrderlyHandler orderlyHandler = mock(RocketmqEventMessageOrderlyHandler.class);
+        RocketmqEventMessageConcurrentlyHandler concurrentlyHandler = mock(RocketmqEventMessageConcurrentlyHandler.class);
+        template.setMessageOrderlyHandler(orderlyHandler);
+        template.setMessageConcurrentlyHandler(concurrentlyHandler);
+
+        RocketmqPushConsumerProperties props = new RocketmqPushConsumerProperties();
+        props.setEnabled(true);
+        props.setConsumeMode(org.apache.rocketmq.spring.boot.enums.ConsumeMode.ORDERLY);
+        props.setSelectorType(org.apache.rocketmq.spring.boot.enums.SelectorType.TAG);
+        java.lang.reflect.Field field = RocketmqPushConsumerTemplate.class.getDeclaredField("pushConsumerProperties");
+        field.setAccessible(true);
+        field.set(template, props);
+
+        org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver resolver =
+                new org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver();
+        when(orderlyHandler.getHandlerChainResolver()).thenReturn(resolver);
+
+        org.apache.rocketmq.spring.boot.handler.EventHandler<org.apache.rocketmq.spring.boot.event.RocketmqEvent> handler =
+                mock(org.apache.rocketmq.spring.boot.handler.EventHandler.class);
+        template.subscribe("testTopic", "tag1", "myHandler", handler);
+        verify(consumer).subscribe(eq("testTopic"), anyString());
+    }
+
+    @Test
+    void pushTemplate_subscribe_sql92Mode() throws Exception {
+        MQPushConsumer consumer = mock(MQPushConsumer.class);
+        RocketmqPushConsumerTemplate template = new RocketmqPushConsumerTemplate(consumer);
+
+        RocketmqEventMessageConcurrentlyHandler concurrentlyHandler = mock(RocketmqEventMessageConcurrentlyHandler.class);
+        template.setMessageConcurrentlyHandler(concurrentlyHandler);
+
+        RocketmqPushConsumerProperties props = new RocketmqPushConsumerProperties();
+        props.setEnabled(true);
+        props.setConsumeMode(org.apache.rocketmq.spring.boot.enums.ConsumeMode.CONCURRENTLY);
+        props.setSelectorType(org.apache.rocketmq.spring.boot.enums.SelectorType.SQL92);
+        java.lang.reflect.Field field = RocketmqPushConsumerTemplate.class.getDeclaredField("pushConsumerProperties");
+        field.setAccessible(true);
+        field.set(template, props);
+
+        org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver resolver =
+                new org.apache.rocketmq.spring.boot.handler.chain.def.PathMatchingHandlerChainResolver();
+        when(concurrentlyHandler.getHandlerChainResolver()).thenReturn(resolver);
+
+        org.apache.rocketmq.spring.boot.handler.EventHandler<org.apache.rocketmq.spring.boot.event.RocketmqEvent> handler =
+                mock(org.apache.rocketmq.spring.boot.handler.EventHandler.class);
+        template.subscribe("testTopic", "tag1", "myHandler", handler);
+        verify(consumer).subscribe(eq("testTopic"), any(org.apache.rocketmq.client.consumer.MessageSelector.class));
+    }
 }
