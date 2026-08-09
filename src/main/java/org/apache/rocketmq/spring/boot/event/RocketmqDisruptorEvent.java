@@ -18,9 +18,7 @@ package org.apache.rocketmq.spring.boot.event;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.rocketmq.common.message.MessageExt;
-import org.apache.rocketmq.spring.boot.util.StringUtils;
-
-import com.lmax.disruptor.spring.boot.event.DisruptorEvent;
+import org.springframework.context.ApplicationEvent;
 
 
 /**
@@ -32,7 +30,7 @@ import com.lmax.disruptor.spring.boot.event.DisruptorEvent;
  * @since 1.0.0
  */
 @SuppressWarnings("serial")
-public class RocketmqDisruptorEvent extends DisruptorEvent {
+public class RocketmqDisruptorEvent extends ApplicationEvent {
 
 	/** The raw RocketMQ message. */
 	private MessageExt messageExt;
@@ -42,6 +40,8 @@ public class RocketmqDisruptorEvent extends DisruptorEvent {
 	private String tag;
 	/** The raw message body bytes. */
 	private byte[] body;
+	/** Ant-style route expression used to dispatch the event. */
+	private String routeExpression;
 
 	/**
 	 * @param source the event source (typically the message or a producer)
@@ -56,13 +56,18 @@ public class RocketmqDisruptorEvent extends DisruptorEvent {
 	 *
 	 * @return the Ant-style {@code /topic/tags/keys} route expression
 	 */
-	@Override
 	public String getRouteExpression() {
-		String expression = super.getRouteExpression();
-		if(StringUtils.isEmpty(expression)){
-			return this.buildRouteExpression(messageExt);
+		if (routeExpression == null && messageExt != null) {
+			this.routeExpression = this.buildRouteExpression(messageExt);
 		}
-		return expression;
+		return routeExpression;
+	}
+	
+	/**
+	 * @param routeExpression the Ant-style route expression
+	 */
+	public void setRouteExpression(String routeExpression) {
+		this.routeExpression = routeExpression;
 	}
 	
 	/**

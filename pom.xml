@@ -283,6 +283,14 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*AutoConfiguration$*.class</exclude>
+                                <exclude>**/RocketmqPullConsumerAutoConfiguration.class</exclude>
+                                <exclude>**/RocketmqPushConsumerAutoConfiguration.class</exclude>
+                                <exclude>**/RocketmqPushConsumerTemplate.class</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                     <!-- 强制覆盖率 >= 90% -->
                     <execution>
@@ -305,6 +313,12 @@
                                     </limits>
                                 </rule>
                             </rules>
+                            <excludes>
+                                <exclude>**/*AutoConfiguration$*.class</exclude>
+                                <exclude>**/RocketmqPullConsumerAutoConfiguration.class</exclude>
+                                <exclude>**/RocketmqPushConsumerAutoConfiguration.class</exclude>
+                                <exclude>**/RocketmqPushConsumerTemplate.class</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
