@@ -24,7 +24,7 @@ import org.apache.rocketmq.common.message.MessageExt;
  * <p>Subclass and override the relevant methods to implement custom orderly
  * handling.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public abstract class MessageOrderlyHandlerAdapter implements MessageOrderlyHandler {

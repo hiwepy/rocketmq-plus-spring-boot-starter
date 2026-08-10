@@ -6,7 +6,7 @@ import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
  * Strategy for resolving the {@link HandlerChain} to execute for a given event.
  *
  * @param <T> the event type, bound to {@link RocketmqEvent}
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public interface HandlerChainResolver<T extends RocketmqEvent> {

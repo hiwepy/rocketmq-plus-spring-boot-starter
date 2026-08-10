@@ -44,7 +44,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *   <li>{@code rocketmq.consume-passively.delay-start-seconds} — delayed start in seconds (default {@code 10})</li>
  * </ul>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(RocketmqPushConsumerProperties.PREFIX)

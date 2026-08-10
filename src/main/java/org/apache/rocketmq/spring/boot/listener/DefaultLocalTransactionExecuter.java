@@ -26,7 +26,7 @@ import org.apache.rocketmq.common.message.Message;
  * outcomes (commit / rollback / unknown) based on an incrementing counter.
  * <p>Use as a starting point for real transaction execution logic.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class DefaultLocalTransactionExecuter implements LocalTransactionExecuter {
