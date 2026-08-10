@@ -4,7 +4,7 @@ package org.apache.rocketmq.spring.boot.exception;
  * Runtime exception raised when an {@link org.apache.rocketmq.spring.boot.handler.EventHandler}
  * fails to process a message.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @SuppressWarnings("serial")

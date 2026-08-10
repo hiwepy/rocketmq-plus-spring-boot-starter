@@ -26,7 +26,7 @@ import org.springframework.context.ApplicationEvent;
  * {@link MessageExt}, carrying its topic, tag, body and an Ant-style route
  * expression ({@code topic/tags/keys}) used by the handler-chain resolver.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @SuppressWarnings("serial")

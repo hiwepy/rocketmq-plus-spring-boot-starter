@@ -11,7 +11,7 @@ import com.lmax.disruptor.EventTranslatorOneArg;
  * {@link MessageExt} into a {@link RocketmqDisruptorEvent} for orderly
  * processing, retaining the {@link ConsumeOrderlyContext}.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class RocketmqDataOrderlyEventTranslator implements EventTranslatorOneArg<RocketmqDisruptorEvent, MessageExt> {

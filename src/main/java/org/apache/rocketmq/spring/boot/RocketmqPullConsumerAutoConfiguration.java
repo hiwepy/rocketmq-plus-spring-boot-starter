@@ -57,7 +57,7 @@ import org.springframework.util.ObjectUtils;
  *   <li>{@code rocketmq.consume-actively.namesrv-addr} — name server (required)</li>
  * </ul>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Configuration
