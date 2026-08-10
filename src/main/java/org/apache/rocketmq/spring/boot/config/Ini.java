@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * definitions as an {@code [urls]} or default section of key/value pairs.
  * <p>Modeled after Apache Shiro's {@code Ini} class.</p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class Ini implements Map<String, Ini.Section> {

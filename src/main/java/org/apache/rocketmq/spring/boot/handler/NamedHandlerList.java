@@ -11,7 +11,7 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChain;
  * into a single {@link HandlerChain}.
  *
  * @param <T> the event type, bound to {@link RocketmqEvent}
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public interface NamedHandlerList<T extends RocketmqEvent> extends List<EventHandler<T>> {

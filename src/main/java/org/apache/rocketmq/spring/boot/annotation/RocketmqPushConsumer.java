@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * {@code topic-a/tag-a/*}. The rule is used by the handler-chain resolver to
  * route incoming messages.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Target(ElementType.TYPE)

@@ -15,7 +15,7 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChainResolver;
  * against the registered chain names using an Ant-style {@link PathMatcher},
  * returning the first matching chain.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class PathMatchingHandlerChainResolver implements HandlerChainResolver<RocketmqEvent> {
