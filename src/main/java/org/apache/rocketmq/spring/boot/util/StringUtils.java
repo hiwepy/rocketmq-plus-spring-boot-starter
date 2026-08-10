@@ -27,7 +27,7 @@ import org.springframework.util.ObjectUtils;
  * tokenisation, path handling, Chinese pinyin extraction and SQL-friendly
  * quoting used throughout the RocketMQ starter.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public abstract class StringUtils extends org.apache.commons.lang3.StringUtils {

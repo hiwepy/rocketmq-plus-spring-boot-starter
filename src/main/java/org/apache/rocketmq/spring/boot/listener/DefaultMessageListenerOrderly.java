@@ -29,7 +29,7 @@ import org.springframework.util.ObjectUtils;
  * pre-handle / handle / post-handle / after-completion lifecycle, suspending
  * the queue on failure.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class DefaultMessageListenerOrderly implements MessageListenerOrderly, ApplicationContextAware, InitializingBean {

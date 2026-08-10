@@ -15,7 +15,7 @@ import org.apache.rocketmq.spring.boot.event.RocketmqEvent;
  * expression matches one of the configured Ant-style patterns.
  *
  * @param <T> the event type, bound to {@link RocketmqEvent}
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public abstract class AbstractPathMatchMessageHandler<T extends RocketmqEvent> extends AbstractAdviceMessageHandler<T>  implements PathProcessor<T> {

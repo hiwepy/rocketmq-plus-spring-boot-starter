@@ -11,7 +11,7 @@ import org.apache.rocketmq.spring.boot.handler.chain.HandlerChain;
  * after-completion advice, ensuring {@code afterCompletion} is always invoked.
  *
  * @param <T> the event type, bound to {@link RocketmqEvent}
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class AbstractAdviceMessageHandler<T extends RocketmqEvent> extends AbstractEnabledMessageHandler<T> {
