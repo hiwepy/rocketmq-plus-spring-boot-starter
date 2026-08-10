@@ -11,7 +11,7 @@ import com.lmax.disruptor.EventTranslatorOneArg;
  * {@link MessageExt} into a {@link RocketmqDisruptorEvent} for concurrent
  * processing, retaining the {@link ConsumeConcurrentlyContext}.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class RocketmqDataConcurrentlyEventTranslator implements EventTranslatorOneArg<RocketmqDisruptorEvent, MessageExt> {

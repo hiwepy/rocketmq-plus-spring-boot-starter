@@ -7,7 +7,7 @@ import org.apache.rocketmq.common.filter.ExpressionType;
  * RocketMQ message selector type, controlling how the selector expression is
  * interpreted by the broker.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public enum SelectorType {

@@ -21,7 +21,7 @@ import org.apache.rocketmq.spring.boot.util.StringUtils;
  * Default {@link HandlerChainManager} implementation that maintains an ordered
  * registry of named {@link EventHandler}s and comma-separated handler chains.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqEvent> {
