@@ -59,7 +59,7 @@ import org.springframework.util.CollectionUtils;
  *   <li>{@code rocketmq.consume-passively.selector-type} — {@code TAG} or {@code SQL92}</li>
  * </ul>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Configuration

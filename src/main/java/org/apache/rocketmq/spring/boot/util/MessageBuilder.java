@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
  * serialisable Object (JSON-encoded) or a raw byte array.
  * </p>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class MessageBuilder implements Builder<Message> {
