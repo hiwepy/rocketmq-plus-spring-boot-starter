@@ -21,7 +21,7 @@ import java.util.Map;
  * Strategy for providing the topic-to-selector-expression subscription map used
  * by the push consumer when it subscribes to topics.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public interface SubscriptionProvider {

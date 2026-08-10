@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * a pull-task callback bound to the given topic. The scheduled pull consumer
  * auto-configuration registers the callback against the topic it declares.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @Target(ElementType.TYPE)

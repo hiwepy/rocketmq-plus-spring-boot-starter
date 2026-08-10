@@ -19,7 +19,7 @@ import org.apache.rocketmq.spring.boot.handler.chain.ProxiedHandlerChain;
  * {@link ArrayList}, producing {@link ProxiedHandlerChain} instances when
  * proxied.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class DefaultNamedHandlerList implements NamedHandlerList<RocketmqEvent> {
