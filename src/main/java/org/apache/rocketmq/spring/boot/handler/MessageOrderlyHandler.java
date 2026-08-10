@@ -7,7 +7,7 @@ import org.apache.rocketmq.common.message.MessageExt;
  * Lifecycle contract for orderly message handling, modelled after the
  * classic pre-handle / handle / post-handle / after-completion pattern.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public interface MessageOrderlyHandler {
