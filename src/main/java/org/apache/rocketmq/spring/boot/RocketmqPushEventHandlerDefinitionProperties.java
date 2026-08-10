@@ -20,7 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *   <li>{@code rocketmq.consume-passively.event.definition-map} — rule-to-handler-names map</li>
  * </ul>
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @ConfigurationProperties(RocketmqPushEventHandlerDefinitionProperties.PREFIX)

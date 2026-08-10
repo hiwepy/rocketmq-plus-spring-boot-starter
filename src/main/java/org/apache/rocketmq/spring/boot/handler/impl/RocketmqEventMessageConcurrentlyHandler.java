@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * received message in a {@link RocketmqEvent} and dispatches it through the
  * configured {@link HandlerChain}.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class RocketmqEventMessageConcurrentlyHandler extends AbstractRouteableMessageHandler<RocketmqEvent> implements MessageConcurrentlyHandler {

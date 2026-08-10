@@ -4,7 +4,7 @@ package org.apache.rocketmq.spring.boot.exception;
  * Runtime exception raised when a RocketMQ {@link org.apache.rocketmq.common.message.Message}
  * cannot be built (e.g. missing topic, tags, keys or body).
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 @SuppressWarnings("serial")

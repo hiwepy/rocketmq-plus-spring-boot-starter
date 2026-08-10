@@ -14,7 +14,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
  * Spring {@link ApplicationEventPublisher}, allowing tag-specific listeners to
  * receive it.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class ApplicationEventMessageConcurrentlyHandler implements MessageConcurrentlyHandler, ApplicationEventPublisherAware {
