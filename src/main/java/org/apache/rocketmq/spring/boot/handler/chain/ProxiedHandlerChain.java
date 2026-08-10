@@ -12,7 +12,7 @@ import org.apache.rocketmq.spring.boot.handler.EventHandler;
  * A {@link HandlerChain} that executes a list of {@link EventHandler}s in order
  * and then delegates to an optional original (root) chain.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class ProxiedHandlerChain implements HandlerChain<RocketmqEvent> {

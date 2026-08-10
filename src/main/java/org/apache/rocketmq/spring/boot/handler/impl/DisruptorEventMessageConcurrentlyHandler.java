@@ -14,7 +14,7 @@ import com.lmax.disruptor.dsl.Disruptor;
  * Concurrent message handler that publishes received messages onto a LMAX
  * Disruptor ring buffer for asynchronous processing.
  *
- * @author [@Loong Wan](https://github.com/loong10k)
+ * @author <a href="https://github.com/loong10k">Loong Wan</a>
  * @since 1.0.0
  */
 public class DisruptorEventMessageConcurrentlyHandler implements MessageConcurrentlyHandler {
