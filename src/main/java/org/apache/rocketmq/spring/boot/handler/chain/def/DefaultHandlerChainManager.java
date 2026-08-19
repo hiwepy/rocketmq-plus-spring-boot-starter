@@ -43,6 +43,10 @@ public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqE
         return handlers;
     }
 
+    /**
+     * <p>Sets the handlers.</p>
+     * @param handlers
+     */
     public void setHandlers(Map<String, EventHandler<RocketmqEvent>> handlers) {
         this.handlers = handlers;
     }
@@ -51,18 +55,38 @@ public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqE
         return handlerChains;
     }
     
+    /**
+     * <p>Sets the handler chains.</p>
+     * @param handlerChains
+     */
     public void setHandlerChains(Map<String, NamedHandlerList<RocketmqEvent>> handlerChains) {
         this.handlerChains = handlerChains;
     }
 
+    /**
+     * <p>Returns the handler.</p>
+     * @param name
+     * @return the get handler
+     */
     public EventHandler<RocketmqEvent> getHandler(String name) {
         return this.handlers.get(name);
     }
 
+    /**
+     * <p>Add handler.</p>
+     * @param name
+     * @param handler
+     */
     public void addHandler(String name, EventHandler<RocketmqEvent> handler) {
         addHandler(name, handler, true);
     }
     
+    /**
+     * <p>Add handler.</p>
+     * @param name
+     * @param handler
+     * @param overwrite
+     */
     protected void addHandler(String name, EventHandler<RocketmqEvent> handler, boolean overwrite) {
         EventHandler<RocketmqEvent> existing = getHandler(name);
         if (existing == null || overwrite) {
@@ -73,6 +97,11 @@ public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqE
         }
     }
 
+    /**
+     * <p>Creates a new chain.</p>
+     * @param chainName
+     * @param chainDefinition
+     */
     public void createChain(String chainName, String chainDefinition) {
         if (StringUtils.isBlank(chainName)) {
             throw new NullPointerException("chainName cannot be null or empty.");
@@ -108,6 +137,11 @@ public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqE
 		
 	}
     
+    /**
+     * <p>Add to chain.</p>
+     * @param chainName
+     * @param handlerName
+     */
     public void addToChain(String chainName, String handlerName) {
         if (StringUtils.isBlank(chainName)) {
             throw new IllegalArgumentException("chainName cannot be null or empty.");
@@ -122,6 +156,11 @@ public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqE
         chain.add(handler);
     }
 
+    /**
+     * <p>Ensure chain.</p>
+     * @param chainName
+     * @return the ensure chain
+     */
     protected NamedHandlerList<RocketmqEvent> ensureChain(String chainName) {
         NamedHandlerList<RocketmqEvent> chain = getChain(chainName);
         if (chain == null) {
@@ -131,20 +170,39 @@ public class DefaultHandlerChainManager implements HandlerChainManager<RocketmqE
         return chain;
     }
 
+    /**
+     * <p>Returns the chain.</p>
+     * @param chainName
+     * @return the get chain
+     */
     public NamedHandlerList<RocketmqEvent> getChain(String chainName) {
         return this.handlerChains.get(chainName);
     }
 
+    /**
+     * <p>Has chains.</p>
+     * @return the has chains
+     */
     public boolean hasChains() {
         return !CollectionUtils.isEmpty(this.handlerChains);
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * <p>Returns the chain names.</p>
+     * @return the get chain names
+     */
 	public Set<String> getChainNames() {
         return this.handlerChains != null ? this.handlerChains.keySet() : Collections.EMPTY_SET;
     }
 
     @Override
+    /**
+     * <p>Proxy.</p>
+     * @param original
+     * @param chainName
+     * @return the proxy
+     */
     public HandlerChain<RocketmqEvent> proxy(HandlerChain<RocketmqEvent> original, String chainName) {
         NamedHandlerList<RocketmqEvent> configured = getChain(chainName);
         if (configured == null) {

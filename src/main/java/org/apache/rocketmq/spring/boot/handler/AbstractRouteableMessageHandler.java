@@ -42,6 +42,11 @@ public class AbstractRouteableMessageHandler<T extends RocketmqEvent> extends Ab
 	}
 
 	@Override
+    /**
+     * <p>Performs handler internal.</p>
+     * @param event
+     * @param handlerChain
+     */
 	protected void doHandlerInternal(T event, HandlerChain<T> handlerChain) throws Exception {
 		Throwable t = null;
 		try {
@@ -58,6 +63,12 @@ public class AbstractRouteableMessageHandler<T extends RocketmqEvent> extends Ab
 		}
 	}
 
+    /**
+     * <p>Returns the execution chain.</p>
+     * @param event
+     * @param origChain
+     * @return the get execution chain
+     */
 	protected HandlerChain<T> getExecutionChain(T event, HandlerChain<T> origChain) {
 		HandlerChain<T> chain = origChain;
 
@@ -78,15 +89,28 @@ public class AbstractRouteableMessageHandler<T extends RocketmqEvent> extends Ab
 		return chain;
 	}
 
+    /**
+     * <p>Execute chain.</p>
+     * @param event
+     * @param origChain
+     */
 	protected void executeChain(T event, HandlerChain<T> origChain) throws Exception {
 		HandlerChain<T> chain = getExecutionChain(event, origChain);
 		chain.doHandler(event);
 	}
 
+    /**
+     * <p>Returns the handler chain resolver.</p>
+     * @return the get handler chain resolver
+     */
 	public HandlerChainResolver<T> getHandlerChainResolver() {
 		return handlerChainResolver;
 	}
 
+    /**
+     * <p>Sets the handler chain resolver.</p>
+     * @param handlerChainResolver
+     */
 	public void setHandlerChainResolver(HandlerChainResolver<T> handlerChainResolver) {
 		this.handlerChainResolver = handlerChainResolver;
 	}

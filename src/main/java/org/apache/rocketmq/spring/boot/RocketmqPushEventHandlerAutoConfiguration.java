@@ -132,6 +132,10 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
         return new RocketmqEventMessageOrderlyHandler(chainResolver);
 	}
 	
+    /**
+     * <p>Sets the handler chain definitions.</p>
+     * @param definitions
+     */
 	protected void setHandlerChainDefinitions(String definitions) {
         Ini ini = new Ini();
         ini.load(definitions);
@@ -170,19 +174,35 @@ public class RocketmqPushEventHandlerAutoConfiguration implements ApplicationCon
 		return manager;
 	}
 	
+    /**
+     * <p>Returns the handler chain definition map.</p>
+     * @return the get handler chain definition map
+     */
 	public Map<String, String> getHandlerChainDefinitionMap() {
 		return handlerChainDefinitionMap;
 	}
 
+    /**
+     * <p>Sets the handler chain definition map.</p>
+     * @param handlerChainDefinitionMap
+     */
 	public void setHandlerChainDefinitionMap(Map<String, String> handlerChainDefinitionMap) {
 		this.handlerChainDefinitionMap = handlerChainDefinitionMap;
 	}
 
 	@Override
+    /**
+     * <p>Sets the application context.</p>
+     * @param applicationContext
+     */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+    /**
+     * <p>Returns the application context.</p>
+     * @return the get application context
+     */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

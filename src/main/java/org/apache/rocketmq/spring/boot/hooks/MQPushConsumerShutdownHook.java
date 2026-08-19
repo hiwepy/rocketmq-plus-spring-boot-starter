@@ -22,6 +22,9 @@ public class MQPushConsumerShutdownHook extends Thread{
 	}
 
 	@Override
+    /**
+     * <p>Run.</p>
+     */
 	public void run() {
 		consumer.shutdown();
 	}

@@ -45,6 +45,9 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly, Ap
 	private ApplicationContext applicationContext;
 
 	@Override
+    /**
+     * <p>After properties set.</p>
+     */
 	public void afterPropertiesSet() throws Exception {
 
 		List<MessageOrderlyHandler> handlers = new ArrayList<MessageOrderlyHandler>();
@@ -68,6 +71,12 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly, Ap
 	}
 
 	@Override
+    /**
+     * <p>Consume message.</p>
+     * @param msgExts
+     * @param context
+     * @return the consume message
+     */
 	public ConsumeOrderlyStatus consumeMessage(List<MessageExt> msgExts, ConsumeOrderlyContext context) {
 		// By default msgExts contains a single message; use consumeMessageBatchMaxSize to receive batches.
 		LOG.debug(Thread.currentThread().getName() + " Receive New Messages: " + msgExts.size());
@@ -112,6 +121,12 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly, Ap
 		return ConsumeOrderlyStatus.SUCCESS;
 	}
 	
+    /**
+     * <p>Cleanup.</p>
+     * @param msgExt
+     * @param context
+     * @param existing
+     */
 	protected void cleanup(MessageExt msgExt, ConsumeOrderlyContext context, Exception existing) {
 		Exception exception = existing;
 		try {
@@ -129,27 +144,51 @@ public class DefaultMessageListenerOrderly implements MessageListenerOrderly, Ap
 		}
 	}
 
+    /**
+     * <p>Returns the message handler.</p>
+     * @return the get message handler
+     */
 	public MessageOrderlyHandler getMessageHandler() {
 		return messageHandler;
 	}
 
+    /**
+     * <p>Sets the message handler.</p>
+     * @param messageHandler
+     */
 	public void setMessageHandler(MessageOrderlyHandler messageHandler) {
 		this.messageHandler = messageHandler;
 	}
 	
+    /**
+     * <p>Returns the properties.</p>
+     * @return the get properties
+     */
 	public RocketmqPushConsumerProperties getProperties() {
 		return properties;
 	}
 
+    /**
+     * <p>Sets the properties.</p>
+     * @param properties
+     */
 	public void setProperties(RocketmqPushConsumerProperties properties) {
 		this.properties = properties;
 	}
 	
 	@Override
+    /**
+     * <p>Sets the application context.</p>
+     * @param applicationContext
+     */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+    /**
+     * <p>Returns the application context.</p>
+     * @return the get application context
+     */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

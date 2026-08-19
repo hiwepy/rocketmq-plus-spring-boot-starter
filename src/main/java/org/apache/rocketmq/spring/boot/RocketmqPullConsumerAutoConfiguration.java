@@ -76,6 +76,10 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 	 */
 	@Bean
 	@ConditionalOnMissingBean
+    /**
+     * <p>Allocate message queue strategy.</p>
+     * @return the allocate message queue strategy
+     */
 	public AllocateMessageQueueStrategy allocateMessageQueueStrategy() {
 		return new AllocateMessageQueueConsistentHash();
 	}
@@ -161,6 +165,9 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		 * not yet registered.
 		 */
 		Executors.newScheduledThreadPool(1).schedule(new Thread() {
+    /**
+     * <p>Run.</p>
+     */
 			public void run() {
 				try {
 
@@ -191,6 +198,11 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 	
 	@Bean
 	@ConditionalOnProperty(prefix = RocketmqPullConsumerProperties.PREFIX, name = "schedulable", havingValue = "true")
+    /**
+     * <p>Schedule pull consumer.</p>
+     * @param properties
+     * @return the schedule pull consumer
+     */
 	public MQPullConsumerScheduleService schedulePullConsumer(RocketmqPullConsumerProperties properties) throws MQClientException {
 
 		if (StringUtils.isEmpty(properties.getConsumerGroup())) {
@@ -238,6 +250,9 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 		 * not yet registered.
 		 */
 		Executors.newScheduledThreadPool(1).schedule(new Thread() {
+    /**
+     * <p>Run.</p>
+     */
 			public void run() {
 				try {
 
@@ -267,15 +282,28 @@ public class RocketmqPullConsumerAutoConfiguration  implements ApplicationContex
 	}
 	
 	@Bean
+    /**
+     * <p>Rocketmq consumer template.</p>
+     * @param consumer
+     * @return the rocketmq consumer template
+     */
 	public RocketmqPullConsumerTemplate rocketmqConsumerTemplate(MQPullConsumer consumer) throws MQClientException {
 		return new RocketmqPullConsumerTemplate(consumer);
 	}
 	
 	@Override
+    /**
+     * <p>Sets the application context.</p>
+     * @param applicationContext
+     */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+    /**
+     * <p>Returns the application context.</p>
+     * @return the get application context
+     */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

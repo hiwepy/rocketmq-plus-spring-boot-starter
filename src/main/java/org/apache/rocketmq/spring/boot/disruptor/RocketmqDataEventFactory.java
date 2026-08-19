@@ -14,6 +14,10 @@ import com.lmax.disruptor.EventFactory;
 public class RocketmqDataEventFactory implements EventFactory<RocketmqDisruptorEvent> {
 
 	@Override
+    /**
+     * <p>New instance.</p>
+     * @return the new instance
+     */
 	public RocketmqDisruptorEvent newInstance() {
 		return new RocketmqDisruptorEvent(this);
 	}

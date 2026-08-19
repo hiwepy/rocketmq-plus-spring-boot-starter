@@ -21,6 +21,10 @@ public abstract class AbstractNameableMessageHandler<T extends RocketmqEvent> im
 	}
 
 	@Override
+    /**
+     * <p>Sets the name.</p>
+     * @param name
+     */
 	public void setName(String name) {
 		this.name = name;
 	}

@@ -23,6 +23,9 @@ public class MQPullConsumerScheduleShutdownHook extends Thread{
 	}
 
 	@Override
+    /**
+     * <p>Run.</p>
+     */
 	public void run() {
 		consumerSchedule.shutdown();
 	}

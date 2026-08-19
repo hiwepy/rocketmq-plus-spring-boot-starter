@@ -29,26 +29,53 @@ public abstract class AbstractPathMatchMessageHandler<T extends RocketmqEvent> e
 	protected List<String> appliedPaths = new ArrayList<String>();
 
 	@Override
+    /**
+     * <p>Process path.</p>
+     * @param path
+     * @return the process path
+     */
 	public EventHandler<T> processPath(String path) {
 		this.appliedPaths.add(path);
 		return this;
 	}
 	
+    /**
+     * <p>Returns the path within event.</p>
+     * @param event
+     * @return the get path within event
+     */
 	protected String getPathWithinEvent(T event) {
 		return event.getRouteExpression();
 	}
 
+    /**
+     * <p>Paths match.</p>
+     * @param path
+     * @param event
+     * @return the paths match
+     */
 	protected boolean pathsMatch(String path, T event) {
 		String eventExp = getPathWithinEvent(event);
 		LOG.trace("Attempting to match pattern '{}' with current Event Expression '{}'...", path, eventExp);
 		return pathsMatch(path, eventExp);
 	}
 
+    /**
+     * <p>Paths match.</p>
+     * @param pattern
+     * @param path
+     * @return the paths match
+     */
 	protected boolean pathsMatch(String pattern, String path) {
 		return pathMatcher.match(pattern, path);
 	}
 	
 	
+    /**
+     * <p>Pre handle.</p>
+     * @param event
+     * @return the pre handle
+     */
 	protected boolean preHandle(T event) throws Exception {
 
 		if (this.appliedPaths == null || this.appliedPaths.isEmpty()) {
@@ -96,22 +123,45 @@ public abstract class AbstractPathMatchMessageHandler<T extends RocketmqEvent> e
 		return true;
 	}
 
+    /**
+     * <p>On pre handle.</p>
+     * @param event
+     * @return the on pre handle
+     */
 	protected boolean onPreHandle(T event) throws Exception {
 		return true;
 	}
 	
+    /**
+     * <p>Checks if enabled.</p>
+     * @param event
+     * @param path
+     * @return the is enabled
+     */
 	protected boolean isEnabled(T event, String path) throws Exception {
 		return isEnabled(event);
 	}
 
+    /**
+     * <p>Returns the path matcher.</p>
+     * @return the get path matcher
+     */
 	public PathMatcher getPathMatcher() {
 		return pathMatcher;
 	}
 
+    /**
+     * <p>Sets the path matcher.</p>
+     * @param pathMatcher
+     */
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		this.pathMatcher = pathMatcher;
 	}
 
+    /**
+     * <p>Returns the applied paths.</p>
+     * @return the get applied paths
+     */
 	public List<String> getAppliedPaths() {
 		return appliedPaths;
 	}

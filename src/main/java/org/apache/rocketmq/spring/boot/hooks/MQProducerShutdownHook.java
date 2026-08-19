@@ -22,6 +22,9 @@ public class MQProducerShutdownHook extends Thread{
 	}
 
 	@Override
+    /**
+     * <p>Run.</p>
+     */
 	public void run() {
 		producer.shutdown();
 	}

@@ -36,6 +36,12 @@ public class DefaultLocalTransactionExecuter implements LocalTransactionExecuter
 
 	@Override
 
+    /**
+     * <p>Execute local transaction branch.</p>
+     * @param msg
+     * @param arg
+     * @return the execute local transaction branch
+     */
 	public LocalTransactionState executeLocalTransactionBranch(final Message msg, final Object arg) {
 
 		int value = transactionIndex.getAndIncrement();

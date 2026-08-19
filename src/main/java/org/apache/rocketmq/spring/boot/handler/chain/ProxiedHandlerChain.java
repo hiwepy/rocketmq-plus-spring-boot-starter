@@ -45,6 +45,10 @@ public class ProxiedHandlerChain implements HandlerChain<RocketmqEvent> {
     }
 
     @Override
+    /**
+     * <p>Performs handler.</p>
+     * @param event
+     */
 	public void doHandler(RocketmqEvent event) throws Exception {
         if (this.handlers == null || this.handlers.size() == this.currentPosition) {
             if (LOG.isTraceEnabled()) {

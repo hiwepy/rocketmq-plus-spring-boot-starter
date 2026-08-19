@@ -25,22 +25,44 @@ public class DisruptorEventMessageConcurrentlyHandler implements MessageConcurre
 	private Disruptor<RocketmqDisruptorEvent> disruptor;
 
 	@Override
+    /**
+     * <p>Pre handle.</p>
+     * @param msgExt
+     * @param context
+     * @return the pre handle
+     */
 	public boolean preHandle(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		return true;
 	}
 
 	@Override
+    /**
+     * <p>Handle message.</p>
+     * @param msgExt
+     * @param context
+     */
 	public void handleMessage(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		// Publish the message onto the Disruptor ring buffer.
 		disruptor.publishEvent(new RocketmqDataConcurrentlyEventTranslator(context), msgExt);
 	}
 	
 	@Override
+    /**
+     * <p>Post handle.</p>
+     * @param msgExt
+     * @param context
+     */
 	public void postHandle(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		
 	}
 
 	@Override
+    /**
+     * <p>After completion.</p>
+     * @param msgExt
+     * @param context
+     * @param ex
+     */
 	public void afterCompletion(MessageExt msgExt, ConsumeConcurrentlyContext context, Exception ex) throws Exception {
 		if(ex != null) {
 			LOG.warn("Consume message failed. messageExt:{}", msgExt, ex);

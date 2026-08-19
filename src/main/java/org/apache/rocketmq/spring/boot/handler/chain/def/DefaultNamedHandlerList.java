@@ -40,6 +40,10 @@ public class DefaultNamedHandlerList implements NamedHandlerList<RocketmqEvent> 
         setName(name);
 	}
 
+    /**
+     * <p>Sets the name.</p>
+     * @param name
+     */
 	public void setName(String name) {
 		 if (StringUtils.isBlank(name)) {
 	         throw new IllegalArgumentException("Cannot specify a null or empty name.");
@@ -48,26 +52,48 @@ public class DefaultNamedHandlerList implements NamedHandlerList<RocketmqEvent> 
 	}
 
 	@Override
+    /**
+     * <p>Returns the name.</p>
+     * @return the get name
+     */
 	public String getName() {
 		return this.name;
 	}
 	
 	@Override
+    /**
+     * <p>Proxy.</p>
+     * @param handlerChain
+     * @return the proxy
+     */
 	public HandlerChain<RocketmqEvent> proxy(HandlerChain<RocketmqEvent> handlerChain) {
 		return new ProxiedHandlerChain((ProxiedHandlerChain) handlerChain, this);
 	}
 	
 	@Override
+    /**
+     * <p>Size.</p>
+     * @return the size
+     */
 	public int size() {
 		return this.backingList.size();
 	}
 
 	@Override
+    /**
+     * <p>Checks if empty.</p>
+     * @return the is empty
+     */
 	public boolean isEmpty() {
 		return this.backingList.isEmpty();
 	}
 
 	@Override
+    /**
+     * <p>Contains.</p>
+     * @param o
+     * @return the contains
+     */
 	public boolean contains(Object o) {
 		return this.backingList.contains(o);
 	}
@@ -88,71 +114,141 @@ public class DefaultNamedHandlerList implements NamedHandlerList<RocketmqEvent> 
 	}
 
 	@Override
+    /**
+     * <p>Add.</p>
+     * @param e
+     * @return the add
+     */
 	public boolean add(EventHandler<RocketmqEvent> e) {
 		return this.backingList.add(e);
 	}
 
 	@Override
+    /**
+     * <p>Remove.</p>
+     * @param o
+     * @return the remove
+     */
 	public boolean remove(Object o) {
 		return this.backingList.remove(o);
 	}
 
 	@Override
+    /**
+     * <p>Contains all.</p>
+     * @param c
+     * @return the contains all
+     */
 	public boolean containsAll(Collection<?> c) {
 		return this.backingList.containsAll(c);
 	}
 
 	@Override
+    /**
+     * <p>Add all.</p>
+     * @param c
+     * @return the add all
+     */
 	public boolean addAll(Collection<? extends EventHandler<RocketmqEvent>> c) {
 		return this.backingList.addAll(c);
 	}
 
 	@Override
+    /**
+     * <p>Add all.</p>
+     * @param index
+     * @param c
+     * @return the add all
+     */
 	public boolean addAll(int index, Collection<? extends EventHandler<RocketmqEvent>> c) {
 		return this.backingList.addAll(index, c);
 	}
 
 	@Override
+    /**
+     * <p>Remove all.</p>
+     * @param c
+     * @return the remove all
+     */
 	public boolean removeAll(Collection<?> c) {
 		return this.backingList.removeAll(c);
 	}
 
 	@Override
+    /**
+     * <p>Retain all.</p>
+     * @param c
+     * @return the retain all
+     */
 	public boolean retainAll(Collection<?> c) {
 		return this.backingList.retainAll(c);
 	}
 
 	@Override
+    /**
+     * <p>Clear.</p>
+     */
 	public void clear() {
 		this.backingList.clear();
 	}
 
 	@Override
+    /**
+     * <p>Returns the get.</p>
+     * @param index
+     * @return the get
+     */
 	public EventHandler<RocketmqEvent> get(int index) {
 		return this.backingList.get(index);
 	}
 
 	@Override
+    /**
+     * <p>Sets the set.</p>
+     * @param index
+     * @param element
+     * @return the set
+     */
 	public EventHandler<RocketmqEvent> set(int index, EventHandler<RocketmqEvent> element) {
 		return this.backingList.set(index, element);
 	}
 
 	@Override
+    /**
+     * <p>Add.</p>
+     * @param index
+     * @param element
+     */
 	public void add(int index, EventHandler<RocketmqEvent> element) {
 		this.backingList.add(index, element);
 	}
 
 	@Override
+    /**
+     * <p>Remove.</p>
+     * @param index
+     * @return the remove
+     */
 	public EventHandler<RocketmqEvent> remove(int index) {
 		return this.backingList.remove(index);
 	}
 
 	@Override
+    /**
+     * <p>Index of.</p>
+     * @param o
+     * @return the index of
+     */
 	public int indexOf(Object o) {
 		return this.backingList.indexOf(o);
 	}
 
 	@Override
+    /**
+     * <p>Last index of.</p>
+     * @param o
+     * @return the last index of
+     */
 	public int lastIndexOf(Object o) {
 		return this.backingList.lastIndexOf(o);
 	}

@@ -49,6 +49,13 @@ public class RocketmqPushConsumerTemplate {
 		this.consumer = consumer;
 	}
 	
+    /**
+     * <p>Subscribe.</p>
+     * @param topic
+     * @param tags
+     * @param handlerName
+     * @param handler
+     */
 	public void subscribe(String topic, String tags, String handlerName, EventHandler<RocketmqEvent> handler) throws MQClientException {
 
 		PathMatchingHandlerChainResolver chainResolver = getChainResolver();
@@ -86,6 +93,12 @@ public class RocketmqPushConsumerTemplate {
 		
 	}
 	
+    /**
+     * <p>Unsubscribe.</p>
+     * @param topic
+     * @param tags
+     * @param handlerName
+     */
 	public void unsubscribe(String topic, String tags, String handlerName) {
 		
 		PathMatchingHandlerChainResolver chainResolver = getChainResolver();
@@ -110,14 +123,26 @@ public class RocketmqPushConsumerTemplate {
 		
 	}
 
+    /**
+     * <p>Register message listener.</p>
+     * @param messageListener
+     */
 	public void registerMessageListener(final MessageListenerConcurrently messageListener){
 		consumer.registerMessageListener(messageListener);
 	}
 
+    /**
+     * <p>Register message listener.</p>
+     * @param messageListener
+     */
 	public void registerMessageListener(final MessageListenerOrderly messageListener){
 		consumer.registerMessageListener(messageListener);
 	}
 	
+    /**
+     * <p>Returns the chain resolver.</p>
+     * @return the get chain resolver
+     */
 	protected PathMatchingHandlerChainResolver getChainResolver() {
 		PathMatchingHandlerChainResolver chainResolver = null;
 		if( pushConsumerProperties != null && pushConsumerProperties.isEnabled() ) {
@@ -131,26 +156,50 @@ public class RocketmqPushConsumerTemplate {
 		return chainResolver;
 	}
 
+    /**
+     * <p>Returns the message orderly handler.</p>
+     * @return the get message orderly handler
+     */
 	public RocketmqEventMessageOrderlyHandler getMessageOrderlyHandler() {
 		return messageOrderlyHandler;
 	}
 
+    /**
+     * <p>Sets the message orderly handler.</p>
+     * @param messageOrderlyHandler
+     */
 	public void setMessageOrderlyHandler(RocketmqEventMessageOrderlyHandler messageOrderlyHandler) {
 		this.messageOrderlyHandler = messageOrderlyHandler;
 	}
 
+    /**
+     * <p>Returns the message concurrently handler.</p>
+     * @return the get message concurrently handler
+     */
 	public RocketmqEventMessageConcurrentlyHandler getMessageConcurrentlyHandler() {
 		return messageConcurrentlyHandler;
 	}
 
+    /**
+     * <p>Sets the message concurrently handler.</p>
+     * @param messageConcurrentlyHandler
+     */
 	public void setMessageConcurrentlyHandler(RocketmqEventMessageConcurrentlyHandler messageConcurrentlyHandler) {
 		this.messageConcurrentlyHandler = messageConcurrentlyHandler;
 	}
 
+    /**
+     * <p>Returns the consumer.</p>
+     * @return the get consumer
+     */
 	public MQPushConsumer getConsumer() {
 		return consumer;
 	}
 
+    /**
+     * <p>Sets the consumer.</p>
+     * @param consumer
+     */
 	public void setConsumer(MQPushConsumer consumer) {
 		this.consumer = consumer;
 	}

@@ -57,6 +57,10 @@ public class DefaultSubscriptionProvider implements SubscriptionProvider, Applic
 	 * @return the topic-to-selector-expression subscription map
 	 */
 	@Override
+    /**
+     * <p>Subscription.</p>
+     * @return the subscription
+     */
 	public Map<String, String> subscription() {
 
 		Map<String /* topic */, String /* selectorExpress */> subscription = new HashMap<String, String>();
@@ -95,10 +99,18 @@ public class DefaultSubscriptionProvider implements SubscriptionProvider, Applic
 	}
 	
 	@Override
+    /**
+     * <p>Sets the application context.</p>
+     * @param applicationContext
+     */
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
 
+    /**
+     * <p>Returns the application context.</p>
+     * @return the get application context
+     */
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

@@ -94,6 +94,10 @@ public class MessageBuilder implements Builder<Message> {
 	 * @throws MessageBuildException if any required field is missing
 	 */
 	@Override
+    /**
+     * <p>Builds the build.</p>
+     * @return the build
+     */
 	public Message build() {
 
 		if (StringUtils.isEmpty(topic)) {

@@ -31,11 +31,22 @@ public class RocketmqEventMessageOrderlyHandler extends AbstractRouteableMessage
 	}
 
 	@Override
+    /**
+     * <p>Pre handle.</p>
+     * @param msgExt
+     * @param context
+     * @return the pre handle
+     */
 	public boolean preHandle(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		return true;
 	}
 
 	@Override
+    /**
+     * <p>Handle message.</p>
+     * @param msgExt
+     * @param context
+     */
 	public void handleMessage(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		// Build the original (root) chain.
 		HandlerChain<RocketmqEvent>	originalChain = new ProxiedHandlerChain();
@@ -44,11 +55,22 @@ public class RocketmqEventMessageOrderlyHandler extends AbstractRouteableMessage
 	}
 
 	@Override
+    /**
+     * <p>Post handle.</p>
+     * @param msgExt
+     * @param context
+     */
 	public void postHandle(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		
 	}
 
 	@Override
+    /**
+     * <p>After completion.</p>
+     * @param msgExt
+     * @param context
+     * @param ex
+     */
 	public void afterCompletion(MessageExt msgExt, ConsumeOrderlyContext context, Exception ex) throws Exception {
 		if(ex != null) {
 			LOG.warn("Consume message failed. messageExt:{}", msgExt, ex);

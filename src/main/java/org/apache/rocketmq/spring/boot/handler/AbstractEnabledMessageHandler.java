@@ -30,6 +30,11 @@ public abstract class AbstractEnabledMessageHandler<T extends RocketmqEvent> ext
 	protected abstract void doHandlerInternal(T event, HandlerChain<T> handlerChain) throws Exception;
 
 	@Override
+    /**
+     * <p>Performs handler.</p>
+     * @param event
+     * @param handlerChain
+     */
 	public void doHandler(T event, HandlerChain<T> handlerChain) throws Exception {
 
 		if (!isEnabled(event)) {

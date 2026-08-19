@@ -36,23 +36,45 @@ public class PathMatchingHandlerChainResolver implements HandlerChainResolver<Ro
         this.handlerChainManager = new DefaultHandlerChainManager();
     }
 
+    /**
+     * <p>Returns the handler chain manager.</p>
+     * @return the get handler chain manager
+     */
 	public HandlerChainManager<RocketmqEvent> getHandlerChainManager() {
 		return handlerChainManager;
 	}
 
+    /**
+     * <p>Sets the handler chain manager.</p>
+     * @param handlerChainManager
+     */
 	public void setHandlerChainManager(HandlerChainManager<RocketmqEvent> handlerChainManager) {
 		this.handlerChainManager = handlerChainManager;
 	}
 
+    /**
+     * <p>Returns the path matcher.</p>
+     * @return the get path matcher
+     */
 	public PathMatcher getPathMatcher() {
 		return pathMatcher;
 	}
 
+    /**
+     * <p>Sets the path matcher.</p>
+     * @param pathMatcher
+     */
 	public void setPathMatcher(PathMatcher pathMatcher) {
 		this.pathMatcher = pathMatcher;
 	}
 	
 	
+    /**
+     * <p>Returns the chain.</p>
+     * @param event
+     * @param originalChain
+     * @return the get chain
+     */
 	public HandlerChain<RocketmqEvent> getChain(RocketmqEvent event, HandlerChain<RocketmqEvent> originalChain) {
         HandlerChainManager<RocketmqEvent> handlerChainManager = getHandlerChainManager();
         if (!handlerChainManager.hasChains()) {
@@ -71,11 +93,22 @@ public class PathMatchingHandlerChainResolver implements HandlerChainResolver<Ro
         return null;
     }
 
+    /**
+     * <p>Path matches.</p>
+     * @param pattern
+     * @param path
+     * @return the path matches
+     */
     protected boolean pathMatches(String pattern, String path) {
         PathMatcher pathMatcher = getPathMatcher();
         return pathMatcher.match(pattern, path);
     }
 
+    /**
+     * <p>Returns the path within event.</p>
+     * @param event
+     * @return the get path within event
+     */
     protected String getPathWithinEvent(RocketmqEvent event) {
     	return event.getRouteExpression();
     }

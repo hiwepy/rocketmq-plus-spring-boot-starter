@@ -28,6 +28,12 @@ public class RocketmqDataConcurrentlyEventTranslator implements EventTranslatorO
 	}
 
 	@Override
+    /**
+     * <p>Translate to.</p>
+     * @param event
+     * @param sequence
+     * @param msgExt
+     */
 	public void translateTo(RocketmqDisruptorEvent event, long sequence, MessageExt msgExt) {
 
 		event.setMessageExt(msgExt);

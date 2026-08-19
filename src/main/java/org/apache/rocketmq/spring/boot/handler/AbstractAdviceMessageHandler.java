@@ -18,21 +18,45 @@ public class AbstractAdviceMessageHandler<T extends RocketmqEvent> extends Abstr
 
 	protected final Logger LOG = LoggerFactory.getLogger(AbstractAdviceMessageHandler.class);
 	
+    /**
+     * <p>Pre handle.</p>
+     * @param event
+     * @return the pre handle
+     */
 	protected boolean preHandle(T event) throws Exception {
 		return true;
 	}
 
+    /**
+     * <p>Post handle.</p>
+     * @param event
+     */
 	protected void postHandle(T event) throws Exception {
 	}
 
+    /**
+     * <p>After completion.</p>
+     * @param event
+     * @param exception
+     */
 	public void afterCompletion(T event, Exception exception) throws Exception {
 	}
 
+    /**
+     * <p>Execute chain.</p>
+     * @param event
+     * @param chain
+     */
 	protected void executeChain(T event, HandlerChain<T> chain) throws Exception {
 		chain.doHandler(event);
 	}
 
 	@Override
+    /**
+     * <p>Performs handler internal.</p>
+     * @param event
+     * @param handlerChain
+     */
 	public void doHandlerInternal(T event, HandlerChain<T> handlerChain) throws Exception {
 
 		if (!isEnabled(event)) {
@@ -68,6 +92,11 @@ public class AbstractAdviceMessageHandler<T extends RocketmqEvent> extends Abstr
 
 	}
 
+    /**
+     * <p>Cleanup.</p>
+     * @param event
+     * @param existing
+     */
 	protected void cleanup(T event, Exception existing) throws Exception {
 		Exception exception = existing;
 		try {
@@ -85,15 +114,28 @@ public class AbstractAdviceMessageHandler<T extends RocketmqEvent> extends Abstr
 		}
 	}
 	
+    /**
+     * <p>Checks if enabled.</p>
+     * @param event
+     * @return the is enabled
+     */
 	protected boolean isEnabled(T event)
 			throws Exception {
 		return isEnabled();
 	}
 	
+    /**
+     * <p>Checks if enabled.</p>
+     * @return the is enabled
+     */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+    /**
+     * <p>Sets the enabled.</p>
+     * @param enabled
+     */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}

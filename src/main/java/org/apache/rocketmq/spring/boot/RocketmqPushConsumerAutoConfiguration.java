@@ -73,12 +73,20 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	
 	@Bean
 	@ConditionalOnMissingBean
+    /**
+     * <p>Message listener concurrently.</p>
+     * @return the message listener concurrently
+     */
 	public MessageListenerConcurrently messageListenerConcurrently() {
 		return new DefaultMessageListenerConcurrently();
 	}
 	
 	@Bean
 	@ConditionalOnMissingBean
+    /**
+     * <p>Message listener orderly.</p>
+     * @return the message listener orderly
+     */
 	public MessageListenerOrderly messageListenerOrderly() {
 		return new DefaultMessageListenerOrderly();
 	}
@@ -89,6 +97,10 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	 */
 	@Bean
 	@ConditionalOnMissingBean
+    /**
+     * <p>Allocate message queue strategy.</p>
+     * @return the allocate message queue strategy
+     */
 	public AllocateMessageQueueStrategy allocateMessageQueueStrategy() {
 		return new AllocateMessageQueueConsistentHash();
 	}
@@ -139,6 +151,10 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	
 	@Bean
 	@ConditionalOnMissingBean
+    /**
+     * <p>Default sub provider.</p>
+     * @return the default sub provider
+     */
 	public SubscriptionProvider defaultSubProvider() {
 		return new DefaultSubscriptionProvider();
 	}
@@ -246,6 +262,9 @@ public class RocketmqPushConsumerAutoConfiguration  {
 			 * its listener is not yet registered.
 			 */
 			Executors.newScheduledThreadPool(1).schedule(new Thread() {
+    /**
+     * <p>Run.</p>
+     */
 				public void run() {
 					try {
 
@@ -280,6 +299,11 @@ public class RocketmqPushConsumerAutoConfiguration  {
 	}
 	
 	@Bean
+    /**
+     * <p>Rocketmq consumer template.</p>
+     * @param consumer
+     * @return the rocketmq consumer template
+     */
 	public RocketmqPushConsumerTemplate rocketmqConsumerTemplate(MQPushConsumer consumer) throws MQClientException {
 		return new RocketmqPushConsumerTemplate(consumer);
 	}

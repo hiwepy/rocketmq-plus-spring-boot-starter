@@ -35,18 +35,34 @@ public class RocketmqPushEventHandlerDefinitionProperties {
     /** Rule-to-handler-names mapping used to build handler chains. */
     private Map<String /* rule */, String /* handler names */> definitionMap = new LinkedHashMap<String, String>();
 
+    /**
+     * <p>Returns the definitions.</p>
+     * @return the get definitions
+     */
 	public String getDefinitions() {
 		return definitions;
 	}
 
+    /**
+     * <p>Sets the definitions.</p>
+     * @param definitions
+     */
 	public void setDefinitions(String definitions) {
 		this.definitions = definitions;
 	}
 
+    /**
+     * <p>Returns the definition map.</p>
+     * @return the get definition map
+     */
 	public Map<String, String> getDefinitionMap() {
 		return definitionMap;
 	}
 
+    /**
+     * <p>Sets the definition map.</p>
+     * @param definitionMap
+     */
 	public void setDefinitionMap(Map<String, String> definitionMap) {
 		this.definitionMap = definitionMap;
 	}

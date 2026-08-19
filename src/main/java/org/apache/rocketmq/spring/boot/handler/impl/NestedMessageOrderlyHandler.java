@@ -42,11 +42,22 @@ public class NestedMessageOrderlyHandler implements MessageOrderlyHandler {
 	}
 
 	@Override
+    /**
+     * <p>Pre handle.</p>
+     * @param msgExt
+     * @param context
+     * @return the pre handle
+     */
 	public boolean preHandle(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		return true;
 	}
 	
 	@Override
+    /**
+     * <p>Handle message.</p>
+     * @param msgExt
+     * @param context
+     */
 	public void handleMessage(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 		if(isNested()){
 			for (MessageOrderlyHandler handler : getHandlers()) {
@@ -58,16 +69,31 @@ public class NestedMessageOrderlyHandler implements MessageOrderlyHandler {
 	}
 	
 	@Override
+    /**
+     * <p>Post handle.</p>
+     * @param msgExt
+     * @param context
+     */
 	public void postHandle(MessageExt msgExt, ConsumeOrderlyContext context) throws Exception {
 	}
 
 	@Override
+    /**
+     * <p>After completion.</p>
+     * @param msgExt
+     * @param context
+     * @param ex
+     */
 	public void afterCompletion(MessageExt msgExt, ConsumeOrderlyContext context, Exception ex) throws Exception {
 		if(ex != null) {
 			LOG.warn("Consume message failed. messageExt:{}", msgExt, ex);
 		}
 	}
 	
+    /**
+     * <p>Checks if nested.</p>
+     * @return the is nested
+     */
 	protected boolean isNested() {
 		if(CollectionUtils.isEmpty(getHandlers())){
 			return false;
@@ -75,6 +101,10 @@ public class NestedMessageOrderlyHandler implements MessageOrderlyHandler {
 		return true;
 	}
 	
+    /**
+     * <p>Returns the handlers.</p>
+     * @return the get handlers
+     */
 	public List<MessageOrderlyHandler> getHandlers() {
 		return handlers;
 	}
