@@ -31,54 +31,28 @@ public abstract class MessageConcurrentlyHandlerAdapter implements MessageConcur
 
 	/**
 	 * This implementation always returns {@code true}.
-	 */
 	@Override
-    /**
-     * <p>Pre handle.</p>
-     * @param msgExt
-     * @param context
-     * @return the pre handle
-     */
 	public boolean preHandle(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		return true;
 	}
 
 	/**
 	 * This implementation is empty.
-	 */
 	@Override
-    /**
-     * <p>Handle message.</p>
-     * @param msgExt
-     * @param context
-     */
 	public void handleMessage(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		
 	}
 	
 	/**
 	 * This implementation is empty.
-	 */
 	@Override
-    /**
-     * <p>Post handle.</p>
-     * @param msgExt
-     * @param context
-     */
 	public void postHandle(MessageExt msgExt, ConsumeConcurrentlyContext context) throws Exception {
 		
 	}
 	
 	/**
 	 * This implementation is empty.
-	 */
 	@Override
-    /**
-     * <p>After completion.</p>
-     * @param msgExt
-     * @param context
-     * @param ex
-     */
 	public void afterCompletion(MessageExt msgExt, ConsumeConcurrentlyContext context, Exception ex) throws Exception {
 		
 	}

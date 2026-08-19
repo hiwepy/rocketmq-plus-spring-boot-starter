@@ -55,12 +55,7 @@ public class DefaultSubscriptionProvider implements SubscriptionProvider, Applic
 	 * {@link #SELECTOR_EXPRESSS_EPARATOR}.
 	 *
 	 * @return the topic-to-selector-expression subscription map
-	 */
 	@Override
-    /**
-     * <p>Subscription.</p>
-     * @return the subscription
-     */
 	public Map<String, String> subscription() {
 
 		Map<String /* topic */, String /* selectorExpress */> subscription = new HashMap<String, String>();
